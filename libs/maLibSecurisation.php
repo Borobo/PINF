@@ -21,7 +21,7 @@ include_once "bdd.php";	// Car on utilise la fonction connecterUtilisateur()
 function verifUser($login,$password)
 {
 	// NE PAS ETRE UN LOSER
-	$sql = "SELECT id, identifiant FROM users WHERE identifiant='$login' AND password='$password' ";
+	$sql = "SELECT id, pseudo FROM users WHERE pseudo='$login' AND passe='$password' ";
 	$rs = SQLSelect($sql);
 	if ($rs)
 	{
@@ -29,7 +29,7 @@ function verifUser($login,$password)
 		$tabUsers = parcoursRs($rs);
 		$dataUser = $tabUsers[0];
 		$_SESSION["connecte"] = true;
-		$_SESSION["identifiant"] = $dataUser["identifiant"];
+		$_SESSION["pseudo"] = $dataUser["pseudo"];
 		$_SESSION["idUser"] = $dataUser["id"];
 		$_SESSION["heureConnexion"] = date("H:i:s");
 		return true;
