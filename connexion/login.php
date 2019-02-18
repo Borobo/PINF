@@ -15,7 +15,7 @@
         $(document).on("click", "input[type=submit]", function(){
             console.log($("input[type=text]").val());
             console.log($("input[type=password]").val());
-            $.getJSON("data.php", 
+            $.getJSON("../data.php", 
             {
                 action : "connexion",
                 identifiant : $("input[type=text]").val(),
