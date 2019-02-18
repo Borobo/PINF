@@ -29,8 +29,7 @@ session_start();
 			 
 	
 			switch($data["action"])
-			{
-		
+			{		
 
 				// Connexion //////////////////////////////////////////////////
 
@@ -40,12 +39,17 @@ session_start();
 
 					if 	(
 							!($identifiant = valider("identifiant")) 
-						|| 	!($passe = valider("passe"))
-						||	!($data["connecte"] = verifUser($login,$passe))
+						|| 	!($passe = valider("password"))
+						||	!($data["connecte"] = verifUser($identifiant,$passe))
 					)
 					{
 						// On verifie l'utilisateur, et on crée des variables de session si tout est OK
 						$data["feedback"] = "Entrez identifiant,passe (eg 'user','user')";
+
+					} else {
+						$data["feedback"] = "Utilisateur connecté";
+						$data["connecte"] = true;
+						header('Location:../affichage/test.php');
 					}
 				break;
 

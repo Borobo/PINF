@@ -21,6 +21,7 @@
                 identifiant : $("input[type=text]").val(),
                 password : $("input[type=password]").val()
             }, function(oRep){
+                console.log("Connecté : "+oRep.connecte);
                 console.log(oRep.feedback);
             })
         })
