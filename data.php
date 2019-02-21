@@ -47,7 +47,7 @@ session_start();
 						$data["feedback"] = "Entrez identifiant,passe (eg 'user','user')";
 
 					} else {
-						$data["feedback"] = "Utilisateur connect�";
+						$data["feedback"] = "Utilisateur connecte";
 						$data["connecte"] = true;
 						header('Location:affichage/test.php');
 					}
@@ -82,8 +82,9 @@ session_start();
 				break;
 
 
-				case 'getTables' : 
-					$data["boards"] = listerTables();
+				case 'getTables' :
+					$bdd = valider('bdd');
+					$data["boards"] = listerTables($bdd);
 				break;
 
 				case 'majTable' : 
