@@ -3,6 +3,6 @@
 $BDD_host="localhost";
 $BDD_user="root";
 $BDD_password="";
-$BDD_base="dblock2";
+$BDD_base="dblock";
 
 ?>
