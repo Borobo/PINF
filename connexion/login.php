@@ -5,13 +5,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="../bootstrap-4.2.1-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../libs/bootstrap.css">
 
-    <script src="./libs/jquery-3.3.1.js"></script>
+    <script src="../libs/jquery-3.3.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-    <script src="./libs/bootstrap.min.js"></script>
+    <script src="../libs/bootstrap.min.js"></script>
 
-    <script type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).on("click", "input[type=submit]", function(){
+            console.log($("input[type=text]").val());
+            console.log($("input[type=password]").val());
+            $.getJSON("../data.php", 
+            {
+                action : "connexion",
+                identifiant : $("input[type=text]").val(),
+                password : $("input[type=password]").val()
+            }, function(oRep){
+                console.log("Connecté : "+oRep.connecte);
+                console.log(oRep.feedback);
+            })
+        })
+    </script>
 </head>
 <body>
 
@@ -26,7 +40,6 @@
 
         </div>
         <div class="col-sm-4 jumbotron text-center alert-dark">
-            <form action="verification.php" method="GET">
                 <h1>Formulaire</h1><br>
 
                 <input type="text" placeholder="Nom d'utilisateur" name="username" required><br><br><!-- le required permet d'être obligé de rentrer une donnée-->
