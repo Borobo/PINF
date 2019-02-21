@@ -21,7 +21,7 @@ include_once "bdd.php";	// Car on utilise la fonction connecterUtilisateur()
 function verifUser($login,$password)
 {
 	// NE PAS ETRE UN LOSER
-	$sql = "SELECT id, identifiant FROM users WHERE identifiant='$login' AND password='$password' ";
+	$sql = "SELECT id, identifiant FROM user WHERE identifiant='$login' AND password='$password' ";
 	$rs = SQLSelect($sql);
 	if ($rs)
 	{
