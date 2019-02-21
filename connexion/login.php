@@ -42,7 +42,7 @@
         <div class="col-sm-4 jumbotron text-center alert-dark">
                 <h1>Formulaire</h1><br>
 
-                <input type="text" placeholder="Nom d'utilisateur" name="username" required><br><br><!-- le required permet d'être obligé de rentrer une donnée-->
+                <input type="text" placeholder="Nom d'utilisateur" name="identifiant" required><br><br><!-- le required permet d'être obligé de rentrer une donnée-->
 
                 <input type="password" placeholder="Mot de passe" name="password" required><br><br>
 

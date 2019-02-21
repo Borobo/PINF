@@ -13,7 +13,7 @@ session_start();
 
 	if (!$data["action"])
 	{
-		// On ne doit rentrer dans le switch que si on y est autorisé
+		// On ne doit rentrer dans le switch que si on y est autorisï¿½
 		$data["feedback"] = "Entrez connexion(login,passe) (eg 'tom','web2')";
 	}
 	else 
@@ -43,13 +43,13 @@ session_start();
 						||	!($data["connecte"] = verifUser($identifiant,$passe))
 					)
 					{
-						// On verifie l'utilisateur, et on crée des variables de session si tout est OK
+						// On verifie l'utilisateur, et on crï¿½e des variables de session si tout est OK
 						$data["feedback"] = "Entrez identifiant,passe (eg 'user','user')";
 
 					} else {
-						$data["feedback"] = "Utilisateur connecté";
+						$data["feedback"] = "Utilisateur connectï¿½";
 						$data["connecte"] = true;
-						header('Location:../affichage/test.php');
+						header('Location:affichage/test.php');
 					}
 				break;
 
@@ -73,11 +73,11 @@ session_start();
 				if ($label = valider("label"))
 				{
 					$data["idTable"] = mkTable($label);
-					// On définit aussi ses colonnes 
+					// On dï¿½finit aussi ses colonnes 
 					setColonnes($data["idTable"]); 
 
 					mkNotification(valider("idUser","SESSION"),"Creation du Table \'$label\'"); 
-					//TODO : à Modifier
+					//TODO : ï¿½ Modifier
 				}
 				break;
 
@@ -122,7 +122,7 @@ session_start();
 				case 'majData' : 
 					if ($idPostIt = valider("idPostIt"))
 					{
-						//TODO : à faire avec majData() dans bdd.php
+						//TODO : ï¿½ faire avec majData() dans bdd.php
 					}
 				break;
 
