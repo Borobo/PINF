@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `tab` (
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `identifiant` varchar(30) NOT NULL,
-  `password` int(11) NOT NULL,
+  `password` varchar(30) NOT NULL,
   PRIMARY KEY (`identifiant`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 COMMIT;
