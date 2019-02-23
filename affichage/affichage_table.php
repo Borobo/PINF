@@ -7,8 +7,8 @@ include("../header.html");
 
 		$(document).ready(function(){
 			//LES MODELES//////////////////////////////////////////
-			var modelJTable = $("<div class='tables text-center'>");
-			var modelJLabel = $("<div class='label label-default'>");
+			var modelJTable = $("<div class='tables col-sm-2 shadow bg-white text-center rounded border border-dark'>");
+			var modelJLabel = $("<div class='title border border-right-0 border-left-0 border-top-0 border-dark'>");
 			var modelJP = $("<p>");
 			///////////////////////////////////////////////////////
 
@@ -39,18 +39,23 @@ include("../header.html");
 		#content{
 			background-color: lightblue;
 			display: flex;
+			overflow: auto; 
 		}
-		.tables{
-			background-color: orange;
-			width: 300px;
+		.tables{		
 			height: 450px;
-			border: black 2px solid;
-			margin: 20px;
+			margin: 10px;
+			padding: 0;
+			min-width: 70px;
+		}
+		.title{
+			width: 100%;
+			font-size: auto;
 		}
 	</style>
 </header>
 
 <body>
 	<div class="container" id="content">
+
 	</div>
 </body>
