@@ -38,7 +38,7 @@ function majTable($idTable,$label)
 //////////////////////////////////////////////////////////////////////////////
 
 function listerColonnes($idTable) {
-	$SQL = "SELECT * FROM colonnes WHERE idTab='$idTable'"; 
+	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable";
 	return parcoursRs(SQLSelect($SQL));
 }
 
