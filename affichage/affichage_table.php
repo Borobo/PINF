@@ -1,5 +1,6 @@
 <?php
 include("../header.html");
+session_start()
 ?>
 
 <header>
@@ -116,7 +117,6 @@ include("../header.html");
 </header>
 
 <body>
-
     <div class="table-main-content">
         <div id="name" class="lead font-weight-bold text-uppercase ml-sm-5"><u>Nom de la base de données</u></div>
         <div class="table-canvas">
