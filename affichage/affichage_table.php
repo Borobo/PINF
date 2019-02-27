@@ -61,20 +61,41 @@ include("../header.html");
 	</script>
 
 	<style>
+        body{
+            background-color: lightblue;
+            overflow-y: auto;
+            overflow-x: auto;
+            overflow-scrolling: touch;
+        }
+        .table-main-content{
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .table-canvas{
+            position: relative;
+            display: block;
+            flex-grow: 1;
+        }
 		#content{
-			background-color: lightblue;
+            position: absolute;
 			display: flex;
-			overflow: auto;
+			overflow-x: auto;
+            top: 0;
+            bottom: 0;
+            right: 0;
 		}
 		.tables{
             position: relative;
 			height: 450px;
 			margin: 10px;
-			padding: 0;
             font-size: 9pt;
-            background-color: #dfe3e6 !important;
+            background-color: #dfe3e6;
             white-space: normal;
             min-width: 272px;
+        }
+        .tables:last-child{
+            margin-right: 30px;
         }
 		.title{
             font-size: 12pt;
@@ -88,16 +109,21 @@ include("../header.html");
         .col{
             display: flex;
             margin: 10px 0;
+        }
+        #name{
+            margin-top: 20px;
+        }
 
-        }
-        .col div{
-            float: left;
-        }
 	</style>
 </header>
 
 <body>
-	<div class="container" id="content">
+    <div class="table-main-content">
+        <div id="name" class="lead font-weight-bold text-uppercase ml-sm-5"><u>Nom de la base de données</u></div>
+        <div class="table-canvas">
+            <div class="container-fluid" id="content">
 
-	</div>
+            </div>
+        </div>
+    </div>
 </body>
