@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 	//echo $_SERVER["REQUEST_URI"] . "<br />";
 
 	include_once "libs/maLibUtils.php";
@@ -49,7 +48,8 @@ session_start();
 					} else {
 						$data["feedback"] = "Utilisateur connecte";
 						$data["connecte"] = true;
-						header('Location:affichage/test.php');
+						$_SESSION["connecte"] = true;
+						//header('Location:affichage/test.php');
 					}
 				break;
 
@@ -139,7 +139,6 @@ session_start();
 		
 	echo json_encode($data);
 
-	// todo : notifications
 ?>
 
 

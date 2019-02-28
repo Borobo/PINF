@@ -1,3 +1,6 @@
+<?php
+session_start()
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,10 +15,8 @@
     <script src="../libs/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-        $(document).on("click", "input[type=submit]", function(){
-            console.log($("input[type=text]").val());
-            console.log($("input[type=password]").val());
-            $.getJSON("../data.php", 
+        $(document).on("click", "input[type=submit]", function(contexte){
+            $.getJSON("../data.php",
             {
                 action : "connexion",
                 identifiant : $("input[type=text]").val(),
@@ -23,8 +24,23 @@
             }, function(oRep){
                 console.log("Connecté : "+oRep.connecte);
                 console.log(oRep.feedback);
+                if(!oRep.connecte){
+                    var alertBox = $("<div class='alert alert-danger'>")
+                        .html("<strong>Alerte</strong> : Identifiant ou mot de passe incorrect");
+                    $(".alert").remove();
+                    $("body").append(alertBox);
+                } else {
+                    <?php
+                    if(isset($_SESSION["connecte"]) && $_SESSION["connecte"])
+                        header('Location:../affichage/test.php');
+                    ?>
+                    window.location.reload().delay(1000);
+                }
+
             })
-        })
+        });
+
+
     </script>
 </head>
 <body>
@@ -41,12 +57,12 @@
         </div>
         <div class="col-sm-4 jumbotron text-center alert-dark">
                 <h1>Formulaire</h1><br>
+                    <input type="text" placeholder="Nom d'utilisateur" name="identifiant" required><br><br><!-- le required permet d'être obligé de rentrer une donnée-->
 
-                <input type="text" placeholder="Nom d'utilisateur" name="identifiant" required><br><br><!-- le required permet d'être obligé de rentrer une donnée-->
+                    <input type="password" placeholder="Mot de passe" name="password" required><br><br>
 
-                <input type="password" placeholder="Mot de passe" name="password" required><br><br>
+                    <input type="submit" id='submit' value='Connexion'>
 
-                <input type="submit" id='submit' value='Connexion'>
         </div>
         <div class="col-sm-4">
         </div>
