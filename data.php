@@ -33,7 +33,7 @@ session_start();
 
 				// Connexion //////////////////////////////////////////////////
 
-				case 'connexion' :
+			case 'connexion' :
 					// On verifie la presence des champs login et passe
 			
 
@@ -49,7 +49,8 @@ session_start();
 					} else {
 						$data["feedback"] = "Utilisateur connecte";
 						$data["connecte"] = true;
-						header('Location:affichage/test.php');
+						$_SESSION["connecte"] = true;
+						//header('Location:affichage/test.php');
 					}
 				break;
 
@@ -141,13 +142,4 @@ session_start();
 
 	// todo : notifications
 ?>
-
-
-
-
-
-
-
-
-
 
