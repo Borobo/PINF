@@ -1,6 +1,5 @@
 <?php
 include("../header.html");
-session_start()
 ?>
 
 <header>
@@ -64,7 +63,9 @@ session_start()
 	<style>
         body{
             background-color: lightblue;
+            overflow-y: auto;
             overflow-x: auto;
+            overflow-scrolling: touch;
         }
         .table-main-content{
             height: 100%;

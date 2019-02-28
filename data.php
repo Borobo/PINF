@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 	//echo $_SERVER["REQUEST_URI"] . "<br />";
 
 	include_once "libs/maLibUtils.php";
@@ -32,7 +33,7 @@ session_start();
 
 				// Connexion //////////////////////////////////////////////////
 
-				case 'connexion' :
+			case 'connexion' :
 					// On verifie la presence des champs login et passe
 			
 
@@ -139,14 +140,6 @@ session_start();
 		
 	echo json_encode($data);
 
+	// todo : notifications
 ?>
-
-
-
-
-
-
-
-
-
 
