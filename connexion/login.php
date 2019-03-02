@@ -34,7 +34,7 @@ session_start()
                     if(isset($_SESSION["connecte"]) && $_SESSION["connecte"])
                         header('Location:../affichage/test.php');
                     ?>
-                    window.location.reload().delay(1000);
+                    window.location.reload();
                 }
 
             })

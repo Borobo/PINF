@@ -5,8 +5,8 @@ session_start();
 
 	include_once "libs/maLibUtils.php";
 	include_once "libs/maLibSQL.pdo.php";
-	include_once "libs/maLibSecurisation.php"; 
-	include_once "libs/bdd.php"; 
+	include_once "libs/maLibSecurisation.php";
+	include_once "libs/bdd.php";
 
 	$data["connecte"] = valider("connecte","SESSION");
 	$data["action"] = valider("action");
@@ -16,29 +16,29 @@ session_start();
 		// On ne doit rentrer dans le switch que si on y est autoris�
 		$data["feedback"] = "Entrez connexion(login,passe) (eg 'tom','web2')";
 	}
-	else 
+	else
 	{
 		// si on a une action, on devrait avoir un message classique
 		$data["feedback"] = "entrez action: logout, setUser(login,passe,initiales), getUsers,setNotification(description), getNotifications, delNotification(idNotification), setTable(label),getTables,majTable(idTable,label), getColonnes(idTable), majColonne(idTable,numColonne,label), setPostIt(idTable,[label],[avancement],[numColonne]), getPostIts(idTable,[numColonne]),  majPostIt(idPostIt,[label],[avancement],[numColonne]), delPostIt(idPostIt),setMarqueur(idPostIt,type,valeur), getMarqueurs(idPostIt),delMarqueur(idMarqueur),setCommentaire(idPostIt,contenu),getCommentaires(idPostIt),delCommentaire(idPostIt)";
-				
+
 		// si pas connecte et action n'est pas connexion, on refuse
 		if ( (!valider("idUser","SESSION")) && ($data["action"] != "connexion" ) ) {
 			$data["feedback"] = "Entrez connexion(identifiant,passe) (eg 'user','user')";
 		}
 		else {
-			 
-	
+
+
 			switch($data["action"])
-			{		
+			{
 
 				// Connexion //////////////////////////////////////////////////
 
 			case 'connexion' :
 					// On verifie la presence des champs login et passe
-			
+
 
 					if 	(
-							!($identifiant = valider("identifiant")) 
+							!($identifiant = valider("identifiant"))
 						|| 	!($passe = valider("password"))
 						||	!($data["connecte"] = verifUser($identifiant,$passe))
 					)
@@ -55,18 +55,45 @@ session_start();
 				break;
 
 				case 'logout' :
-					// On supprime juste la session 
+					// On supprime juste la session
 					session_destroy();
 					$data["feedback"] = "Entrez login,passe (eg 'user','user')";
 					$data["connecte"] = false;
-				break;	
+				break;
 
 				// Utilisateurs //////////////////////////////////////////////////
 
 
-				case 'getUsers' : 
+				case 'getUsers' :
 					$data["users"] = listerUsers();
 				break;
+
+				// BDD //////////////////////////////////////////////////////
+
+				case 'creerBDD'	:
+                    $data["feedback"] = "on rentre dans creer BDD";
+                    if ($nom = valider("nom"))
+                    if ($description = valider("description"))
+						{
+                            $data["feedback"] = "creation";
+                            $SQL = "INSERT INTO bdd(nom,description,idCreateur) VALUES('$nom','$description',1)";
+                            $data["idBDD"]=SQLInsert($SQL);
+						}
+					break;
+
+				case 'afficherBDD':
+
+			        $SQL = "SELECT * FROM bdd WHERE idCreateur=1";
+			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
+
+	        		break;
+
+				case 'afficherLaBDD':
+
+					$SQL = "SELECT * FROM bdd WHERE id=$idBdd";
+					$data["bdd"]=parcoursRs(SQLSelect($SQL));
+
+					break;
 
 				// Tables //////////////////////////////////////////////////
 
@@ -74,10 +101,10 @@ session_start();
 				if ($label = valider("label"))
 				{
 					$data["idTable"] = mkTable($label);
-					// On d�finit aussi ses colonnes 
-					setColonnes($data["idTable"]); 
+					// On d�finit aussi ses colonnes
+					setColonnes($data["idTable"]);
 
-					mkNotification(valider("idUser","SESSION"),"Creation du Table \'$label\'"); 
+					mkNotification(valider("idUser","SESSION"),"Creation du Table \'$label\'");
 					//TODO : � Modifier
 				}
 				break;
@@ -88,25 +115,25 @@ session_start();
 					$data["boards"] = listerTables($bdd);
 				break;
 
-				case 'majTable' : 
+				case 'majTable' :
 					if ($idTable = valider("idTable"))
 					if ($label = valider("label"))
-					majTable($idTable,$label); 
+					majTable($idTable,$label);
 				break;
 
 				// Colonnes //////////////////////////////////////////////////
 
 
-				case 'getColonnes' : 
+				case 'getColonnes' :
 					if ($idTable = valider("idTable"))
 					$data["colonnes"] = listerColonnes($idTable);
 				break;
 
-				case 'majColonne' : 
+				case 'majColonne' :
 					if ($idTable = valider("idTable"))
 					if ($numColonne = valider("numColonne"))
 					if ($label = valider("label"))
-					majColonne($idTable,$numColonne,$label); 
+					majColonne($idTable,$numColonne,$label);
 				break;
 
 				// DATA //////////////////////////////////////////////////
@@ -114,21 +141,21 @@ session_start();
 				break;
 
 
-				case 'getData' : 
+				case 'getData' :
 					if ($idTable = valider("idTable")) {
-						$numColonne = valider("numColonne"); 
-						$data["postIts"] = listerPostIts($idTable,$numColonne); 
+						$numColonne = valider("numColonne");
+						$data["postIts"] = listerPostIts($idTable,$numColonne);
 					}
 				break;
 
-				case 'majData' : 
+				case 'majData' :
 					if ($idPostIt = valider("idPostIt"))
 					{
 						//TODO : � faire avec majData() dans bdd.php
 					}
 				break;
 
-				default : 				
+				default :
 					$data["action"] = "default";
 
 
@@ -137,9 +164,8 @@ session_start();
 		}
 	}
 
-		
+
 	echo json_encode($data);
 
 	// todo : notifications
 ?>
-
