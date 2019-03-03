@@ -72,22 +72,24 @@ session_start();
 
 				case 'creerBDD'	:
                     $data["feedback"] = "on rentre dans creer BDD";
+										$idCreateur = $_SESSION["idUser"];
                     if ($nom = valider("nom"))
                     if ($description = valider("description"))
 						{
                             $data["feedback"] = "creation";
-                            $SQL = "INSERT INTO bdd(nom,description,idCreateur) VALUES('$nom','$description',1)";
+                            $SQL = "INSERT INTO bdd(nom,description,idCreateur) VALUES('$nom','$description',$idCreateur)";
                             $data["idBDD"]=SQLInsert($SQL);
 						}
 					break;
 
 				case 'afficherBDD':
 
-					$idUser = valider("idUser");
-					$idBDD = valider("idBDD");
-			        $SQL = "SELECT * FROM bdd,liste_user WHERE
-					(bdd.idCreateur=$idUser AND bdd.id=$idBDD)
-					OR (liste_user.idUser=$idUser AND liste_user.idBDD=$idBdd)";
+							$idUser = $_SESSION["idUser"];
+
+			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser AND bdd.id = liste_user.idBdd
+							UNION
+							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser";
+
 			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 	        		break;
