@@ -83,7 +83,11 @@ session_start();
 
 				case 'afficherBDD':
 
-			        $SQL = "SELECT * FROM bdd WHERE idCreateur=1";
+					$idUser = valider("idUser");
+					$idBDD = valider("idBDD");
+			        $SQL = "SELECT * FROM bdd,liste_user WHERE
+					(bdd.idCreateur=$idUser AND bdd.id=$idBDD)
+					OR (liste_user.idUser=$idUser AND liste_user.idBDD=$idBdd)";
 			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 	        		break;
