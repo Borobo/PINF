@@ -1,17 +1,12 @@
 <!DOCTYPE html>
+<?php
+include("../header.html");
+?>
 <html lang="en">
 <head>
     <title>Bootstrap Example</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="bootstrap-4.2.1-dist/css/bootstrap.min.css">
-
-    <script src="jquery-3.3.1.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-
-    <script src="bootstrap-4.2.1-dist/js/bootstrap.min.js"></script>
 </head>
 
 <style>
@@ -55,12 +50,11 @@
         $("#envoyer").hide(); //formulaire création de bdd
 
         //affichage des bdd de l'utilisateur
-        $.getJSON("data.php",{
+        $.getJSON("../data.php",{
             action:"afficherBDD"
         },function(oRep){
             var i,meta;
             var btn,p;
-            console.log("creation de la bdd");
             console.log(oRep.bdd.length);
             for(i=0; i<oRep.bdd.length; i++){
                 meta = oRep.bdd[i];
@@ -99,7 +93,7 @@
         console.log("test creer");
         console.log($("#nom").val());
         console.log($("#description").val());
-        $.getJSON("data.php",{
+        $.getJSON("../data.php",{
             action:"creerBDD",
             nom:$("#nom").val(),
             description:$("#description").val()},function(oRep){
@@ -109,12 +103,11 @@
         $(".affichage").empty();
 
         $("#envoyer").hide(); //formulaire création de bdd
-        $.getJSON("data.php",{
+        $.getJSON("../data.php",{
             action:"afficherBDD"
         },function(oRep){
             var i,meta;
             var btn;
-            console.log("creation de la bdd");
             console.log(oRep.bdd.length);
             for(i=0; i<oRep.bdd.length; i++){
                 meta = oRep.bdd[i];
@@ -155,7 +148,7 @@
                     <p>
                 Si vous voulez envoyer une demande de création de base de données, cliquez sur le bouton Envoyer
                     </p>
-                    <img src="down-arrow.png"><br/>
+                    <img src="ressource/down-arrow.png"><br/>
                 <button type="button" class="btn btn-secondary" id="BtnEnvoyer">Envoyer</button>
                 </div>
             </fieldset>
