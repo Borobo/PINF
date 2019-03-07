@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <?php
+
 include("../header.html");
 ?>
 <html lang="en">
 <head>
     <title>Bootstrap Example</title>
     <meta charset="utf-8">
+
 </head>
 
 <style>
@@ -64,7 +66,7 @@ include("../header.html");
                 $(".affichage").append(p);*/
                 $(".affichage").append($("<p></p>")
                     .append($("<div class='btn-group'></div>")
-                        .append($("<button type='button' class='btn btn-secondary' style='width: 70%;' id='btn1'></button>").html(meta.nom))
+                        .append($("<a href='affichage_colonne.php' class='btn btn-secondary bdd' style='width: 70%;' ></a>").html(meta.nom).data("id",meta.id))
                         .append("<button type='button' class='btn btn-secondary dropdown-toggle dropdown-toggle-split' data-toggle='dropdown'>")
                         .append($("<div class='dropdown-menu'></div>")
                             .append($("<span class='dropdown-item-text'></span>").html(meta.description)))));
@@ -117,7 +119,7 @@ include("../header.html");
                 $(".affichage").append(p);*/
                 $(".affichage").append($("<p></p>")
                     .append($("<div class='btn-group'></div>")
-                        .append($("<button type='button' class='btn btn-secondary' style='width: 70%;' id='btn1'></button>").html(meta.nom))
+                        .append($("<a href='affichage_colonne.php' class='btn btn-secondary bdd' style='width: 70%;'></a>").html(meta.nom).data("id",meta.id))
                         .append("<button type='button' class='btn btn-secondary dropdown-toggle dropdown-toggle-split' data-toggle='dropdown'>")
                         .append($("<div class='dropdown-menu'></div>")
                             .append($("<span class='dropdown-item-text'></span>").html(meta.description)))));
@@ -126,6 +128,17 @@ include("../header.html");
         });
     });
 
+
+    $(document).on("click",".bdd",function(){
+      console.log("wshhhbdddddd");
+      console.log($(this).data("id"));
+        $.getJSON("../data.php",{
+          action:"pageColonne",
+          id:$(this).data("id")
+        },function(oRep){
+        });
+
+    });
 </script>
 
 <body>
