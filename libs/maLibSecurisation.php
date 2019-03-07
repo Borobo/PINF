@@ -31,6 +31,9 @@ function verifUser($login,$password)
 		$_SESSION["connecte"] = true;
 		$_SESSION["identifiant"] = $dataUser["identifiant"];
 		$_SESSION["idUser"] = $dataUser["id"];
+		$_SESSION["prenom"] = $dataUser["prenom"];
+		$_SESSION["nom"] = $dataUser["nom"];
+		$_SESSION["grade"] = $dataUser["grade"];
 		$_SESSION["heureConnexion"] = date("H:i:s");
 		return true;
 	}
@@ -46,7 +49,7 @@ function verifUser($login,$password)
 
 /**
  * Fonction � placer au d�but de chaque page priv�e
- * Cette fonction redirige vers la page $urlBad en envoyant un message d'erreur 
+ * Cette fonction redirige vers la page $urlBad en envoyant un message d'erreur
 	et arr�te l'interpr�tation si l'utilisateur n'est pas connect�
  * Elle ne fait rien si l'utilisateur est connect�, et si $urlGood est faux
  * Elle redirige vers urlGood sinon
@@ -57,21 +60,21 @@ function securiser($urlBad,$urlGood=false)
 	if (valider("pseudo","SESSION") == false)
 	{
 		// intrus !
-		
+
 		// on redirige en envoyant un message!!
 		header("Location:$urlBad?message=" .  urlencode("Hors d'ici !") );
 		die("");	// arreter l'interpr�tation du code
 		return;
-	
+
 	}
-	
+
 	// Utilisateur autoris� et urlGood n'est pas faux
 	if ($urlGood)
 	{
 		// on redirige puisque urlGood n'est pas faux
 		header("Location:$urlGood");
 		die("");	// arreter l'interpr�tation du code
-	
+
 	}
 }
 
