@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 4.7.4
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mer. 27 fév. 2019 à 13:19
--- Version du serveur :  5.7.23
--- Version de PHP :  7.2.10
+-- Généré le :  ven. 08 mars 2019 à 13:02
+-- Version du serveur :  5.7.19
+-- Version de PHP :  5.6.31
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -30,21 +30,25 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `bdd`;
 CREATE TABLE IF NOT EXISTS `bdd` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(30) DEFAULT NULL,
   `description` varchar(100) DEFAULT NULL,
   `idCreateur` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idCreateur` (`idCreateur`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `bdd`
 --
 
 INSERT INTO `bdd` (`id`, `nom`, `description`, `idCreateur`) VALUES
-(1, 'bdd1', NULL, NULL),
-(2, 'bdd2', NULL, NULL);
+(1, 'BDD3', 'Ceci est la description de la BDD3', 1),
+(4, 'test2', 'testest2', 1),
+(5, 'test3', 'testtest3', 1),
+(2, 'yoooo', 'oui bonjour', 1),
+(12, 'ouaiiii', 'Décris moi ça', 2),
+(13, 'bdd8', 'c\'est bien comme description pour la bdd8', 1);
 
 -- --------------------------------------------------------
 
@@ -93,6 +97,20 @@ CREATE TABLE IF NOT EXISTS `data` (
   KEY `idColonne` (`idColonne`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+--
+-- Déchargement des données de la table `data`
+--
+
+INSERT INTO `data` (`id`, `valInt`, `valChar`, `idColonne`) VALUES
+(1, NULL, 'Clement', 1),
+(2, NULL, 'BREHARD', 2),
+(3, NULL, 'Ranio', 1),
+(4, NULL, 'ElBour', 2),
+(5, NULL, 'Lucas', 1),
+(6, NULL, 'TESSOUILLE', 2),
+(7, NULL, 'Sachouille', 1),
+(8, NULL, 'LESUEUR', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -101,11 +119,22 @@ CREATE TABLE IF NOT EXISTS `data` (
 
 DROP TABLE IF EXISTS `liste_user`;
 CREATE TABLE IF NOT EXISTS `liste_user` (
-  `idBdd` int(11) DEFAULT NULL,
-  `idUser` int(11) DEFAULT NULL,
+  `idBdd` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
+  PRIMARY KEY (`idBdd`,`idUser`),
   KEY `idBdd` (`idBdd`),
   KEY `idUser` (`idUser`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `liste_user`
+--
+
+INSERT INTO `liste_user` (`idBdd`, `idUser`) VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 2);
 
 -- --------------------------------------------------------
 
@@ -152,14 +181,15 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` varchar(30) NOT NULL,
   `identifiant` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `user`
 --
 
 INSERT INTO `user` (`id`, `prenom`, `nom`, `grade`, `password`, `identifiant`) VALUES
-(1, 'aaa', 'aaa', 0, '123', 'aaa');
+(1, 'aaa', 'aaa', 0, '123', 'aaa'),
+(2, 'user2', 'osef', 0, '456', 'bbb');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
