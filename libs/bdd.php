@@ -1,13 +1,13 @@
 <?php
 
 
-include_once("maLibSQL.pdo.php"); 
-// définit les fonctions SQLSelect, SQLUpdate... 
+include_once("maLibSQL.pdo.php");
+// définit les fonctions SQLSelect, SQLUpdate...
 
 function listerUsers()
 {
 	// liste tous les Tables disponibles, triés par valeur du champ 'ordre' croissant
-	$SQL = "SELECT * FROM user ORDER BY nom, prenom ASC"; 
+	$SQL = "SELECT * FROM user ORDER BY nom, prenom ASC";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -24,7 +24,7 @@ function mkTable($label)
 function listerTables($idBdd)
 {
 	// liste tous les Tables disponibles, triés par valeur du champ 'ordre' croissant
-	$SQL = "SELECT * FROM tab WHERE idBdd = '$idBdd' ORDER BY id ASC"; 
+	$SQL = "SELECT * FROM tab WHERE idBdd = '$idBdd' ORDER BY id ASC";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -56,7 +56,7 @@ function setColonnes($idTable) {
 
 function listerData($idCol)
 {
-	$SQL = "SELECT * FROM data WHERE idColonne='$idCol'"; 
+	$SQL = "SELECT * FROM data WHERE idColonne='$idCol'";
 	return parcoursRs(SQLSelect($SQL));
 }
 

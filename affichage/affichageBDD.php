@@ -130,10 +130,9 @@ include("../header.html");
 
 
     $(document).on("click",".bdd",function(){
-      console.log("wshhhbdddddd");
       console.log($(this).data("id"));
         $.getJSON("../data.php",{
-          action:"pageColonne",
+          action:"StockIdBDD",
           id:$(this).data("id")
         },function(oRep){
         });

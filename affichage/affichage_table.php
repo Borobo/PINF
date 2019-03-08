@@ -50,11 +50,11 @@ include("../header.html");
 
                         uneTable.append(lesData);
 						$("#content").append(uneTable);
-                        })(i);
-					}
+					})(i);
+				}
 				}
 
-			)
+)
 
 		});
 
