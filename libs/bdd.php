@@ -1,30 +1,29 @@
 <?php
 
 
-include_once("maLibSQL.pdo.php"); 
-// définit les fonctions SQLSelect, SQLUpdate... 
+include_once("maLibSQL.pdo.php");
+// définit les fonctions SQLSelect, SQLUpdate...
 
 function listerUsers()
 {
 	// liste tous les Tables disponibles, triés par valeur du champ 'ordre' croissant
-	$SQL = "SELECT * FROM user ORDER BY nom, prenom ASC"; 
+	$SQL = "SELECT * FROM user ORDER BY nom, prenom ASC";
 	return parcoursRs(SQLSelect($SQL));
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-function mkTable($label)
+function mkTable($idBdd,$label)
 {
 	// Cette fonction crée un nouveau Table à la fin des Tables existants et renvoie son identifiant
-	$SQL = "INSERT INTO tab(label) VALUES('$label')";
+	$SQL = "INSERT INTO tab(label,idBdd) VALUES('$label','$idBdd')";
 	return SQLInsert($SQL);
-	//TODO : à modifier
 }
 
 function listerTables($idBdd)
 {
 	// liste tous les Tables disponibles, triés par valeur du champ 'ordre' croissant
-	$SQL = "SELECT * FROM tab WHERE idBdd = '$idBdd' ORDER BY id ASC"; 
+	$SQL = "SELECT * FROM tab WHERE idBdd = '$idBdd' ORDER BY id ASC";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -46,8 +45,8 @@ function majColonne($idTable,$numColonne,$label) {
 	//TODO : majColonne --> majDonnee
 }
 
-function setColonnes($idTable) {
-	$SQL = "INSERT INTO colonnes(idTable,nomCol1,nomCol2,nomCol3) VALUES ('$idTable','A Faire', 'En cours', 'Fait')";
+function setColonnes($idTable, $label) {
+	$SQL = "INSERT INTO colonne(label,idTab) VALUES ('$label','$idTable')";
 	return SQLUpdate($SQL);
 	//TODO : ?????
 }
@@ -56,7 +55,7 @@ function setColonnes($idTable) {
 
 function listerData($idCol)
 {
-	$SQL = "SELECT * FROM data WHERE idColonne='$idCol'"; 
+	$SQL = "SELECT * FROM data WHERE idColonne='$idCol'";
 	return parcoursRs(SQLSelect($SQL));
 }
 

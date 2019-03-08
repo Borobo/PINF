@@ -103,14 +103,10 @@ session_start();
 				// Tables //////////////////////////////////////////////////
 
 				case 'setTable' :
+				if ($idBdd = valider("idBdd"))
 				if ($label = valider("label"))
 				{
-					$data["idTable"] = mkTable($label);
-					// On d�finit aussi ses colonnes
-					setColonnes($data["idTable"]);
-
-					mkNotification(valider("idUser","SESSION"),"Creation du Table \'$label\'");
-					//TODO : � Modifier
+					$data["idTable"] = mkTable(1,$label);
 				}
 				break;
 

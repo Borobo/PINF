@@ -18,7 +18,7 @@ include("../header.html");
 	.append(modelJOption.clone().html("Texte"))
 	.append(modelJOption.clone().html("Nombre"));
 	var addDesc = $("<input type='text' class='desc rounded' placeholder='Description'>");
-	var addCroix = $("<img src='ressource/cancel.png'>");
+	var addCroix = $("<img class='croix' src='ressource/cancel.png'>");
 	var addCol = $("<div class='popup-table-addCol'>").append(addNom.clone())
 	.append(addType.clone()).append(addDesc.clone()).append(addCroix.clone(true));
 
@@ -79,13 +79,25 @@ include("../header.html");
 
 		})
 
-		$(document).on("click", "#popup-table-form button", function(){
+		$(document).on("click", "#popup-table-form #addCol", function(){
 			$("#popup-table-cols").append(addCol.clone());
 		});
 
-		$(document).on("click", "#popup-table-addCol img", function(){
-			$("").remove();
+		$(document).on("click", ".croix",function(){
+			$(this).parent().remove();
 		})
+
+		$(document).on("click", "#validate", function(){
+			$.getJSON("../data.php", {
+				action : "setTable",
+				idBdd : 1,
+				labelTab : "",
+			})
+			$(".popup-table-addCol").each(function(){
+
+			})
+		})
+
 
 	</script>
 
@@ -151,7 +163,7 @@ include("../header.html");
 		}
 		#popup-table{
 			height: 450px;
-			width: 50%;
+			min-width: 50%;
 			position: absolute;
 			background: #dfe3e6;
 			top: 20%;
@@ -184,6 +196,7 @@ include("../header.html");
 			margin-top: 5px;
 			height: 25px;
 			width: 25px;
+			cursor: pointer;
 		}
 
 		.input{
@@ -216,7 +229,8 @@ include("../header.html");
 				</div>
 				<div id="popup-table-form">
 					<div id="popup-table-cols"></div>
-					<button type="button" class="btn btn-outline-secondary">Ajouter une colonne</button>
+					<button type="button" id="validate" class="btn btn-primary">Valider</button>
+					<button type="button" id="addCol" class="btn btn-outline-secondary">Ajouter une colonne</button>
 				</div>
 
 			</div>
