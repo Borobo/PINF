@@ -117,7 +117,6 @@ session_start();
 
 
 				case 'getTables' :
-
 					//$bdd = 1;
 					$bdd = $_SESSION["idBDD"];
 					$data["boards"] = listerTables($bdd);
@@ -150,9 +149,9 @@ session_start();
 
 
 				case 'getData' :
-					if ($idTable = valider("idTable")) {
-						$numColonne = valider("numColonne");
-						$data["postIts"] = listerPostIts($idTable,$numColonne);
+					if ($idColonne = valider("idColonne")) {
+						//$data["postIts"] = listerPostIts($idTable,$numColonne);
+						$data["data"] = listerData($idColonne);
 					}
 				break;
 
@@ -163,7 +162,7 @@ session_start();
 					}
 				break;
 
-				case 'pageColonne':
+				case 'StockIdBDD':
 				if($id = valider("id")){
 					$data["feedback"]="changement de page";
 					$_SESSION["idBDD"] = $id;
