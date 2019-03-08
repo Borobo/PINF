@@ -1,5 +1,10 @@
+<?php
+  session_start();
+
+?>
+
 <head>
-    <title>Bootstrap Example</title>
+    <title>Example</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -14,33 +19,59 @@
             console.log($("input[type=text]").val());
             console.log($("input[type=password]").val());
             $.getJSON("../data.php",
-            {
-                action : "connexion",
-                identifiant : $("input[type=text]").val(),
-                password : $("input[type=password]").val()
-            }, function(oRep){
-                console.log("Connecté : "+oRep.connecte);
-                console.log(oRep.feedback);
-            })
+                {
+                    action : "connexion",
+                    identifiant : $("input[type=text]").val(),
+                    password : $("input[type=password]").val()
+                }, function(oRep){
+                    console.log("Connecté : "+oRep.connecte);
+                    console.log(oRep.feedback);
+                })
         });
         $(document).ready(function () {
             var img = $("<img class='icon' src='./ressource/home.png'>");
             $("#header").append(img);
         });
+
+        $(document).on("click","#deconnexion",function(){
+
+            $.getJSON("../data.php",
+                {action:'logout'},function(oRep){
+                    console.log(oRep);
+                });
+
+
+        });
     </script>
 </head>
 <style>
-    #header{
+    .header{
         height: 50px;
         background-color: #118d9e;
         border-bottom: #0f6674 5px solid;
     }
     .icon{
+        height: 46px;
+        width: 50px;
         background-color: red;
         position: absolute;
+        top :0;
+        left: 0;
+    }
+    .header p {
+      float : right;
     }
 </style>
 <body>
-    <div id="header">
-    </div>
+    <nav class="header navbar-static-top">
+        <p>
+
+          <?php if (isset($_SESSION['identifiant'])){
+            echo "Bonjour ".$_SESSION['identifiant'].", bienvenue !";}
+                else { echo "Vous êtes déconnecté ! ";}
+          ?>
+          <a href="../connexion/login.php" class="btn btn-info" id="deconnexion">Deconnexion</a>
+        </p>
+    </nav>
+
 </body>
