@@ -16,8 +16,7 @@ include ("../header.html");
         var modelJLabCol = $("<div class='card-body text-left'>");
 
         $.getJSON("../data.php", {
-            action : "getTables",
-            bdd : 1},
+            action : "getTables"},
             function(oRep){
                 console.log(oRep);
                 for(var i=0; i<oRep.boards.length; i++){
@@ -36,7 +35,6 @@ include ("../header.html");
                             idTable : meta.id
                         },
                         function(oCol){
-                            console.log(oCol);
                             for(var j=0; j<oCol.colonnes.length; j++){
                                 (function(j){
                                 var meta2 = oCol.colonnes[j];
@@ -44,7 +42,24 @@ include ("../header.html");
                                 var unLabelCol = modelJLabCol.clone(true).html(meta2.label);
                                 var uneColonne = modelJColonne.clone(true).append(unLabelCol);
                                 ////////////////////////////////////////
-                                lesData.append(uneColonne);
+
+                                //Affichage des data
+                                $.getJSON("../data.php",{
+                                  action:"getData",
+                                  idColonne:meta2.id},function(oData){
+                                    console.log(oData);
+                                    var dataP = modelJP.clone();
+                                    var k,meta3;
+
+                                    for(k=0; k<oData.data.length; k++){
+                                      meta3=oData.data[k];
+                                      dataP.html(meta3.valChar).attr("class","data");
+                                      unLabelCol.append(dataP);
+                                    }
+                                    lesData.append(uneColonne);
+
+                                  });
+
                             })(j)
                             }
                         }
@@ -128,6 +143,13 @@ include ("../header.html");
         width: 180px;
         height: 50px;
         margin-left: 7px;
+      }
+      .data:first-child{
+        margin-top:20px;
+      }
+
+      .data{
+        margin-bottom:10px;
       }
 
     </style>
