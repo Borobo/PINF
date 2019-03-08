@@ -48,10 +48,11 @@ include ("../header.html");
                                   action:"getData",
                                   idColonne:meta2.id},function(oData){
                                     console.log(oData);
-                                    var dataP = modelJP.clone();
+
                                     var k,meta3;
 
                                     for(k=0; k<oData.data.length; k++){
+                                      var dataP = modelJP.clone();
                                       meta3=oData.data[k];
                                       dataP.html(meta3.valChar).attr("class","data");
                                       unLabelCol.append(dataP);
