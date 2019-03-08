@@ -4,16 +4,28 @@ include("../header.html");
 
 <header>
 	<script type="text/javascript">
+	//LES MODELES//////////////////////////////////////////
+	var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
+	var modelJLabel = $("<div class='title border border-right-0 border-left-0 border-top-0 border-dark'>");
+	var modelJData = $("<div class='container tab-data'>");
+	var modelJP = $("<p>");
+	var modelJColonne = $("<div class='card col shadow-sm bg-white'>");
+	var modelJLabCol = $("<div class='card-body text-left'>");
+	var modelJOption = $("<option>");
+
+	var addNom = $("<input type='text' class='input rounded' placeholder='Nom colonne'>");
+	var addType = $("<select class='form-control'>")
+	.append(modelJOption.clone().html("Texte"))
+	.append(modelJOption.clone().html("Nombre"));
+	var addDesc = $("<input type='text' class='desc rounded' placeholder='Description'>");
+	var addCroix = $("<img src='ressource/cancel.png'>");
+	var addCol = $("<div class='popup-table-addCol'>").append(addNom.clone())
+	.append(addType.clone()).append(addDesc.clone()).append(addCroix.clone(true));
+
+	///////////////////////////////////////////////////////
 
 		$(document).ready(function(){
-			//LES MODELES//////////////////////////////////////////
-			var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
-			var modelJLabel = $("<div class='title border border-right-0 border-left-0 border-top-0 border-dark'>");
-			var modelJData = $("<div class='container tab-data'>");
-			var modelJP = $("<p>");
-			var modelJColonne = $("<div class='card col shadow-sm bg-white'>");
-			var modelJLabCol = $("<div class='card-body text-left'>");
-			///////////////////////////////////////////////////////
+
 
 			$.getJSON("../data.php", {
 				action : "getTables",
@@ -59,11 +71,20 @@ include("../header.html");
 
 
 			)
+			$("#popup-table-cols").prepend(addCol.clone());
 
 		});
 
 		$(document).on("click","#divPlus", function(){
 
+		})
+
+		$(document).on("click", "#popup-table-form button", function(){
+			$("#popup-table-cols").append(addCol.clone());
+		});
+
+		$(document).on("click", "#popup-table-addCol img", function(){
+			$("").remove();
 		})
 
 	</script>
@@ -141,7 +162,43 @@ include("../header.html");
 		#popup-table div{
 			margin-top: 15px;
 		}
+		#popup-table-form{
+			overflow: auto;
+		}
 
+		#popup-table-form button{
+			margin-top: 30px;
+		}
+		.popup-table-addCol{
+			position: relative;
+			display: flex;
+			height: 40px;
+		}
+
+		.popup-table-addCol *{
+			height: 100%;
+			margin: 0 10px;
+		}
+
+		.popup-table-addCol img{
+			margin-top: 5px;
+			height: 25px;
+			width: 25px;
+		}
+
+		.input{
+			float: left;
+		}
+		.desc{
+			flex-grow: 1;
+		}
+		#popup-table-cols{
+			overflow: auto;
+			height: 288px;
+		}
+		#popup-table-cols select{
+			width: 115px;
+		}
 	</style>
 </header>
 
@@ -156,7 +213,10 @@ include("../header.html");
 		<div id="popup-table" class="border border-dark shadow">
 			<div>
 				<div><input class="rounded" type="text" placeholder="Nom de la table"></input>
-
+				</div>
+				<div id="popup-table-form">
+					<div id="popup-table-cols"></div>
+					<button type="button" class="btn btn-outline-secondary">Ajouter une colonne</button>
 				</div>
 
 			</div>
