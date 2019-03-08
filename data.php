@@ -89,7 +89,6 @@ session_start();
 			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser AND bdd.id = liste_user.idBdd
 							UNION
 							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser";
-
 			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 	        		break;
@@ -117,9 +116,7 @@ session_start();
 
 
 				case 'getTables' :
-
-					//$bdd = 1;
-					$bdd = $_SESSION["idBDD"];
+					$bdd = valider('bdd');
 					$data["boards"] = listerTables($bdd);
 				break;
 
@@ -162,13 +159,6 @@ session_start();
 						//TODO : � faire avec majData() dans bdd.php
 					}
 				break;
-
-				case 'pageColonne':
-				if($id = valider("id")){
-					$data["feedback"]="changement de page";
-					$_SESSION["idBDD"] = $id;
-				}
-					break;
 
 				default :
 					$data["action"] = "default";
