@@ -114,6 +114,7 @@ session_start();
 				case 'getTables' :
 					if($bdd = valider('bdd'));
 					$data["boards"] = listerTables($bdd);
+					$data["grade"] = $_SESSION["grade"];
 				break;
 
 				case 'majTable' :

@@ -65,9 +65,11 @@ include("../header.html");
 						$("#content").append(uneTable);
                         })(i);
 					}
+
 					var divPlus = $("<div id='divPlus' class='tables shadow text-center rounded border border-dark'>")
 					.append($("<img>").attr("src","ressource/plus.png"));
-					$("#content").append(divPlus);
+					if(oRep.grade != 0)
+						$("#content").append(divPlus);
 				}
 
 
