@@ -14,68 +14,85 @@ include ("../header.html");
         var modelJColonneCanvas = $("<div class='container border border-danger'>");
         var modelJTable = $("<div class=\"tables\">");
         var modelJLabCol = $("<div class='card-body text-left'>");
+        var modelJBtn = $("<a href='' class='btn btn-info'></a>");
 
-        $.getJSON("../data.php", {
-            action : "getTables"},
-            function(oRep){
-                console.log(oRep);
-                for(var i=0; i<oRep.boards.length; i++){
-                    (function (i) {
-                    var meta = oRep.boards[i];
-                    //CREATION DU LABEL////////////////////////////////////////////////////
-                    var unP = modelJP.clone();
-                    var unLabel = modelJLabel.clone(true);
-                    ///////////////////////////////////////////////////////////////////////text
-                    var lesData = modelJData.clone(true);
-                    var uneTable = modelJTable.clone(true).append(unLabel)
-                        .data("label", meta.label); //On stocke le label dans le div.
+      $.getJSON("../data.php",{
+          action:"getNomTables"},function(oRep){
 
-                    $.getJSON("../data.php", {
-                            action : "getColonnes",
-                            idTable : meta.id
-                        },
-                        function(oCol){
-                            for(var j=0; j<oCol.colonnes.length; j++){
-                                (function(j){
-                                var meta2 = oCol.colonnes[j];
-                                //CREATION DUNE COLONNE/////////////////
-                                var unLabelCol = modelJLabCol.clone(true).html(meta2.label);
-                                var uneColonne = modelJColonne.clone(true).append(unLabelCol);
-                                ////////////////////////////////////////
+            var i;
+          //  console.log(oRep.nomTables[0].label);
+            for(i=0; i<oRep.nomTables.length; i++){
+              console.log(oRep.nomTables[i].label);
+              var unBtn = modelJBtn.clone(true).html(oRep.nomTables[i].label);
+              $("#nomTab").append(unBtn);
 
-                                //Affichage des data
-                                $.getJSON("../data.php",{
-                                  action:"getData",
-                                  idColonne:meta2.id},function(oData){
-                                    console.log(oData);
-
-                                    var k,meta3;
-
-                                    for(k=0; k<oData.data.length; k++){
-                                      var dataP = modelJP.clone();
-                                      meta3=oData.data[k];
-                                      dataP.html(meta3.valChar).attr("class","data");
-                                      unLabelCol.append(dataP);
-                                    }
-                                    lesData.append(uneColonne);
-
-                                  });
-
-                            })(j)
-                            }
-                        }
-
-                    );
-
-                    uneTable.append(lesData).hide();
-                    $("#container-table").append(uneTable);
-                    })(i);
-                }
             }
 
-        )
+          });
+
+
+
+        $.getJSON("../data.php",{
+          action:"getLaTable"},function(oRep){
+            console.log(oRep);
+            var meta = oRep.tab[0];
+            //CREATION DU LABEL////////////////////////////////////////////////////
+            var unP = modelJP.clone();
+            var unLabel = modelJLabel.clone(true);
+            ///////////////////////////////////////////////////////////////////////text
+            var lesData = modelJData.clone(true);
+            var uneTable = modelJTable.clone(true).append(unLabel)
+                .data("label", meta.label); //On stocke le label dans le div.
+
+            $.getJSON("../data.php", {
+                    action : "getColonnes",
+                    idTable : meta.id
+                },
+                function(oCol){
+                    console.log(oCol);
+
+                    for(var j=0; j<oCol.colonnes.length; j++){
+                        (function(j){
+                        var meta2 = oCol.colonnes[j];
+                        //CREATION DUNE COLONNE/////////////////
+                        var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
+                        var unLabelCol = modelJLabCol.clone(true).append(colP);
+
+                        var uneColonne = modelJColonne.clone(true).append(unLabelCol);
+                        ////////////////////////////////////////
+                        console.log(meta2.label);
+                        console.log(meta2.id);
+                        //Affichage des data
+                        $.getJSON("../data.php",{
+                          action:"getData",
+                          idColonne:meta2.id},function(oData){
+                            //console.log(oData);
+
+                            var k,meta3;
+
+                            for(k=0; k<oData.data.length; k++){
+                              var dataP = modelJP.clone();
+                              meta3=oData.data[k];
+                              dataP.html(meta3.valChar).attr("class","data");
+                              unLabelCol.append(dataP);
+                            }
+                            lesData.append(uneColonne);
+
+                          });
+
+                    })(j)
+                  }
+                }
+
+            );
+            uneTable.append(lesData);
+            $("#container-table").append(uneTable);
+          });
+
 
   })
+
+
 
     </script>
 
@@ -103,9 +120,20 @@ include ("../header.html");
       #container-table{
         background-color: rgb(50, 80, 50);
         width: 100%;
-        margin-top: 50px;
         height: 100%;
       }
+
+      #nomTab{
+        height: 50px;
+        display: flex;
+      }
+
+      .btn-info{
+        margin-right: 10px;
+        margin-top:5px;
+        min-width:100px;
+        height:40px;
+        }
 
       .tables:first-child{
           display: block !important;
@@ -153,6 +181,11 @@ include ("../header.html");
         margin-bottom:10px;
       }
 
+      .labCol{
+        text-align: center;
+
+      }
+
     </style>
 </head>
 
@@ -170,6 +203,8 @@ include ("../header.html");
               <button type="button" class="btn btn-light">Maximum</button>
     </div>
     <div id="affichage" class="container-fluide">
+      <div id="nomTab">
+      </div>
       <div class="tables" id="container-table">
       </div>
     </div>
