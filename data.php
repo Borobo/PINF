@@ -106,13 +106,13 @@ session_start();
 				if ($idBdd = valider("idBdd"))
 				if ($label = valider("label"))
 				{
-					$data["idTable"] = mkTable(1,$label);
+					$data["idTable"] = mkTable($idBdd,$label);
 				}
 				break;
 
 
 				case 'getTables' :
-					$bdd = valider('bdd');
+					if($bdd = valider('bdd'));
 					$data["boards"] = listerTables($bdd);
 				break;
 
@@ -123,7 +123,12 @@ session_start();
 				break;
 
 				// Colonnes //////////////////////////////////////////////////
-
+				case 'setColonne' :
+					if($idTable = valider("idTable"))
+					if($labelCol = valider("labelCol"))
+					if($descCol = valider("descCol"))
+						mkCol($idTable, $labelCol, $descCol);
+				break;
 
 				case 'getColonnes' :
 					if ($idTable = valider("idTable"))

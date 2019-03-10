@@ -45,10 +45,9 @@ function majColonne($idTable,$numColonne,$label) {
 	//TODO : majColonne --> majDonnee
 }
 
-function setColonnes($idTable, $label) {
-	$SQL = "INSERT INTO colonne(label,idTab) VALUES ('$label','$idTable')";
+function mkCol($idTable, $label, $desc) {
+	$SQL = "INSERT INTO colonne(label,description,idTab) VALUES ('$label','$desc','$idTable')";
 	return SQLUpdate($SQL);
-	//TODO : ?????
 }
 
 //////////////////////////////////////////////////////////////////////////////

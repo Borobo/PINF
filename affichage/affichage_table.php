@@ -26,6 +26,8 @@ include("../header.html");
 
 		$(document).ready(function(){
 
+			$("#popup-table").hide();
+
 
 			$.getJSON("../data.php", {
 				action : "getTables",
@@ -76,7 +78,11 @@ include("../header.html");
 		});
 
 		$(document).on("click","#divPlus", function(){
+			$("#popup-table").fadeToggle("fast");
+		})
 
+		$(document).on("click", "#popup-table-croix", function(){
+			$("#popup-table").hide();
 		})
 
 		$(document).on("click", "#popup-table-form #addCol", function(){
@@ -88,15 +94,32 @@ include("../header.html");
 		})
 
 		$(document).on("click", "#validate", function(){
+			console.log($("#nomTable").val());
 			$.getJSON("../data.php", {
 				action : "setTable",
 				idBdd : 1,
-				labelTab : "",
-			})
-			$(".popup-table-addCol").each(function(){
-
+				label : $("#nomTable").val()
+			}, function(oRep){
+				//if(oRep)
+				$(".popup-table-addCol").each(function(){
+					console.log($(this).find(".input").val());
+					//console.log(oRep.idTable);
+					$.getJSON("../data.php", {
+						action : "setColonne",
+						idTable : oRep.idTable,
+						labelCol : $(this).find(".input").val(),
+						descCol : $(this).find(".desc").val()
+					}, function(){
+						console.log("ENVOIE"); //TODO : à finir
+						$("#popup-table").find(".input").val("");
+						$("#popup-table").find(".desc").val("");
+						$("#nomTable").val("");
+					})
+				})
 			})
 		})
+
+
 
 
 	</script>
@@ -154,12 +177,15 @@ include("../header.html");
         #name{
             margin-top: 20px;
         }
+		#divPlus{
+			background-color: rgba(223, 227, 230, 0.5);
+		}
 		#divPlus img{
 			margin-top: 65%;
 		}
 		#divPlus:hover{
 			cursor: pointer;
-			background-color: #b9b9b9;
+			background-color: rgba(223, 227, 230, 0.85);
 		}
 		#popup-table{
 			height: 450px;
@@ -212,6 +238,13 @@ include("../header.html");
 		#popup-table-cols select{
 			width: 115px;
 		}
+		#popup-table-croix{
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			cursor: pointer;
+		}
+
 	</style>
 </header>
 
@@ -225,10 +258,11 @@ include("../header.html");
         </div>
 		<div id="popup-table" class="border border-dark shadow">
 			<div>
-				<div><input class="rounded" type="text" placeholder="Nom de la table"></input>
+				<div><input id="nomTable" class="rounded" type="text" placeholder="Nom de la table"></input>
 				</div>
 				<div id="popup-table-form">
 					<div id="popup-table-cols"></div>
+					<img src="ressource/cancel.png" id="popup-table-croix">
 					<button type="button" id="validate" class="btn btn-primary">Valider</button>
 					<button type="button" id="addCol" class="btn btn-outline-secondary">Ajouter une colonne</button>
 				</div>
