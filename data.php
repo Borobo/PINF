@@ -127,7 +127,7 @@ session_start();
 				case 'setColonne' :
 					if($idTable = valider("idTable"))
 					if($labelCol = valider("labelCol"))
-					if($descCol = valider("descCol"))
+					if($descCol = valider("descCol") || $descCol == null)
 						mkCol($idTable, $labelCol, $descCol);
 				break;
 
