@@ -14,16 +14,16 @@ include ("../header.html");
         var modelJColonneCanvas = $("<div class='container border border-danger'>");
         var modelJTable = $("<div class=\"tables\">");
         var modelJLabCol = $("<div class='card-body text-left'>");
-        var modelJBtn = $("<a href='' class='btn btn-info'></a>");
+        var modelJBtn = $("<a class='btn btn-info'></a>");
 
       $.getJSON("../data.php",{
-          action:"getNomTables"},function(oRep){
+          action:"getTables"},function(oRep){
 
             var i;
           //  console.log(oRep.nomTables[0].label);
-            for(i=0; i<oRep.nomTables.length; i++){
-              console.log(oRep.nomTables[i].label);
-              var unBtn = modelJBtn.clone(true).html(oRep.nomTables[i].label);
+            for(i=0; i<oRep.boards.length; i++){
+              console.log(oRep.boards[i].id);
+              var unBtn = modelJBtn.clone(true).html(oRep.boards[i].label).data("idTable",oRep.boards[i].id).attr("class","btn btn-info nomTab").attr("href","affichage_colonne.php");
               $("#nomTab").append(unBtn);
 
             }
@@ -34,7 +34,6 @@ include ("../header.html");
 
         $.getJSON("../data.php",{
           action:"getLaTable"},function(oRep){
-            console.log(oRep);
             var meta = oRep.tab[0];
             //CREATION DU LABEL////////////////////////////////////////////////////
             var unP = modelJP.clone();
@@ -49,7 +48,6 @@ include ("../header.html");
                     idTable : meta.id
                 },
                 function(oCol){
-                    console.log(oCol);
 
                     for(var j=0; j<oCol.colonnes.length; j++){
                         (function(j){
@@ -60,21 +58,25 @@ include ("../header.html");
 
                         var uneColonne = modelJColonne.clone(true).append(unLabelCol);
                         ////////////////////////////////////////
-                        console.log(meta2.label);
-                        console.log(meta2.id);
                         //Affichage des data
                         $.getJSON("../data.php",{
                           action:"getData",
                           idColonne:meta2.id},function(oData){
-                            //console.log(oData);
+                            console.log(oData);
 
                             var k,meta3;
 
                             for(k=0; k<oData.data.length; k++){
                               var dataP = modelJP.clone();
                               meta3=oData.data[k];
-                              dataP.html(meta3.valChar).attr("class","data");
-                              unLabelCol.append(dataP);
+                              if(meta3.valInt == null){
+                                dataP.html(meta3.valChar).attr("class","data");
+                                unLabelCol.append(dataP);
+                              }
+                              else{
+                                dataP.html(meta3.valInt).attr("class","data");
+                                unLabelCol.append(dataP);
+                              }
                             }
                             lesData.append(uneColonne);
 
@@ -87,10 +89,22 @@ include ("../header.html");
             );
             uneTable.append(lesData);
             $("#container-table").append(uneTable);
-          });
-
+          })
 
   })
+
+  $(document).on("click",".nomTab",function(){
+
+    $.getJSON("../data.php",{
+      action:"stockIdTable",
+      id:$(this).data("idTable")
+    },function(){
+    });
+
+  });
+
+
+
 
 
 
