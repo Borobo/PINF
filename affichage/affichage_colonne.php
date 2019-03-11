@@ -67,6 +67,63 @@ include ("../header.html");
     </script>
 
     <style>
+
+      #content{
+        display: flex;
+        position: relative;
+        height: 100%;
+        overflow-y: hidden;
+      }
+      #container-fonction{
+        background-color: rgb(100, 170, 255);
+        height: 100%;
+        width: 200px;
+      }
+      #affichage{
+        background-color: rgb(86, 190, 143);
+        height: 100%;
+        flex-grow: 1;
+      }
+      #container-table{
+        background-color: rgb(50, 80, 50);
+        width: 100%;
+        margin-top: 50px;
+        height: 100%;
+      }
+      .tables:first-child{
+          display: block !important;
+      }
+      .tables
+      {
+          height: 100%;
+          width: 100%;
+          position: relative;
+          background-color: red;
+          
+      }
+      .colonnes{
+          position: relative;
+          height: 350px;
+          margin: 0;
+          font-size: 9pt;
+          background-color: #dfe3e6;
+          white-space: normal;
+          min-width: 200px;
+          display: flex;
+
+      }
+      .container-colonnes{
+          position: relative;
+          background-color: grey;
+          display: flex;
+          margin: auto;
+      }
+      .btn-light{
+        margin-bottom: 30px;
+        width: 180px;
+        height: 50px;
+        margin-left: 7px;
+      }
         #content{
             display: flex;
             position: relative;
@@ -132,6 +189,7 @@ include ("../header.html");
 
 
 <body>
+
 <div id="content">
     <div id="container-fonction"><br>
         <button type="button" class="btn btn-light">Ajouter une ligne</button>
