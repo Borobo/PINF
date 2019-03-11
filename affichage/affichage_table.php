@@ -27,7 +27,16 @@ include("../header.html");
 		$(document).ready(function(){
 
 			$("#popup-table").hide();
-
+      
+			//LES MODELES//////////////////////////////////////////
+			var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
+			var modelJLabel = $("<div class='title border border-right-0 border-left-0 border-top-0 border-dark'>");
+			var modelJData = $("<div class='container tab-data'>");
+			var modelJP = $("<p>");
+			var modelJColonne = $("<div class='card col shadow-sm bg-white'>");
+			var modelJLabCol = $("<div class='card-body text-left'>");
+			var modelLien = $("<a href='affichage_colonne.php' class='lien'></a>");
+			///////////////////////////////////////////////////////
 
 			$.getJSON("../data.php", {
 				action : "getTables",
@@ -38,12 +47,13 @@ include("../header.html");
                         (function (i) {
 						var meta = oRep.boards[i];
 						//CREATION DU LABEL////////////////////////////////////////////////////
-						var unP = modelJP.clone().html("<b>"+meta.label+"</b>");
-						var unLabel = modelJLabel.clone(true).append(unP);
+						var unLien = modelLien.clone().data("id",meta.id).html("<b>"+meta.label+"</b>");
+						var unLabel = modelJLabel.clone(true).append(unLien);
 						///////////////////////////////////////////////////////////////////////text
                         var lesData = modelJData.clone(true);
+
                         var uneTable = modelJTable.clone(true).append(unLabel)
-                            .data("label", meta.label); //On stocke le label dans le div.
+                            .data({"label":meta.label,"id":meta.id});
 
                         $.getJSON("../data.php", {
                                 action : "getColonnes",
@@ -73,11 +83,20 @@ include("../header.html");
 				}
 
 
-
 			)
 			$("#popup-table-cols").prepend(addCol.clone());
 
 		});
+    
+      $(document).on("click",".lien",function(){
+          console.log("wshhhbdddddd");
+          console.log($(this).data("id"));
+          $.getJSON("../data.php",{
+              action:"stockIdTable",
+              id:$(this).data("id")
+          },function(oRep){
+          });
+      });
 
 		$(document).on("click","#divPlus", function(){
 			$("#popup-table").fadeToggle("fast");
@@ -122,8 +141,6 @@ include("../header.html");
 		})
 
 
-
-
 	</script>
 
 	<style>
@@ -160,6 +177,9 @@ include("../header.html");
             white-space: normal;
             min-width: 272px;
         }
+
+
+
         .tables:last-child{
             margin-right: 30px;
         }
@@ -167,6 +187,12 @@ include("../header.html");
             font-size: 12pt;
 			width: 100%;
 		}
+
+        .title:hover{
+            transition: 0.4s;
+            background-color: #9a9d9f;
+        }
+
         .tab-data{
             position: absolute;
             height: 85%;
