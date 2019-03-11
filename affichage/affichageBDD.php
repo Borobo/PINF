@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-include("../header.html");
+include("../unHeader.html");
 ?>
 <html lang="en">
 <head>
@@ -110,7 +110,6 @@ include("../header.html");
         });
     });
     $(document).on("click",".bdd",function(){
-        console.log("wshhhbdddddd");
         console.log($(this).data("id"));
         $.getJSON("../data.php",{
             action:"stockIdBDD",
@@ -126,20 +125,26 @@ include("../header.html");
     <div class="row">
 
         <div class="col-sm-6">
+            <br><br><br><br>
+
             <fieldset>
-                <legend>Mes bases de données:</legend>
+                <legend><u><b>Mes bases de données :</b></u></legend>
+                <br><br><br>
                 <div class="affichage"></div>
             </fieldset>
 
         </div>
         <div class="col-sm-6">
+            <br><br><br><br>
             <fieldset>
-                <legend>Options:</legend>
+                <legend><u><b>Options :</b></u></legend>
+                <br><br>
                 <div class="text-center">
                     <p>
                         Si vous voulez envoyer une demande de création de base de données, cliquez sur le bouton Envoyer
                     </p>
                     <img src="ressource/down-arrow.png"><br/>
+                    <br>
                     <button type="button" class="btn btn-secondary" id="BtnEnvoyer">Envoyer</button>
                 </div>
             </fieldset>
@@ -169,3 +174,4 @@ include("../header.html");
 
 </body>
 </html>
+ No newline at end of file

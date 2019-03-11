@@ -32,7 +32,7 @@ session_start()
                 } else {
                     <?php
                     if(isset($_SESSION["connecte"]) && $_SESSION["connecte"])
-                        header('Location:../affichage/test.php');
+                        header('Location:../affichage/affichageBDD.php');
 
                         //header('Location:../affichage/test.php');
                     ?>

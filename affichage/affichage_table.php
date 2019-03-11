@@ -1,5 +1,5 @@
 <?php
-include("../header.html");
+include("../unHeader.html");
 ?>
 
 <header>
@@ -27,7 +27,7 @@ include("../header.html");
 		$(document).ready(function(){
 
 			$("#popup-table").hide();
-      
+
 			//LES MODELES//////////////////////////////////////////
 			var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
 			var modelJLabel = $("<div class='title border border-right-0 border-left-0 border-top-0 border-dark'>");
@@ -87,7 +87,7 @@ include("../header.html");
 			$("#popup-table-cols").prepend(addCol.clone());
 
 		});
-    
+
       $(document).on("click",".lien",function(){
           console.log("wshhhbdddddd");
           console.log($(this).data("id"));
