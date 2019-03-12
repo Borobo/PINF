@@ -111,11 +111,16 @@ session_start();
 				break;
 
 
-				case 'getTables' :
-					$data["bdd"] = $_SESSION["idBDD"];
-					$data["boards"] = listerTables($_SESSION["idBDD"]);
-					$data["grade"] = $_SESSION["grade"];
-				break;
+                case 'getTables' :
+                    $bdd = $_SESSION["idBDD"];
+                    $data["boards"] = listerTables($bdd);
+                    break;
+
+                case 'getLaTable':
+                    $idTab = $_SESSION["idTAB"];
+                    $SQL = "SELECT * FROM tab WHERE id=$idTab";
+                    $data["tab"] = parcoursRs(SQLSelect($SQL));
+                    break;
 
 				case 'majTable' :
 					if ($idTable = valider("idTable"))
@@ -136,10 +141,6 @@ session_start();
 					$data["colonnes"] = listerColonnes($idTable);
 				break;
 
-               case 'getColonnes2':
-                    $table = $_SESSION["idTAB"];
-                    $data["colonnes"] = listerColonnes($table);
-                break;
 
                 case 'stockIdBDD':
                     if($id = valider("id")){
@@ -166,13 +167,13 @@ session_start();
 
 				break;
 
+                case 'getData' :
+                    if ($idColonne = valider("idColonne")) {
+                        //$data["postIts"] = listerPostIts($idTable,$numColonne);
+                        $data["data"] = listerData($idColonne);
+                    }
+                    break;
 
-				case 'getData' :
-					if ($idTable = valider("idTable")) {
-						$numColonne = valider("numColonne");
-						$data["postIts"] = listerPostIts($idTable,$numColonne);
-					}
-				break;
 
 				case 'majData' :
 					if ($idPostIt = valider("idPostIt"))
