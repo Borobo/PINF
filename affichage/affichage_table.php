@@ -40,8 +40,8 @@ include("../unHeader.html");
 			///////////////////////////////////////////////////////
 
 			$.getJSON("../data.php", {
-				action : "getTables",
-				bdd : 1},
+				action : "getTables"
+				},
 				function(oRep){
 					console.log(oRep);
 					for(var i=0; i<oRep.boards.length; i++){
@@ -79,7 +79,7 @@ include("../unHeader.html");
 
 					var divPlus = $("<div id='divPlus' class='tables shadow text-center rounded border border-dark'>")
 					.append($("<img>").attr("src","ressource/plus.png"));
-					if(oRep.grade != 0)
+					if(oRep.grade == 1)
 						$("#content").append(divPlus);
 				}
 
@@ -119,7 +119,6 @@ include("../unHeader.html");
 			console.log($("#nomTable").val());
 			$.getJSON("../data.php", {
 				action : "setTable",
-				idBdd : 1,
 				label : $("#nomTable").val()
 			}, function(oRep){
 				//if(oRep)
@@ -136,6 +135,7 @@ include("../unHeader.html");
 						$("#popup-table").find(".input").val("");
 						$("#popup-table").find(".desc").val("");
 						$("#nomTable").val("");
+						window.location.reload();
 					})
 				})
 			})
@@ -300,4 +300,3 @@ include("../unHeader.html");
 		</div>
     </div>
 </body>
-

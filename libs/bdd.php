@@ -63,10 +63,12 @@ function majData()
 	//TODO : Mettre a jour la donnee d'une colonne
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 
-
+function grade($idBdd, $idUser){
+	$SQL = "SELECT gradeBdd FROM liste_user WHERE idUser = '$idUser' AND idBdd='$idBdd'";
+	return SQLGetChamp($SQL);
+}
 
 
 

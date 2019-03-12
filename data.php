@@ -33,7 +33,7 @@ session_start();
 
 				// Connexion //////////////////////////////////////////////////
 
-			case 'connexion' :
+				case 'connexion' :
 					// On verifie la presence des champs login et passe
 
 
@@ -84,7 +84,7 @@ session_start();
 
 				case 'afficherBDD':
 
-							$idUser = $_SESSION["idUser"];
+					$idUser = $_SESSION["idUser"];
 
 			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser AND bdd.id = liste_user.idBdd
 							UNION
@@ -103,9 +103,10 @@ session_start();
 				// Tables //////////////////////////////////////////////////
 
 				case 'setTable' :
-				if ($idBdd = valider("idBdd"))
 				if ($label = valider("label"))
 				{
+					$idBdd = $_SESSION["idBDD"];
+					//$data["idTable"] = $_SESSION["gradeBdd"];
 					$data["idTable"] = mkTable($idBdd,$label);
 				}
 				break;
@@ -113,6 +114,7 @@ session_start();
 
                 case 'getTables' :
                     $bdd = $_SESSION["idBDD"];
+					$data["grade"] = $_SESSION["gradeBdd"];
                     $data["boards"] = listerTables($bdd);
                     break;
 
@@ -138,14 +140,17 @@ session_start();
 
 				case 'getColonnes' :
 					if ($idTable = valider("idTable"))
-					$data["colonnes"] = listerColonnes($idTable);
+						$data["colonnes"] = listerColonnes($idTable);
 				break;
 
 
                 case 'stockIdBDD':
-                    if($id = valider("id")){
-                        $data["feedback"]="changement de page";
-                        $_SESSION["idBDD"] = $id;
+                    if($idBdd = valider("id")){
+
+						$idUser = $_SESSION["idUser"];
+                        $_SESSION["idBDD"] = $idBdd;
+						$_SESSION["gradeBdd"] = grade($idBdd, $idUser);
+						$data["feedback"]= grade($idBdd, $idUser);
                     }
                 break;
 
