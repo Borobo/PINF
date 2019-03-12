@@ -1,3 +1,4 @@
+
 <?php
   session_start();
 
@@ -69,7 +70,9 @@
 
           <?php if (isset($_SESSION['identifiant'])){
             echo "Bonjour ".$_SESSION['identifiant'].", bienvenue !";}
-                else { echo "Vous êtes déconnecté ! ";}
+                else { echo "Vous êtes déconnecté ! "
+                        header("Location:../connexion/login.php");
+                    }
           ?>
           <a href="../connexion/login.php" class="btn btn-info" id="deconnexion">Deconnexion</a>
         </p>
