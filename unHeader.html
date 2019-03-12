@@ -1,7 +1,5 @@
-
 <?php
   session_start();
-
 ?>
 
 <head>
@@ -28,7 +26,6 @@
                     console.log("Connecté : "+oRep.connecte);
                     console.log(oRep.feedback);
                 })
-
         });
         $(document).ready(function () {
             var img = $("<img class='icon' src='./ressource/home.png'>");
@@ -61,20 +58,42 @@
         left: 0;
     }
     .header p {
-      float : right;
+        margin-top: 6px;
+        float : right;
     }
+
+    .header img{
+        margin-top: 7px;
+        margin-left:5px;
+        height: 30px;
+        width: 30px;
+    }
+
+    #deconnexion {
+        margin-top: -3px;
+        margin-right: 5px;
+    }
+
 </style>
 <body>
     <nav class="header navbar-static-top">
         <p>
 
           <?php if (isset($_SESSION['identifiant'])){
-            echo "Bonjour ".$_SESSION['identifiant'].", bienvenue !";}
-                else { echo "Vous êtes déconnecté ! "
-                        header("Location:../connexion/login.php");
-                    }
+            echo "Bonjour <u>".$_SESSION['identifiant']."</u>, bienvenue !";}
+                else
+                    { echo "Vous êtes déconnecté ! ";
+                    header("Location:../connexion/login.php");
+                }
           ?>
-          <a href="../connexion/login.php" class="btn btn-info" id="deconnexion">Deconnexion</a>
+
+
+          <a href="../connexion/login.php" class="btn btn-info" id="deconnexion">Déconnexion</a>
         </p>
+
+
+        <a href="javascript:history.go(-1)">        <img src="ressource/back.png"></a>
+
     </nav>
+
 </body>

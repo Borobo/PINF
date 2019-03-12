@@ -33,6 +33,8 @@ session_start()
                     <?php
                     if(isset($_SESSION["connecte"]) && $_SESSION["connecte"])
                         header('Location:../affichage/affichageBDD.php');
+
+                        //header('Location:../affichage/test.php');
                     ?>
                     window.location.reload();
                 }
