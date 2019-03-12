@@ -89,6 +89,7 @@ session_start();
 			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser AND bdd.id = liste_user.idBdd
 							UNION
 							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser";
+
 			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 	        		break;
@@ -103,19 +104,31 @@ session_start();
 				// Tables //////////////////////////////////////////////////
 
 				case 'setTable' :
-				if ($idBdd = valider("idBdd"))
 				if ($label = valider("label"))
 				{
-					$data["idTable"] = mkTable($idBdd,$label);
+					$data["idTable"] = mkTable($label);
+					// On d�finit aussi ses colonnes
+					setColonnes($data["idTable"]);
+
+					mkNotification(valider("idUser","SESSION"),"Creation du Table \'$label\'");
+					//TODO : � Modifier
 				}
 				break;
 
 
 				case 'getTables' :
-					$data["bdd"] = $_SESSION["idBDD"];
-					$data["boards"] = listerTables($_SESSION["idBDD"]);
-					$data["grade"] = $_SESSION["grade"];
+					$bdd = $_SESSION["idBDD"];
+					$data["boards"] = listerTables($bdd);
 				break;
+
+				case 'getLaTable':
+					$idTab = $_SESSION["idTAB"];
+					$SQL = "SELECT * FROM tab WHERE id=$idTab";
+					$data["tab"] = parcoursRs(SQLSelect($SQL));
+
+				break;
+
+
 
 				case 'majTable' :
 					if ($idTable = valider("idTable"))
@@ -124,36 +137,13 @@ session_start();
 				break;
 
 				// Colonnes //////////////////////////////////////////////////
-				case 'setColonne' :
-					if($idTable = valider("idTable"))
-					if($labelCol = valider("labelCol"))
-					if($descCol = valider("descCol") || $descCol == null)
-						mkCol($idTable, $labelCol, $descCol);
-				break;
+
 
 				case 'getColonnes' :
 					if ($idTable = valider("idTable"))
+					//else if($idTable = $_SESSION["idTAB"])
 					$data["colonnes"] = listerColonnes($idTable);
 				break;
-
-               case 'getColonnes2':
-                    $table = $_SESSION["idTAB"];
-                    $data["colonnes"] = listerColonnes($table);
-                break;
-
-                case 'stockIdBDD':
-                    if($id = valider("id")){
-                        $data["feedback"]="changement de page";
-                        $_SESSION["idBDD"] = $id;
-                    }
-                break;
-
-                case 'stockIdTable':
-                    if($id = valider("id")){
-                        $data["feedback"]="changement de page";
-                        $_SESSION["idTAB"] = $id;
-                    }
-                break;
 
 				case 'majColonne' :
 					if ($idTable = valider("idTable"))
@@ -168,9 +158,9 @@ session_start();
 
 
 				case 'getData' :
-					if ($idTable = valider("idTable")) {
-						$numColonne = valider("numColonne");
-						$data["postIts"] = listerPostIts($idTable,$numColonne);
+					if ($idColonne = valider("idColonne")) {
+						//$data["postIts"] = listerPostIts($idTable,$numColonne);
+						$data["data"] = listerData($idColonne);
 					}
 				break;
 
@@ -180,6 +170,29 @@ session_start();
 						//TODO : � faire avec majData() dans bdd.php
 					}
 				break;
+
+				case 'StockIdBDD':
+				if($id = valider("id")){
+					$data["feedback"]="changement de page";
+					$_SESSION["idBDD"] = $id;
+				}
+					break;
+/*
+				case 'getNomTables':
+
+					$idBdd = $_SESSION["idBDD"];
+					$SQL = "SELECT label FROM tab WHERE idBdd=$idBdd";
+					$data["nomTables"] = parcoursRs(SQLSelect($SQL));
+
+					break;*/
+
+					case 'stockIdTable':
+
+					  if($id = valider("id")){
+ 							$data["feedback"]="changement de page";
+					    $_SESSION["idTAB"] = $id;
+					    }
+							break;
 
 				default :
 					$data["action"] = "default";
