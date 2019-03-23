@@ -79,7 +79,7 @@ include("../unHeader.php");
 
 					var divPlus = $("<div id='divPlus' class='tables shadow text-center rounded border border-dark'>")
 					.append($("<img>").attr("src","ressource/plus.png"));
-					if(oRep.superadmin == 1)
+					if(oRep.admin == 1)
 						$("#content").append(divPlus);
 				}
 

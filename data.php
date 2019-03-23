@@ -135,8 +135,9 @@ session_start();
 
                 case 'getTables' :
                     $bdd = $_SESSION["idBDD"];
-					$data["grade"] = $_SESSION["admin"];
+					$data["admin"] = $_SESSION["admin"];
                     $data["boards"] = listerTables($bdd);
+
                     break;
 
                 case 'getLaTable':
