@@ -29,6 +29,7 @@ session_start()
                         .html("<strong>Alerte</strong> : Identifiant ou mot de passe incorrect");
                     $(".alert").remove();
                     $("body").append(alertBox);
+                    setTimeout(function(){ alertBox.fadeOut("slow"); }, 5000);
                 } else {
                     <?php
                     if(isset($_SESSION["connecte"]) && $_SESSION["connecte"])

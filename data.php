@@ -114,7 +114,9 @@ session_start();
 							$SQL = "UPDATE liste_user SET admin=FALSE WHERE idUser = $idUser";
 						else if($newGrade == "Admin")
 							$SQL = "UPDATE liste_user SET admin=TRUE WHERE idUser = $idUser";
-						if(SQLUpdate($SQL)) $data["feedback"] = "Données mises à jour";
+						if($data["return"] = SQLUpdate($SQL)){
+							 $data["feedback"] = "Données mises à jour";
+						 }
 
 					}
 					break;

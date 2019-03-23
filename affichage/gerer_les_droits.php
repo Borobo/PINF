@@ -58,12 +58,23 @@ include("../unHeader.php");
                     idUser : leSelect.data("id")
                 }, function(oRep){
                     console.log(oRep.feedback);
+                    if(oRep.return){
+                        var alertBox = $("<div class='alert alert-success'>")
+                        .html("<strong>Envoyé !</strong> Les mises à jour ont été éffectuées ");
+                        $("body").append(alertBox);
+                        setTimeout(function(){ alertBox.fadeOut("slow"); }, 3000);
+                    }
                 })
             }
         })
     });
     </script>
     <style>
+        .alert{
+            position:absolute;
+            bottom: 0;
+            width: 100%;
+        }
         .user{
             position: relative;
             height : 40px;
