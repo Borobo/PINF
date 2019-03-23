@@ -15,7 +15,7 @@ include ("../unHeader.php");
         var modelJColonneCanvas = $("<div class='container border border-danger'>");
         var modelJTable = $("<div class=\"tables\">");
         var modelJLabCol = $("<div class='card-body text-left'>");
-        var modelJBtn = $("<a class='btn btn-info'></a>");
+        var modelJBtn = $("<a class='onglet rounded-top'></a>");
 
       $.getJSON("../data.php",{
           action:"getTables"},function(oRep){
@@ -24,8 +24,8 @@ include ("../unHeader.php");
           //  console.log(oRep.nomTables[0].label);
             for(i=0; i<oRep.boards.length; i++){
               console.log(oRep.boards[i].id);
-              var unBtn = modelJBtn.clone(true).html(oRep.boards[i].label).data("idTable",oRep.boards[i].id).attr("class","btn btn-info nomTab").attr("href","affichage_colonne.php");
-              $("#nomTab").append(unBtn);
+              var unBtn = modelJBtn.clone(true).html(oRep.boards[i].label).data("idTable",oRep.boards[i].id).attr("href","affichage_colonne.php");
+              $("#div-onglet").append(unBtn);
 
             }
 
@@ -94,7 +94,7 @@ include ("../unHeader.php");
 
   })
 
-  $(document).on("click",".nomTab",function(){
+  $(document).on("click",".onglet",function(){
 
     $.getJSON("../data.php",{
       action:"stockIdTable",
@@ -141,6 +141,7 @@ include ("../unHeader.php");
       #nomTab{
         height: 50px;
         display: flex;
+        position: relative;
       }
 
       .btn-info{
@@ -200,6 +201,26 @@ include ("../unHeader.php");
         text-align: center;
 
       }
+      .onglet{
+          background-color: rgba(70, 125, 247, 0.77);
+          margin: 0px 5px;
+          height: 20px;
+          min-width: 20px;
+          width: auto;
+          padding: 7px;
+          color: white;
+          text-decoration: none;
+      }
+      .onglet:hover{
+          text-decoration: none;
+          color: white;
+          background-color: rgba(70, 125, 247, 1);
+      }
+      #div-onglet{
+          position: absolute;
+          bottom: 5;
+
+      }
 
     </style>
 </head>
@@ -219,10 +240,10 @@ include ("../unHeader.php");
     </div>
     <div id="affichage" class="container-fluide">
       <div id="nomTab">
+          <div id="div-onglet"></div>
       </div>
       <div class="tables" id="container-table">
       </div>
     </div>
   </div>
 </body>
-
