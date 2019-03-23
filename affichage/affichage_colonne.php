@@ -1,6 +1,6 @@
 
 <?php
-include ("../unHeader.html");
+include ("../unHeader.php");
 ?>
 
 <head>

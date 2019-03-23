@@ -11,6 +11,12 @@ function listerUsers()
 	return parcoursRs(SQLSelect($SQL));
 }
 
+function listerUsersBdd($idBdd)
+{
+	// liste tous les Tables disponibles, triés par valeur du champ 'ordre' croissant
+	$SQL = "SELECT * FROM user, liste_user WHERE idUser = user.id AND idBdd = '$idBdd' ORDER BY nom, prenom ASC";
+	return parcoursRs(SQLSelect($SQL));
+}
 //////////////////////////////////////////////////////////////////////////////
 
 function mkTable($idBdd,$label)
@@ -47,7 +53,7 @@ function majColonne($idTable,$numColonne,$label) {
 
 function mkCol($idTable, $label, $desc) {
 	$SQL = "INSERT INTO colonne(label,description,idTab) VALUES ('$label','$desc','$idTable')";
-	return SQLUpdate($SQL);
+	return SQLInsert($SQL);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -66,7 +72,7 @@ function majData()
 //////////////////////////////////////////////////////////////////////////////
 
 function grade($idBdd, $idUser){
-	$SQL = "SELECT gradeBdd FROM liste_user WHERE idUser = '$idUser' AND idBdd='$idBdd'";
+	$SQL = "SELECT admin FROM liste_user WHERE idUser = '$idUser' AND idBdd='$idBdd'";
 	return SQLGetChamp($SQL);
 }
 

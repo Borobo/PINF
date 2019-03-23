@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <?php
-include("../unHeader.html");
+include("../unHeader.php");
 ?>
 <html lang="en">
 <head>

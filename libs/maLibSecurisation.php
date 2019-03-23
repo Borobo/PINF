@@ -33,7 +33,7 @@ function verifUser($login,$password)
 		$_SESSION["idUser"] = $dataUser["id"];
 		$_SESSION["prenom"] = $dataUser["prenom"];
 		$_SESSION["nom"] = $dataUser["nom"];
-		$_SESSION["grade"] = $dataUser["grade"];
+		$_SESSION["superadmin"] = $dataUser["superadmin"];
 		$_SESSION["heureConnexion"] = date("H:i:s");
 		return true;
 	}

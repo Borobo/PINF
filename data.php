@@ -14,7 +14,7 @@ session_start();
 	if (!$data["action"])
 	{
 		// On ne doit rentrer dans le switch que si on y est autoris�
-		$data["feedback"] = "Entrez connexion(login,passe) (eg 'tom','web2')";
+		$data["feedback"] = "Erreur : Non connecté. Redirection";
 	}
 	else
 	{
@@ -68,6 +68,13 @@ session_start();
 					$data["users"] = listerUsers();
 				break;
 
+				case 'getUsersBdd' :
+				$idBdd = $_SESSION["idBDD"];
+					$data["users"] = listerUsersBdd($idBdd);
+					$data["idUser"] = $_SESSION["idUser"];
+					$data["superadmin"] = $_SESSION["superadmin"];
+				break;
+
 				// BDD //////////////////////////////////////////////////////
 
 				case 'creerBDD'	:
@@ -100,13 +107,25 @@ session_start();
 
 					break;
 
+				case 'updateGrade':
+					if($newGrade = valider("newGrade"));
+					if($idUser = valider("idUser")){
+						if($newGrade == "Utilisateur")
+							$SQL = "UPDATE liste_user SET admin=FALSE WHERE idUser = $idUser";
+						else if($newGrade == "Admin")
+							$SQL = "UPDATE liste_user SET admin=TRUE WHERE idUser = $idUser";
+						if(SQLUpdate($SQL)) $data["feedback"] = "Données mises à jour";
+
+					}
+					break;
+
 				// Tables //////////////////////////////////////////////////
 
 				case 'setTable' :
 				if ($label = valider("label"))
 				{
 					$idBdd = $_SESSION["idBDD"];
-					//$data["idTable"] = $_SESSION["gradeBdd"];
+					//$data["idTable"] = $_SESSION["admin"];
 					$data["idTable"] = mkTable($idBdd,$label);
 				}
 				break;
@@ -114,7 +133,7 @@ session_start();
 
                 case 'getTables' :
                     $bdd = $_SESSION["idBDD"];
-					$data["grade"] = $_SESSION["gradeBdd"];
+					$data["grade"] = $_SESSION["admin"];
                     $data["boards"] = listerTables($bdd);
                     break;
 
@@ -134,7 +153,7 @@ session_start();
 				case 'setColonne' :
 					if($idTable = valider("idTable"))
 					if($labelCol = valider("labelCol"))
-					if($descCol = valider("descCol") || $descCol == null)
+					if($descCol = valider("descCol") || !isset($descCol))
 						mkCol($idTable, $labelCol, $descCol);
 				break;
 
@@ -149,7 +168,7 @@ session_start();
 
 						$idUser = $_SESSION["idUser"];
                         $_SESSION["idBDD"] = $idBdd;
-						$_SESSION["gradeBdd"] = grade($idBdd, $idUser);
+						$_SESSION["admin"] = grade($idBdd, $idUser);
 						$data["feedback"]= grade($idBdd, $idUser);
                     }
                 break;
