@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <?php
-include("../unHeader.html");
+include("../unHeader.php");
 ?>
 <html lang="en">
 <head>
@@ -103,10 +103,10 @@ include("../unHeader.html");
                 $(".affichage").append(p);*/
                 $(".affichage").append($("<p></p>")
                     .append($("<div class='btn-group'></div>")
-                        .append($("<a href='affichage_table.php' class='btn btn-secondary bdd' style='width: 70%;'></a>").html(meta.nom).data("id",meta.id))
-                        .append("<button type='button' class='btn btn-secondary dropdown-toggle dropdown-toggle-split' data-toggle='dropdown'>")
-                        .append($("<div class='dropdown-menu'></div>")
-                            .append($("<span class='dropdown-item-text'></span>").html(meta.description)))));
+                    .append($("<a href='affichage_table.php' class='btn btn-secondary bdd' style='width: 70%;'></a>").html(meta.nom).data("id",meta.id))
+                    .append("<button type='button' class='btn btn-secondary dropdown-toggle dropdown-toggle-split' data-toggle='dropdown'>")
+                    .append($("<div class='dropdown-menu'></div>")
+                    .append($("<span class='dropdown-item-text'></span>").html(meta.description)))));
             }
         });
     });
@@ -175,4 +175,3 @@ include("../unHeader.html");
 
 </body>
 </html>
-
