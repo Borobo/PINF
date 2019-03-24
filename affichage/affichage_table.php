@@ -38,6 +38,8 @@ include("../unHeader.php");
 			var modelJLabCol = $("<div class='card-body text-left'>");
 			var modelLien = $("<a href='affichage_colonne.php' class='lien'></a>");
 			var modelJDelete = $("<img class='del' data-toggle='modal' data-target='#myModal' src='ressource/delete.png'>");
+			var modelJDeleteCol = $("<img class='del-col' src='ressource/delete.png'>");
+
 			///////////////////////////////////////////////////////
 
 			$.getJSON("../data.php", {
@@ -70,7 +72,10 @@ include("../unHeader.php");
                                 for(var j=0; j<oCol.colonnes.length; j++){
                                     var meta2 = oCol.colonnes[j];
                                     //CREATION DUNE COLONNE////////////////////////////////////////////////////
-                                    var unLabelCol = modelJLabCol.clone(true).html(meta2.label);
+									var unDeleteCol = modelJDeleteCol.clone().data("idCol", meta2.id);
+									var unLabelCol = modelJLabCol.clone(true).html(meta2.label);
+									if(oRep.superadmin == 1||oRep.admin == 1)
+										unLabelCol.append(unDeleteCol);
                                     var uneColonne = modelJColonne.clone(true).append(unLabelCol);
                                     ///////////////////////////////////////////////////////////////////////
                                     lesData.append(uneColonne);
@@ -300,8 +305,14 @@ include("../unHeader.php");
 			top: 4px;
 			width: 17px;
 		}
-		.del:hover{
+		.del:hover,.del-col:hover{
 			cursor: pointer;
+		}
+		.del-col{
+			position: absolute;
+			top: 20px;
+			right: 17px;
+			width: 17px;
 		}
 
 	</style>
