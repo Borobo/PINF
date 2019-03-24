@@ -94,14 +94,26 @@ session_start();
 
 					$idUser = $_SESSION["idUser"];
 
-			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser AND bdd.id = liste_user.idBdd
+			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser  AND bdd.id = liste_user.idBdd AND bdd.creee = 1
 							UNION
-							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser";
+							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser ";
 			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 	        		break;
 
-				case 'afficherLaBDD':
+                case 'afficherBDDproposes':
+
+                    $idUser = $_SESSION["idUser"];
+
+                    $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE bdd.creee = 0
+							UNION
+							SELECT nom,id,description FROM bdd WHERE idCreateur = $idUser";
+                    $data["bdd"]=parcoursRs(SQLSelect($SQL));
+
+                    break;
+
+
+                case 'afficherLaBDD':
 
 					$SQL = "SELECT * FROM bdd WHERE id=$idBdd";
 					$data["bdd"]=parcoursRs(SQLSelect($SQL));
