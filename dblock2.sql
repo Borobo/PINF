@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.4
+-- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  ven. 08 mars 2019 à 13:02
--- Version du serveur :  5.7.19
--- Version de PHP :  5.6.31
+-- Généré le :  Dim 24 mars 2019 à 13:27
+-- Version du serveur :  5.7.23
+-- Version de PHP :  7.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -36,19 +36,15 @@ CREATE TABLE IF NOT EXISTS `bdd` (
   `idCreateur` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idCreateur` (`idCreateur`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `bdd`
 --
 
 INSERT INTO `bdd` (`id`, `nom`, `description`, `idCreateur`) VALUES
-(1, 'BDD3', 'Ceci est la description de la BDD3', 1),
-(4, 'test2', 'testest2', 1),
-(5, 'test3', 'testtest3', 1),
-(2, 'yoooo', 'oui bonjour', 1),
-(12, 'ouaiiii', 'Décris moi ça', 2),
-(13, 'bdd8', 'c\'est bien comme description pour la bdd8', 1);
+(1, 'bdd1', NULL, NULL),
+(2, 'bdd2', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -58,28 +54,26 @@ INSERT INTO `bdd` (`id`, `nom`, `description`, `idCreateur`) VALUES
 
 DROP TABLE IF EXISTS `colonne`;
 CREATE TABLE IF NOT EXISTS `colonne` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `label` varchar(40) DEFAULT NULL,
+  `description` varchar(300) DEFAULT NULL,
   `idTab` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idTab` (`idTab`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=57 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `colonne`
 --
 
-INSERT INTO `colonne` (`id`, `label`, `idTab`) VALUES
-(1, 'prenom', 1),
-(2, 'nom', 1),
-(3, 'id', 2),
-(4, 'marque', 2),
-(5, 'date', 2),
-(6, 'user', 2),
-(7, 'jpp1', 2),
-(8, 'jpp1', 2),
-(9, 'jpp', 2),
-(10, 'OMG c\'est hype long de ouf', 2);
+INSERT INTO `colonne` (`id`, `label`, `description`, `idTab`) VALUES
+(1, 'prenom', NULL, 1),
+(2, 'nom', NULL, 1),
+(3, 'id', NULL, 2),
+(4, 'marque', NULL, 2),
+(5, 'date', NULL, 2),
+(56, 'titre', '1', 75),
+(55, 'a', '1', 69);
 
 -- --------------------------------------------------------
 
@@ -89,27 +83,37 @@ INSERT INTO `colonne` (`id`, `label`, `idTab`) VALUES
 
 DROP TABLE IF EXISTS `data`;
 CREATE TABLE IF NOT EXISTS `data` (
-  `id` int(11) NOT NULL,
-  `valInt` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `valInt` float DEFAULT NULL,
   `valChar` varchar(1000) DEFAULT NULL,
   `idColonne` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idColonne` (`idColonne`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `data`
 --
 
 INSERT INTO `data` (`id`, `valInt`, `valChar`, `idColonne`) VALUES
-(1, NULL, 'Clement', 1),
-(2, NULL, 'BREHARD', 2),
-(3, NULL, 'Ranio', 1),
-(4, NULL, 'ElBour', 2),
-(5, NULL, 'Lucas', 1),
-(6, NULL, 'TESSOUILLE', 2),
-(7, NULL, 'Sachouille', 1),
-(8, NULL, 'LESUEUR', 2);
+(1, NULL, 'sacha', 1),
+(2, NULL, '', 2),
+(3, 1, NULL, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Doublure de structure pour la vue `lebon`
+-- (Voir ci-dessous la vue réelle)
+--
+DROP VIEW IF EXISTS `lebon`;
+CREATE TABLE IF NOT EXISTS `lebon` (
+`idBdd` int(11)
+,`nom` varchar(30)
+,`prenom` varchar(30)
+,`identifiant` varchar(30)
+,`grade` varchar(5)
+);
 
 -- --------------------------------------------------------
 
@@ -121,6 +125,7 @@ DROP TABLE IF EXISTS `liste_user`;
 CREATE TABLE IF NOT EXISTS `liste_user` (
   `idBdd` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
+  `admin` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`idBdd`,`idUser`),
   KEY `idBdd` (`idBdd`),
   KEY `idUser` (`idUser`)
@@ -130,11 +135,14 @@ CREATE TABLE IF NOT EXISTS `liste_user` (
 -- Déchargement des données de la table `liste_user`
 --
 
-INSERT INTO `liste_user` (`idBdd`, `idUser`) VALUES
-(1, 1),
-(1, 2),
-(2, 1),
-(2, 2);
+INSERT INTO `liste_user` (`idBdd`, `idUser`, `admin`) VALUES
+(1, 1, 0),
+(2, 1, 0),
+(1, 2, 1),
+(2, 2, 1),
+(1, 6, 0),
+(1, 4, 1),
+(1, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -144,14 +152,14 @@ INSERT INTO `liste_user` (`idBdd`, `idUser`) VALUES
 
 DROP TABLE IF EXISTS `tab`;
 CREATE TABLE IF NOT EXISTS `tab` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `label` varchar(20) DEFAULT NULL,
   `idBdd` int(11) DEFAULT NULL,
   `idUser` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idBdd` (`idBdd`),
   KEY `idUser` (`idUser`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=76 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `tab`
@@ -161,10 +169,8 @@ INSERT INTO `tab` (`id`, `label`, `idBdd`, `idUser`) VALUES
 (1, 'user', 1, NULL),
 (2, 'voitures', 1, NULL),
 (3, 'test', 1, NULL),
-(4, 'test2', 1, NULL),
-(5, 'test3', 1, NULL),
-(6, 'test4', 1, NULL),
-(7, 'PAS BIEN', 2, NULL);
+(7, 'PAS BIEN', 2, NULL),
+(75, 'missions', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -177,19 +183,31 @@ CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `prenom` varchar(30) NOT NULL,
   `nom` varchar(30) NOT NULL,
-  `grade` int(11) NOT NULL DEFAULT '0',
+  `superadmin` tinyint(1) DEFAULT '0',
   `password` varchar(30) NOT NULL,
   `identifiant` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `user`
 --
 
-INSERT INTO `user` (`id`, `prenom`, `nom`, `grade`, `password`, `identifiant`) VALUES
+INSERT INTO `user` (`id`, `prenom`, `nom`, `superadmin`, `password`, `identifiant`) VALUES
 (1, 'aaa', 'aaa', 0, '123', 'aaa'),
-(2, 'user2', 'osef', 0, '456', 'bbb');
+(2, 'John', 'Doe', 1, 'admin', 'admin'),
+(4, 'Clément', 'Bréhard', 1, 'clemi', 'clemi'),
+(5, 'Sacha', 'Lesueur', 1, 'slesueur', 'slesueur'),
+(6, 'Lucas', 'Tesson', 0, 'ltesson', 'ltesson');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `lebon`
+--
+DROP TABLE IF EXISTS `lebon`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lebon`  AS  select `liste_user`.`idBdd` AS `idBdd`,`user`.`nom` AS `nom`,`user`.`prenom` AS `prenom`,`user`.`identifiant` AS `identifiant`,if((`liste_user`.`admin` = 1),'ADMIN','USER') AS `grade` from (`liste_user` join `user`) where (`liste_user`.`idUser` = `user`.`id`) ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,6 +1,6 @@
 
 <?php
-include("../unHeader.html");
+include("../unHeader.php");
 ?>
 
 <header>
@@ -40,8 +40,8 @@ include("../unHeader.html");
 			///////////////////////////////////////////////////////
 
 			$.getJSON("../data.php", {
-				action : "getTables",
-				bdd : 1},
+				action : "getTables"
+				},
 				function(oRep){
 					console.log(oRep);
 					for(var i=0; i<oRep.boards.length; i++){
@@ -79,7 +79,7 @@ include("../unHeader.html");
 
 					var divPlus = $("<div id='divPlus' class='tables shadow text-center rounded border border-dark'>")
 					.append($("<img>").attr("src","ressource/plus.png"));
-					if(oRep.grade != 0)
+					if(oRep.admin == 1)
 						$("#content").append(divPlus);
 				}
 
@@ -109,6 +109,7 @@ include("../unHeader.html");
 
 		$(document).on("click", "#popup-table-form #addCol", function(){
 			$("#popup-table-cols").append(addCol.clone());
+			console.log($(".popup-table-addCol").length);
 		});
 
 		$(document).on("click", ".croix",function(){
@@ -119,25 +120,28 @@ include("../unHeader.html");
 			console.log($("#nomTable").val());
 			$.getJSON("../data.php", {
 				action : "setTable",
-				idBdd : 1,
 				label : $("#nomTable").val()
 			}, function(oRep){
 				//if(oRep)
-				$(".popup-table-addCol").each(function(){
-					console.log($(this).find(".input").val());
-					//console.log(oRep.idTable);
-					$.getJSON("../data.php", {
-						action : "setColonne",
-						idTable : oRep.idTable,
-						labelCol : $(this).find(".input").val(),
-						descCol : $(this).find(".desc").val()
-					}, function(){
-						console.log("ENVOIE"); //TODO : à finir
-						$("#popup-table").find(".input").val("");
-						$("#popup-table").find(".desc").val("");
-						$("#nomTable").val("");
+				if($(".popup-table-addCol").length > 0){
+					$(".popup-table-addCol").each(function(){
+						console.log($(this).find(".input").val());
+						//console.log(oRep.idTable);
+						$.getJSON("../data.php", {
+							action : "setColonne",
+							idTable : oRep.idTable,
+							labelCol : $(this).find(".input").val(),
+							descCol : $(this).find(".desc").val()
+						}, function(oRep){
+							console.log("ENVOIE"); //TODO : à finir
+							$("#popup-table").find("input").val("");
+							$("#popup-table").find(".desc").val("");
+							$("#nomTable").val("");
+							//window.location.reload();
+						})
 					})
-				})
+				}
+				window.location.reload();
 			})
 		})
 
@@ -300,4 +304,3 @@ include("../unHeader.html");
 		</div>
     </div>
 </body>
-

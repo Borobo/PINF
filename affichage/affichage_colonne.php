@@ -1,5 +1,5 @@
 <?php
-include ("../header.html");
+include ("../unHeader.php");
 ?>
 
 <head>
@@ -12,13 +12,11 @@ include ("../header.html");
     var modelJColonneCanvas = $("<div class='container border border-danger'>");
     var modelJTable = $("<div class=\"tables\">");
     var modelJLabCol = $("<div class='card-body text-left'>");
-    var modelJBtn = $("<a class='btn btn-info'></a>");
+    var modelJBtn = $("<a class='onglet rounded-top'></a>");
     var modelJImg = $("<img src=''>");
     var modelJCheckbox = $("<input type=checkbox class='form-check-input'>");
 
     $(document).ready(function(){
-
-
 
       $.getJSON("../data.php",{
           action:"getTables"},function(oRep){
@@ -26,8 +24,10 @@ include ("../header.html");
             var i;
           //  console.log(oRep.nomTables[0].label);
             for(i=0; i<oRep.boards.length; i++){
-              var unBtn = modelJBtn.clone(true).html(oRep.boards[i].label).data("idTable",oRep.boards[i].id).attr("class","btn btn-info nomTab").attr("href","affichage_colonne.php");
-              $("#nomTab").append(unBtn);
+
+              console.log(oRep.boards[i].id);
+              var unBtn = modelJBtn.clone(true).html(oRep.boards[i].label).data("idTable",oRep.boards[i].id).attr("href","affichage_colonne.php");
+              $("#div-onglet").append(unBtn);
 
             }
 
@@ -96,7 +96,7 @@ include ("../header.html");
 
   })
 
-  $(document).on("click",".nomTab",function(){
+  $(document).on("click",".onglet",function(){
 
     $.getJSON("../data.php",{
       action:"stockIdTable",
@@ -293,6 +293,11 @@ include ("../header.html");
         width: 200px;
       }
 
+      .container-colonnes{
+          position: absolute;
+          top: 25%;
+      }
+
       #affichage{
         background-color: rgb(86, 190, 143);
         height: 100%;
@@ -308,6 +313,7 @@ include ("../header.html");
       #nomTab{
         height: 50px;
         display: flex;
+        position: relative;
       }
 
       .btn-info{
@@ -372,6 +378,26 @@ include ("../header.html");
         text-align: center;
 
       }
+      .onglet{
+          background-color: rgba(70, 125, 247, 0.77);
+          margin: 0px 5px;
+          height: 20px;
+          min-width: 20px;
+          width: auto;
+          padding: 7px;
+          color: white;
+          text-decoration: none;
+      }
+      .onglet:hover{
+          text-decoration: none;
+          color: white;
+          background-color: rgba(70, 125, 247, 1);
+      }
+      #div-onglet{
+          position: absolute;
+          bottom: 5;
+
+      }
 
     </style>
 </head>
@@ -391,6 +417,7 @@ include ("../header.html");
     </div>
     <div id="affichage" class="container-fluide">
       <div id="nomTab">
+          <div id="div-onglet"></div>
       </div>
       <div class="tables" id="container-table">
       </div>

@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -14,7 +15,7 @@ session_start();
 	if (!$data["action"])
 	{
 		// On ne doit rentrer dans le switch que si on y est autoris�
-		$data["feedback"] = "Entrez connexion(login,passe) (eg 'tom','web2')";
+		$data["feedback"] = "Erreur : Non connecté. Redirection";
 	}
 	else
 	{
@@ -33,7 +34,7 @@ session_start();
 
 				// Connexion //////////////////////////////////////////////////
 
-			case 'connexion' :
+				case 'connexion' :
 					// On verifie la presence des champs login et passe
 
 
@@ -68,6 +69,13 @@ session_start();
 					$data["users"] = listerUsers();
 				break;
 
+				case 'getUsersBdd' :
+				$idBdd = $_SESSION["idBDD"];
+					$data["users"] = listerUsersBdd($idBdd);
+					$data["idUser"] = $_SESSION["idUser"];
+					$data["superadmin"] = $_SESSION["superadmin"];
+				break;
+
 				// BDD //////////////////////////////////////////////////////
 
 				case 'creerBDD'	:
@@ -84,12 +92,11 @@ session_start();
 
 				case 'afficherBDD':
 
-							$idUser = $_SESSION["idUser"];
+					$idUser = $_SESSION["idUser"];
 
 			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser AND bdd.id = liste_user.idBdd
 							UNION
 							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser";
-
 			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 	        		break;
@@ -101,54 +108,82 @@ session_start();
 
 					break;
 
+				case 'updateGrade':
+					if($newGrade = valider("newGrade"));
+					if($idUser = valider("idUser")){
+						if($newGrade == "Utilisateur")
+							$SQL = "UPDATE liste_user SET admin=FALSE WHERE idUser = $idUser";
+						else if($newGrade == "Admin")
+							$SQL = "UPDATE liste_user SET admin=TRUE WHERE idUser = $idUser";
+						if($data["return"] = SQLUpdate($SQL)){
+							 $data["feedback"] = "Données mises à jour";
+						 }
+
+					}
+					break;
+
 				// Tables //////////////////////////////////////////////////
 
 				case 'setTable' :
 				if ($label = valider("label"))
 				{
-					$data["idTable"] = mkTable($label);
-					// On d�finit aussi ses colonnes
-					setColonnes($data["idTable"]);
-
-					mkNotification(valider("idUser","SESSION"),"Creation du Table \'$label\'");
-					//TODO : � Modifier
+					$idBdd = $_SESSION["idBDD"];
+					//$data["idTable"] = $_SESSION["admin"];
+					$data["idTable"] = mkTable($idBdd,$label);
 				}
 				break;
 
 
-				case 'getTables' :
-					$bdd = $_SESSION["idBDD"];
-					$data["boards"] = listerTables($bdd);
-				break;
+                case 'getTables' :
+                    $bdd = $_SESSION["idBDD"];
+					$data["admin"] = $_SESSION["admin"];
+                    $data["boards"] = listerTables($bdd);
 
-				case 'getLaTable':
-					$idTab = $_SESSION["idTAB"];
-					$SQL = "SELECT * FROM tab WHERE id=$idTab";
-					$data["tab"] = parcoursRs(SQLSelect($SQL));
+                    break;
 
-				break;
-
-
+                case 'getLaTable':
+                    $idTab = $_SESSION["idTAB"];
+                    $SQL = "SELECT * FROM tab WHERE id=$idTab";
+                    $data["tab"] = parcoursRs(SQLSelect($SQL));
+                    break;
 
 				case 'majTable' :
 					if ($idTable = valider("idTable"))
 					if ($label = valider("label"))
 					majTable($idTable,$label);
 				break;
+       
 
 				// Colonnes //////////////////////////////////////////////////
-
+				case 'setColonne' :
+					if($idTable = valider("idTable"))
+					if($labelCol = valider("labelCol"))
+					if($descCol = valider("descCol") || !isset($descCol))
+						mkCol($idTable, $labelCol, $descCol);
+				break;
 
 				case 'getColonnes' :
 					if ($idTable = valider("idTable"))
-					//else if($idTable = $_SESSION["idTAB"])
-					$data["colonnes"] = listerColonnes($idTable);
+						$data["colonnes"] = listerColonnes($idTable);
 				break;
 
-				case 'getColonnes2':
-                $table = $_SESSION["idTAB"];
-                $data["colonnes"] = listerColonnes($table);
-              break;
+
+                case 'stockIdBDD':
+                    if($idBdd = valider("id")){
+
+						$idUser = $_SESSION["idUser"];
+                        $_SESSION["idBDD"] = $idBdd;
+						$_SESSION["admin"] = grade($idBdd, $idUser);
+						$data["feedback"]= grade($idBdd, $idUser);
+                    }
+                break;
+
+                case 'stockIdTable':
+                    if($id = valider("id")){
+                        $data["feedback"]="changement de page";
+                        $_SESSION["idTAB"] = $id;
+                    }
+                break;
 
 				case 'majColonne' :
 					if ($idTable = valider("idTable"))
@@ -161,13 +196,13 @@ session_start();
 
 				break;
 
+                case 'getData' :
+                    if ($idColonne = valider("idColonne")) {
+                        //$data["postIts"] = listerPostIts($idTable,$numColonne);
+                        $data["data"] = listerData($idColonne);
+                    }
+                    break;
 
-				case 'getData' :
-					if ($idColonne = valider("idColonne")) {
-						//$data["postIts"] = listerPostIts($idTable,$numColonne);
-						$data["data"] = listerData($idColonne);
-					}
-				break;
 
 				case 'majData' :
 					if ($idPostIt = valider("idPostIt"))
@@ -175,36 +210,13 @@ session_start();
 						//TODO : � faire avec majData() dans bdd.php
 					}
 				break;
-
-				case 'delData':
+          
+          case 'delData':
 
 					$idData = valider("idData");
 					$data["data"] = supprimerData($idData);
 					//$data["data"] = $idData;
 					break;
-
-				case 'StockIdBDD':
-				if($id = valider("id")){
-					$data["feedback"]="changement de page";
-					$_SESSION["idBDD"] = $id;
-				}
-					break;
-/*
-				case 'getNomTables':
-
-					$idBdd = $_SESSION["idBDD"];
-					$SQL = "SELECT label FROM tab WHERE idBdd=$idBdd";
-					$data["nomTables"] = parcoursRs(SQLSelect($SQL));
-
-					break;*/
-
-					case 'stockIdTable':
-
-					  if($id = valider("id")){
- 							$data["feedback"]="changement de page";
-					    $_SESSION["idTAB"] = $id;
-					    }
-							break;
 
 				default :
 					$data["action"] = "default";
