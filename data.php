@@ -145,6 +145,11 @@ session_start();
 					$data["colonnes"] = listerColonnes($idTable);
 				break;
 
+				case 'getColonnes2':
+                $table = $_SESSION["idTAB"];
+                $data["colonnes"] = listerColonnes($table);
+              break;
+
 				case 'majColonne' :
 					if ($idTable = valider("idTable"))
 					if ($numColonne = valider("numColonne"))
@@ -170,6 +175,13 @@ session_start();
 						//TODO : � faire avec majData() dans bdd.php
 					}
 				break;
+
+				case 'delData':
+
+					$idData = valider("idData");
+					$data["data"] = supprimerData($idData);
+					//$data["data"] = $idData;
+					break;
 
 				case 'StockIdBDD':
 				if($id = valider("id")){
