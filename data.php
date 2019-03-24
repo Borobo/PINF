@@ -18,6 +18,7 @@ session_start();
 	}
 	else
 	{
+
 		// si on a une action, on devrait avoir un message classique
 		$data["feedback"] = "entrez action: logout, setUser(login,passe,initiales), getUsers,setNotification(description), getNotifications, delNotification(idNotification), setTable(label),getTables,majTable(idTable,label), getColonnes(idTable), majColonne(idTable,numColonne,label), setPostIt(idTable,[label],[avancement],[numColonne]), getPostIts(idTable,[numColonne]),  majPostIt(idPostIt,[label],[avancement],[numColonne]), delPostIt(idPostIt),setMarqueur(idPostIt,type,valeur), getMarqueurs(idPostIt),delMarqueur(idMarqueur),setCommentaire(idPostIt,contenu),getCommentaires(idPostIt),delCommentaire(idPostIt)";
 
@@ -27,9 +28,9 @@ session_start();
 		}
 		else {
 
-
 			switch($data["action"])
 			{
+
 
 				// Connexion //////////////////////////////////////////////////
 
@@ -137,6 +138,8 @@ session_start();
                     $bdd = $_SESSION["idBDD"];
 					$data["admin"] = $_SESSION["admin"];
                     $data["boards"] = listerTables($bdd);
+					$data["superadmin"] = $_SESSION["superadmin"];
+
 
                     break;
 
@@ -145,6 +148,12 @@ session_start();
                     $SQL = "SELECT * FROM tab WHERE id=$idTab";
                     $data["tab"] = parcoursRs(SQLSelect($SQL));
                     break;
+
+				case 'supprimerTable':
+					$idTable = valider("idTable");
+					if($_SESSION["superadmin"])
+						$data["return"] = supprimerTable($idTable);
+					break;
 
 				case 'majTable' :
 					if ($idTable = valider("idTable"))

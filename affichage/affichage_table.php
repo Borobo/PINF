@@ -37,6 +37,7 @@ include("../unHeader.php");
 			var modelJColonne = $("<div class='card col shadow-sm bg-white'>");
 			var modelJLabCol = $("<div class='card-body text-left'>");
 			var modelLien = $("<a href='affichage_colonne.php' class='lien'></a>");
+			var modelJDelete = $("<img class='del' data-toggle='modal' data-target='#myModal' src='ressource/delete.png'>");
 			///////////////////////////////////////////////////////
 
 			$.getJSON("../data.php", {
@@ -48,13 +49,17 @@ include("../unHeader.php");
                         (function (i) {
 						var meta = oRep.boards[i];
 						//CREATION DU LABEL////////////////////////////////////////////////////
+						var unDelete = modelJDelete.clone().data("idTable", meta.id);
 						var unLien = modelLien.clone().data("id",meta.id).html("<b>"+meta.label+"</b>");
-						var unLabel = modelJLabel.clone(true).append(unLien);
+						if(oRep.superadmin)
+							var unLabel = modelJLabel.clone(true).append(unLien).append(unDelete);
+						else
+							var unLabel = modelJLabel.clone(true).append(unLien);
 						///////////////////////////////////////////////////////////////////////text
                         var lesData = modelJData.clone(true);
-
                         var uneTable = modelJTable.clone(true).append(unLabel)
                             .data({"label":meta.label,"id":meta.id});
+
 
                         $.getJSON("../data.php", {
                                 action : "getColonnes",
@@ -137,10 +142,24 @@ include("../unHeader.php");
 							$("#popup-table").find("input").val("");
 							$("#popup-table").find(".desc").val("");
 							$("#nomTable").val("");
-							//window.location.reload();
 						})
 					})
 				}
+				window.location.reload();
+			})
+		})
+
+		var idDeLaTable
+		$(document).on("click", ".del", function(){
+			idDeLaTable = $(this).data("idTable");
+		})
+
+		$(document).on("click", "#del-btn", function(){
+			$.getJSON("../data.php",{
+				action : "supprimerTable",
+				idTable : idDeLaTable
+			}, function(oRep){
+				console.log(oRep.feedback);
 				window.location.reload();
 			})
 		})
@@ -182,9 +201,6 @@ include("../unHeader.php");
             white-space: normal;
             min-width: 272px;
         }
-
-
-
         .tables:last-child{
             margin-right: 30px;
         }
@@ -195,7 +211,7 @@ include("../unHeader.php");
 
         .title:hover{
             transition: 0.4s;
-            background-color: #9a9d9f;
+            background-color: #c7cbcd;
         }
 
         .tab-data{
@@ -277,6 +293,15 @@ include("../unHeader.php");
 			right: 12px;
 			cursor: pointer;
 		}
+		.del{
+			position: absolute;
+			right: 12px;
+			top: 4px;
+			width: 17px;
+		}
+		.del:hover{
+			cursor: pointer;
+		}
 
 	</style>
 </header>
@@ -303,4 +328,35 @@ include("../unHeader.php");
 			</div>
 		</div>
     </div>
+
+	<?php
+		if($_SESSION["admin"]||$_SESSION["superadmin"]){
+			echo '<div class="modal" id="myModal">
+			    <div class="modal-dialog">
+			      <div class="modal-content">
+
+			        <!-- Modal Header -->
+			        <div class="modal-header">
+			          <h4 class="modal-title">Alerte !</h4>
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        </div>
+
+			        <!-- Modal body -->
+			        <div class="modal-body">
+			          Êtes-vous sûr de vouloir supprimer cette table (cette action est irréversible).
+			        </div>
+
+			        <!-- Modal footer -->
+			        <div class="modal-footer">
+						<button type="button" id="del-btn" class="btn btn-success" data-dismiss="modal">Confirmer</button>
+			          	<button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+					</div>
+
+			      </div>
+			    </div>
+			  </div>';
+
+		}
+	 ?>
+
 </body>
