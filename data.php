@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -164,6 +163,12 @@ session_start();
 					if ($label = valider("label"))
 					majTable($idTable,$label);
 				break;
+          
+        case 'supprimerTable':
+					$idTable = valider("idTable");
+					if($_SESSION["superadmin"])
+						$data["return"] = supprimerTable($idTable);
+					break;
        
 
 				// Colonnes //////////////////////////////////////////////////

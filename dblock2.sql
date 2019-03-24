@@ -1,5 +1,5 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.4
+-- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `bdd` (
 --
 -- Déchargement des données de la table `bdd`
 --
+
 
 INSERT INTO `bdd` (`id`, `nom`, `description`, `idCreateur`, `creee`) VALUES
 (1, 'bdd1', NULL, NULL, 1),

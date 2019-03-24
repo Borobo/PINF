@@ -41,6 +41,16 @@ function majTable($idTable,$label)
 	return SQLUpdate($SQL);
 }
 
+function supprimerTable($idTable)
+{
+	$SQL = "DELETE FROM tab WHERE id = $idTable";
+	$res = SQLDelete($SQL);
+	$SQL = "DELETE FROM colonne WHERE idTab = $idTable";
+	$res2 = SQLDelete($SQL);
+
+	return $res && $res2;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 function listerColonnes($idTable) {
