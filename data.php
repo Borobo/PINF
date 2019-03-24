@@ -18,7 +18,6 @@ session_start();
 	}
 	else
 	{
-
 		// si on a une action, on devrait avoir un message classique
 		$data["feedback"] = "entrez action: logout, setUser(login,passe,initiales), getUsers,setNotification(description), getNotifications, delNotification(idNotification), setTable(label),getTables,majTable(idTable,label), getColonnes(idTable), majColonne(idTable,numColonne,label), setPostIt(idTable,[label],[avancement],[numColonne]), getPostIts(idTable,[numColonne]),  majPostIt(idPostIt,[label],[avancement],[numColonne]), delPostIt(idPostIt),setMarqueur(idPostIt,type,valeur), getMarqueurs(idPostIt),delMarqueur(idMarqueur),setCommentaire(idPostIt,contenu),getCommentaires(idPostIt),delCommentaire(idPostIt)";
 
@@ -28,9 +27,9 @@ session_start();
 		}
 		else {
 
+
 			switch($data["action"])
 			{
-
 
 				// Connexion //////////////////////////////////////////////////
 
@@ -94,14 +93,26 @@ session_start();
 
 					$idUser = $_SESSION["idUser"];
 
-			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser AND bdd.id = liste_user.idBdd
+			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser  AND bdd.id = liste_user.idBdd AND bdd.creee = 1
 							UNION
-							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser";
+							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser ";
 			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 	        		break;
 
-				case 'afficherLaBDD':
+                case 'afficherBDDproposes':
+
+                    $idUser = $_SESSION["idUser"];
+
+                    $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE bdd.creee = 0
+							UNION
+							SELECT nom,id,description FROM bdd WHERE idCreateur = $idUser";
+                    $data["bdd"]=parcoursRs(SQLSelect($SQL));
+
+                    break;
+
+
+                case 'afficherLaBDD':
 
 					$SQL = "SELECT * FROM bdd WHERE id=$idBdd";
 					$data["bdd"]=parcoursRs(SQLSelect($SQL));
@@ -138,8 +149,6 @@ session_start();
                     $bdd = $_SESSION["idBDD"];
 					$data["admin"] = $_SESSION["admin"];
                     $data["boards"] = listerTables($bdd);
-					$data["superadmin"] = $_SESSION["superadmin"];
-
 
                     break;
 
@@ -149,17 +158,18 @@ session_start();
                     $data["tab"] = parcoursRs(SQLSelect($SQL));
                     break;
 
-				case 'supprimerTable':
-					$idTable = valider("idTable");
-					if($_SESSION["superadmin"])
-						$data["return"] = supprimerTable($idTable);
-					break;
-
 				case 'majTable' :
 					if ($idTable = valider("idTable"))
 					if ($label = valider("label"))
 					majTable($idTable,$label);
 				break;
+          
+        case 'supprimerTable':
+					$idTable = valider("idTable");
+					if($_SESSION["superadmin"])
+						$data["return"] = supprimerTable($idTable);
+					break;
+       
 
 				// Colonnes //////////////////////////////////////////////////
 				case 'setColonne' :
@@ -217,6 +227,13 @@ session_start();
 						//TODO : � faire avec majData() dans bdd.php
 					}
 				break;
+          
+          case 'delData':
+
+					$idData = valider("idData");
+					$data["data"] = supprimerData($idData);
+					//$data["data"] = $idData;
+					break;
 
 				default :
 					$data["action"] = "default";

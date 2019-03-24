@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  Dim 24 mars 2019 à 13:27
--- Version du serveur :  5.7.23
--- Version de PHP :  7.2.10
+-- Généré le :  Dim 24 mars 2019 à 14:10
+-- Version du serveur :  5.7.19
+-- Version de PHP :  5.6.31
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `bdd` (
   `nom` varchar(30) DEFAULT NULL,
   `description` varchar(100) DEFAULT NULL,
   `idCreateur` int(11) DEFAULT NULL,
+  `creee` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idCreateur` (`idCreateur`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
@@ -42,9 +43,11 @@ CREATE TABLE IF NOT EXISTS `bdd` (
 -- Déchargement des données de la table `bdd`
 --
 
-INSERT INTO `bdd` (`id`, `nom`, `description`, `idCreateur`) VALUES
-(1, 'bdd1', NULL, NULL),
-(2, 'bdd2', NULL, NULL);
+
+INSERT INTO `bdd` (`id`, `nom`, `description`, `idCreateur`, `creee`) VALUES
+(1, 'bdd1', NULL, NULL, 1),
+(2, 'bdd2', NULL, NULL, 1),
+(3, 'bdd3', 'non créée', NULL, 0);
 
 -- --------------------------------------------------------
 
