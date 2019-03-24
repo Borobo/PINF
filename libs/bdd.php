@@ -19,11 +19,12 @@ function listerUsersBdd($idBdd)
 }
 //////////////////////////////////////////////////////////////////////////////
 
-function mkTable($idBdd,$label)
+function mkTable($label)
 {
 	// Cette fonction crée un nouveau Table à la fin des Tables existants et renvoie son identifiant
-	$SQL = "INSERT INTO tab(label,idBdd) VALUES('$label','$idBdd')";
+	$SQL = "INSERT INTO tab(label) VALUES('$label')";
 	return SQLInsert($SQL);
+	//TODO : à modifier
 }
 
 function listerTables($idBdd)
@@ -43,7 +44,7 @@ function majTable($idTable,$label)
 //////////////////////////////////////////////////////////////////////////////
 
 function listerColonnes($idTable) {
-	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable";
+	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable GROUP BY id ORDER BY id ASC";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -51,16 +52,18 @@ function majColonne($idTable,$numColonne,$label) {
 	//TODO : majColonne --> majDonnee
 }
 
+
 function mkCol($idTable, $label, $desc) {
 	$SQL = "INSERT INTO colonne(label,description,idTab) VALUES ('$label','$desc','$idTable')";
 	return SQLInsert($SQL);
+
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 function listerData($idCol)
 {
-	$SQL = "SELECT * FROM data WHERE idColonne='$idCol'";
+	$SQL = "SELECT * FROM data WHERE idColonne='$idCol GROUP BY idColonne ORDER BY idColonne ASC'";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -68,6 +71,17 @@ function majData()
 {
 	//TODO : Mettre a jour la donnee d'une colonne
 }
+
+
+function supprimerData($idData){
+
+	$SQL = "DELETE FROM data WHERE id=$idData";
+
+	return SQLDelete($SQL);
+
+}
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 

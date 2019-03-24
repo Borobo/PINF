@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -151,6 +152,7 @@ session_start();
 					if ($label = valider("label"))
 					majTable($idTable,$label);
 				break;
+       
 
 				// Colonnes //////////////////////////////////////////////////
 				case 'setColonne' :
@@ -208,6 +210,13 @@ session_start();
 						//TODO : � faire avec majData() dans bdd.php
 					}
 				break;
+          
+          case 'delData':
+
+					$idData = valider("idData");
+					$data["data"] = supprimerData($idData);
+					//$data["data"] = $idData;
+					break;
 
 				default :
 					$data["action"] = "default";
