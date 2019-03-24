@@ -51,10 +51,11 @@ include("../unHeader.php");
 						//CREATION DU LABEL////////////////////////////////////////////////////
 						var unDelete = modelJDelete.clone().data("idTable", meta.id);
 						var unLien = modelLien.clone().data("id",meta.id).html("<b>"+meta.label+"</b>");
-						if(oRep.superadmin)
-							var unLabel = modelJLabel.clone(true).append(unLien).append(unDelete);
-						else
-							var unLabel = modelJLabel.clone(true).append(unLien);
+						var unLabel = modelJLabel.clone(true).append(unLien);
+						if(oRep.superadmin == 1 || oRep.admin == 1){
+							unLabel.append(unDelete);
+						}
+
 						///////////////////////////////////////////////////////////////////////text
                         var lesData = modelJData.clone(true);
                         var uneTable = modelJTable.clone(true).append(unLabel)
@@ -149,7 +150,7 @@ include("../unHeader.php");
 			})
 		})
 
-		var idDeLaTable
+		var idDeLaTable;
 		$(document).on("click", ".del", function(){
 			idDeLaTable = $(this).data("idTable");
 		})
