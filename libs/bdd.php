@@ -67,9 +67,12 @@ function listerData($idCol)
 	return parcoursRs(SQLSelect($SQL));
 }
 
-function majData()
+function modifierData($idData,$valChar,$valInt)
 {
-	//TODO : Mettre a jour la donnee d'une colonne
+
+	$SQL = "UPDATE data SET valChar='$valChar', valInt=$valInt WHERE id=$idData";
+
+	return SQLUpdate($SQL);
 }
 
 
