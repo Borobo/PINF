@@ -19,10 +19,10 @@ function listerUsersBdd($idBdd)
 }
 //////////////////////////////////////////////////////////////////////////////
 
-function mkTable($label)
+function mkTable($label,$idBdd,$idUser)
 {
 	// Cette fonction crée un nouveau Table à la fin des Tables existants et renvoie son identifiant
-	$SQL = "INSERT INTO tab(label) VALUES('$label')";
+	$SQL = "INSERT INTO tab(label,idBdd,idUser) VALUES('$label','$idBdd','$idUser')";
 	return SQLInsert($SQL);
 	//TODO : à modifier
 }
