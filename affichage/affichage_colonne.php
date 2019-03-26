@@ -15,7 +15,78 @@ include ("../unHeader.php");
     var modelJBtn = $("<a class='onglet rounded-top'></a>");
     var modelJImg = $("<img src=''>");
     var modelJCheckbox = $("<input type=checkbox class='form-check-input'>");
+    var modelJTA = $("<textarea> </textarea>");
 
+
+    /*///////////////affichageData()////////////////////////////////////////////////////////////
+    *  Récupère les colonnes de la table sélectionné
+    *  Puis récupère les data de chaque colonne
+    *  Ecrit sur la page les colonnes et les data de la table
+    */
+    function affichageData(){
+
+      $("#container-table").empty();
+      //On récupère la table
+      $.getJSON("../data.php",{
+        action:"getLaTable"},function(oRep){
+          var meta = oRep.tab[0];
+          //CREATION DU LABEL////////////////////////////////////////////////////
+          var unP = modelJP.clone();
+          var unLabel = modelJLabel.clone(true);
+
+          var lesData = modelJData.clone(true);
+          var uneTable = modelJTable.clone(true).append(unLabel)
+              .data("label", meta.label); //On stocke le label dans le div.
+          //On récupère les colonnes de la table
+          $.getJSON("../data.php", {
+                  action : "getColonnes",
+                  idTable : meta.id
+              },
+              function(oCol){
+                  for(var j=0; j<oCol.colonnes.length; j++){
+                      (function(j){
+                      var meta2 = oCol.colonnes[j];
+                      //CREATION DUNE COLONNE/////////////////
+                      var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
+                      var unLabelCol = modelJLabCol.clone(true).append(colP);
+
+                      var uneColonne = modelJColonne.clone(true).append(unLabelCol);
+
+                      //On récupère les data de chaque colonne
+                      $.getJSON("../data.php",{
+                        action:"getData",
+                        idColonne:meta2.id},function(oData){
+                          var k,meta3;
+
+                          for(k=0; k<oData.data.length; k++){
+                            var dataP = modelJP.clone();
+                            meta3=oData.data[k];
+                            if(meta3.valInt == null){
+                              dataP.html(meta3.valChar).attr("class","data");
+                              unLabelCol.append(dataP);
+                            }
+                            else{
+                              dataP.html(meta3.valInt).attr("class","data");
+                              unLabelCol.append(dataP);
+                            }
+                          }
+                          lesData.append(uneColonne);
+
+                        });
+
+                  })(j)
+                }
+              }
+
+          );
+          uneTable.append(lesData);
+          $("#container-table").append(uneTable);
+        })
+
+    }
+    /////////////////////FIN affichageData()///////////////////////////////////////////////////////////////////
+
+    /////////////////////Demarrage de la page affichage_colonne.php////////////////////////////////////////////
     $(document).ready(function(){
 
       $.getJSON("../data.php",{
@@ -33,68 +104,9 @@ include ("../unHeader.php");
 
           });
 
+          affichageData();
 
-
-        $.getJSON("../data.php",{
-          action:"getLaTable"},function(oRep){
-            console.log(oRep);
-            var meta = oRep.tab[0];
-            //CREATION DU LABEL////////////////////////////////////////////////////
-            var unP = modelJP.clone();
-            var unLabel = modelJLabel.clone(true);
-            ///////////////////////////////////////////////////////////////////////text
-            var lesData = modelJData.clone(true);
-            var uneTable = modelJTable.clone(true).append(unLabel)
-                .data("label", meta.label); //On stocke le label dans le div.
-
-            $.getJSON("../data.php", {
-                    action : "getColonnes",
-                    idTable : meta.id
-                },
-                function(oCol){
-                    console.log(oCol);
-                    for(var j=0; j<oCol.colonnes.length; j++){
-                        (function(j){
-                        var meta2 = oCol.colonnes[j];
-                        //CREATION DUNE COLONNE/////////////////
-                        var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
-                        var unLabelCol = modelJLabCol.clone(true).append(colP);
-
-                        var uneColonne = modelJColonne.clone(true).append(unLabelCol);
-                        ////////////////////////////////////////
-                        //Affichage des data
-                        $.getJSON("../data.php",{
-                          action:"getData",
-                          idColonne:meta2.id},function(oData){
-                            console.log(oData);
-                            var k,meta3;
-
-                            for(k=0; k<oData.data.length; k++){
-                              var dataP = modelJP.clone();
-                              meta3=oData.data[k];
-                              if(meta3.valInt == null){
-                                dataP.html(meta3.valChar).attr("class","data");
-                                unLabelCol.append(dataP);
-                              }
-                              else{
-                                dataP.html(meta3.valInt).attr("class","data");
-                                unLabelCol.append(dataP);
-                              }
-                            }
-                            lesData.append(uneColonne);
-
-                          });
-
-                    })(j)
-                  }
-                }
-
-            );
-            uneTable.append(lesData);
-            $("#container-table").append(uneTable);
-          })
-
-  })
+    });
 
   $(document).on("click",".onglet",function(){
 
@@ -199,7 +211,6 @@ include ("../unHeader.php");
                    $.getJSON("../data.php",{
                      action:"delData",
                      idData:$(this).data("idData")},function(oRep){
-                      console.log(oRep);
                      });
                  }
 
@@ -209,70 +220,137 @@ include ("../unHeader.php");
 
 
        });
-       $("#container-table").empty();
-       $.getJSON("../data.php",{
-         action:"getLaTable"},function(oRep){
-           var meta = oRep.tab[0];
-           //CREATION DU LABEL////////////////////////////////////////////////////
-           var unP = modelJP.clone();
-           var unLabel = modelJLabel.clone(true);
-           ///////////////////////////////////////////////////////////////////////text
-           var lesData = modelJData.clone(true);
-           var uneTable = modelJTable.clone(true).append(unLabel)
-               .data("label", meta.label); //On stocke le label dans le div.
 
-           $.getJSON("../data.php", {
-                   action : "getColonnes",
-                   idTable : meta.id
-               },
-               function(oCol){
+       affichageData();
 
-                   for(var j=0; j<oCol.colonnes.length; j++){
-                       (function(j){
-                       var meta2 = oCol.colonnes[j];
-                       //CREATION DUNE COLONNE/////////////////
-                       var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
-                       var unLabelCol = modelJLabCol.clone(true).append(colP);
+    });
 
-                       var uneColonne = modelJColonne.clone(true).append(unLabelCol);
-                       ////////////////////////////////////////
-                       //Affichage des data
-                       $.getJSON("../data.php",{
-                         action:"getData",
-                         idColonne:meta2.id},function(oData){
-                           console.log(oData);
+    $(document).on("click","#modifier",function(){
+      console.log("je veux modifier");
+      $("#container-table").empty();
+      $.getJSON("../data.php",{
+        action:"getLaTable"},function(oRep){
+          var meta = oRep.tab[0];
+          //CREATION DU LABEL////////////////////////////////////////////////////
+          var unP = modelJP.clone();
+          var unLabel = modelJLabel.clone(true);
+          ///////////////////////////////////////////////////////////////////////text
+          var lesData = modelJData.clone(true);
+          var uneTable = modelJTable.clone(true).append(unLabel)
+              .data("label", meta.label); //On stocke le label dans le div.
 
-                           var k,meta3;
+          $.getJSON("../data.php", {
+                  action : "getColonnes",
+                  idTable : meta.id
+              },
+              function(oCol){
 
-                           for(k=0; k<oData.data.length; k++){
-                             var dataP = modelJP.clone();
-                             meta3=oData.data[k];
-                             if(meta3.valInt == null){
-                               dataP.html(meta3.valChar).attr("class","data");
-                               unLabelCol.append(dataP);
-                             }
-                             else{
-                               dataP.html(meta3.valInt).attr("class","data");
-                               unLabelCol.append(dataP);
-                             }
-                           }
-                           lesData.append(uneColonne);
+                  for(var j=0; j<oCol.colonnes.length; j++){
+                      (function(j){
+                      var meta2 = oCol.colonnes[j];
+                      //CREATION DUNE COLONNE/////////////////
+                      var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
+                      var unLabelCol = modelJLabCol.clone(true).append(colP);
 
-                         });
+                      var uneColonne = modelJColonne.clone(true).append(unLabelCol);
+                      ////////////////////////////////////////
+                      //Affichage des data
+                      $.getJSON("../data.php",{
+                        action:"getData",
+                        idColonne:meta2.id},function(oData){
+                          console.log(oData);
 
-                   })(j)
-                 }
-               }
+                          var k,meta3;
 
-           );
-           uneTable.append(lesData);
-           $("#container-table").append(uneTable);
-         })
+                          for(k=0; k<oData.data.length; k++){
+                            var dataP = modelJP.clone();
+                            meta3=oData.data[k];
+                            if(meta3.valInt == null){
+                              dataP.html(meta3.valChar).attr("class","dataModifiable").data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
+                              unLabelCol.append(dataP);
+                            }
+                            else{
+                              dataP.html(meta3.valInt).attr("class","dataModifiable").data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+                              unLabelCol.append(dataP);
+                            }
+                          }
+                          lesData.append(uneColonne);
 
+                        });
+
+                  })(j)
+                }
+              }
+
+          );
+          uneTable.append(lesData);
+          $("#container-table").append(uneTable);
+          $(".container-colonnes").after($("<button type='button' class='btn btn-info' id='ConfirmModif'>Confimer modification</button>"));
+
+        });
+
+    });
+
+    $(document).on("click",".dataModifiable",function(){
+       var nextTA;
+
+       if($(this).data("valChar") != null)
+        nextTA = modelJTA.clone().val($(this).html()).data("idData",$(this).data("idData")).data("valChar",$(this).data("valChar")).data("valInt",null);
+       else
+        nextTA = modelJTA.clone().val($(this).html()).data("idData",$(this).data("idData")).data("valInt",$(this).data("valInt")).data("valChar",null);
+
+       $(this).replaceWith(nextTA);
 
 
 
     });
+
+    $(document).on("keydown",
+        ".card-body textarea",
+        function (contexte){
+            if (contexte.which == 13) { // 13 <=> touche ENTREE
+              var nextP;
+              console.log("ENTREE");
+
+              if($(this).data("valChar") != null)
+                nextP = modelJP.clone().html($(this).val()).attr("class","dataModifiable").data("idData",$(this).data("idData")).data("valChar",$(this).val()).data("valInt",null).css("background-color","lightgreen");
+              else
+                nextP = modelJP.clone().html($(this).val()).attr("class","dataModifiable").data("idData",$(this).data("idData")).data("valInt",$(this).val()).data("valChar",null).css("background-color","lightgreen");
+
+              $(this).replaceWith(nextP);
+
+             console.log(nextP.data());
+
+            }
+            if (contexte.which == 27) {	// 27 <=> touche ESCAPE
+              console.log("ECHAP");
+              console.log($(this).val());
+                // restaurer le P. avec ses anciennes données
+               $(".card-body textarea").each(function(){
+                    //restaurerP($(this), $(this).data());
+                    var nextP = modelJP.clone().attr("class","dataModifiable").html($(this).val());
+                    $(this).replaceWith(nextP);
+                });
+            }
+
+        });
+
+        $(document).on("click","#ConfirmModif",function(){
+
+          $(".dataModifiable").each(function(){
+            //console.log($(this).data());
+
+            $.getJSON("../data.php",{
+              action:"majData",
+              idData:$(this).data("idData"),
+              valChar:$(this).data("valChar"),
+              valInt:$(this).data("valInt")},function(oRep){
+                console.log(oRep);
+              });
+          });
+
+          affichageData();
+        });
 
 
 
@@ -295,7 +373,7 @@ include ("../unHeader.php");
 
       .container-colonnes{
           position: absolute;
-          top: 25%;
+
       }
 
       #affichage{
@@ -396,8 +474,20 @@ include ("../unHeader.php");
       #div-onglet{
           position: absolute;
           bottom: 5;
+          min-width: 200px;
 
       }
+
+      .dataModifiable:hover{
+        cursor:text;
+      }
+
+      .dataModifiable{
+        background-color: lightgrey;
+        height:20px;
+      }
+
+
 
     </style>
 </head>
@@ -406,9 +496,9 @@ include ("../unHeader.php");
 <body>
   <div id="content">
     <div id="container-fonction"><br>
-              <button type="button" class="btn btn-light">Ajouter une ligne</button>
-              <button type="button" class="btn btn-light" id="supprimer">Supprimer une ligne</button>
-              <button type="button" class="btn btn-light">Modifier une ligne</button>
+              <button type="button" class="btn btn-light">Ajouter ligne(s)</button>
+              <button type="button" class="btn btn-light" id="supprimer">Supprimer ligne(s)</button>
+              <button type="button" class="btn btn-light" id="modifier">Modifier ligne(s)</button>
               <button type="button" class="btn btn-light">Gérer les doublons</button>
               <button type="button" class="btn btn-light">Compter</button>
               <button type="button" class="btn btn-light">Moyenne</button>
