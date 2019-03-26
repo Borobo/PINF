@@ -152,7 +152,7 @@ session_start();
 					if ($label = valider("label"))
 					majTable($idTable,$label);
 				break;
-       
+
 
 				// Colonnes //////////////////////////////////////////////////
 				case 'setColonne' :
@@ -205,12 +205,18 @@ session_start();
 
 
 				case 'majData' :
-					if ($idPostIt = valider("idPostIt"))
-					{
-						//TODO : � faire avec majData() dans bdd.php
+					if ($idData = valider("idData"))
+					if ($valChar = valider("valChar")){
+						$data["id"] = $idData;
+						$data["valChar"] = $valChar;
+						//$data["data"] = modifierData($idData,$valChar,$valInt);
+						$SQL = "UPDATE data SET valChar='$valChar', valInt=null WHERE id=$idData";
+
+						$data["data"] = SQLUpdate($SQL);
 					}
+
 				break;
-          
+
           case 'delData':
 
 					$idData = valider("idData");
