@@ -13,6 +13,10 @@ include("../unHeader.php");
 	var modelJColonne = $("<div class='card col shadow-sm bg-white'>");
 	var modelJLabCol = $("<div class='card-body text-left'>");
 	var modelJOption = $("<option>");
+	var modelLien = $("<a href='affichage_colonne.php' class='lien'></a>");
+	var modelJDelete = $("<img class='del' data-toggle='modal' data-target='#myModal' src='ressource/delete.png'>");
+	var modelJDeleteCol = $("<img class='del-col' src='ressource/delete.png'>");
+
 
 	var addNom = $("<input type='text' class='input rounded' placeholder='Nom colonne'>");
 	var addType = $("<select class='form-control'>")
@@ -28,18 +32,6 @@ include("../unHeader.php");
 		$(document).ready(function(){
 
 			$("#popup-table").hide();
-
-			//LES MODELES//////////////////////////////////////////
-			var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
-			var modelJLabel = $("<div class='title border border-right-0 border-left-0 border-top-0 border-dark'>");
-			var modelJData = $("<div class='container tab-data'>");
-			var modelJP = $("<p>");
-			var modelJColonne = $("<div class='card col shadow-sm bg-white'>");
-			var modelJLabCol = $("<div class='card-body text-left'>");
-			var modelLien = $("<a href='affichage_colonne.php' class='lien'></a>");
-			var modelJDelete = $("<img class='del' data-toggle='modal' data-target='#myModal' src='ressource/delete.png'>");
-			///////////////////////////////////////////////////////
-
 			$.getJSON("../data.php", {
 				action : "getTables"
 				},
@@ -70,7 +62,10 @@ include("../unHeader.php");
                                 for(var j=0; j<oCol.colonnes.length; j++){
                                     var meta2 = oCol.colonnes[j];
                                     //CREATION DUNE COLONNE////////////////////////////////////////////////////
-                                    var unLabelCol = modelJLabCol.clone(true).html(meta2.label);
+									var unDeleteCol = modelJDeleteCol.clone().data("idCol", meta2.id);
+									var unLabelCol = modelJLabCol.clone(true).html(meta2.label);
+									if(oRep.superadmin == 1||oRep.admin == 1)
+										unLabelCol.append(unDeleteCol);
                                     var uneColonne = modelJColonne.clone(true).append(unLabelCol);
                                     ///////////////////////////////////////////////////////////////////////
                                     lesData.append(uneColonne);
@@ -161,6 +156,16 @@ include("../unHeader.php");
 				idTable : idDeLaTable
 			}, function(oRep){
 				console.log(oRep.feedback);
+				window.location.reload();
+			})
+		})
+
+		$(document).on("click", ".del-col", function(){
+			$.getJSON("../data.php",{
+				action : "supprimerCol",
+				idCol : $(this).data("idCol")
+			}, function(oRep){
+				console.log("LOL");
 				window.location.reload();
 			})
 		})
@@ -300,8 +305,14 @@ include("../unHeader.php");
 			top: 4px;
 			width: 17px;
 		}
-		.del:hover{
+		.del:hover,.del-col:hover{
 			cursor: pointer;
+		}
+		.del-col{
+			position: absolute;
+			top: 20px;
+			right: 17px;
+			width: 17px;
 		}
 
 	</style>
