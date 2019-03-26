@@ -163,13 +163,13 @@ session_start();
 					if ($label = valider("label"))
 					majTable($idTable,$label);
 				break;
-          
-        case 'supprimerTable':
+
+        		case 'supprimerTable':
 					$idTable = valider("idTable");
-					if($_SESSION["superadmin"])
+					if($_SESSION["superadmin"]||$_SESSION["admin"])
 						$data["return"] = supprimerTable($idTable);
 					break;
-       
+
 
 				// Colonnes //////////////////////////////////////////////////
 				case 'setColonne' :
@@ -209,6 +209,12 @@ session_start();
 					majColonne($idTable,$numColonne,$label);
 				break;
 
+				case 'supprimerCol':
+					if($idCol = valider("idCol"))
+					if($_SESSION["superadmin"]||$_SESSION["admin"]){
+						$data["return"] = supprimerCol($idCol);
+					}
+					break;
 				// DATA //////////////////////////////////////////////////
 
 				break;
@@ -227,7 +233,7 @@ session_start();
 						//TODO : � faire avec majData() dans bdd.php
 					}
 				break;
-          
+
           case 'delData':
 
 					$idData = valider("idData");
