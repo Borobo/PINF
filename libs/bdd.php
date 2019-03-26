@@ -62,11 +62,14 @@ function majColonne($idTable,$numColonne,$label) {
 	//TODO : majColonne --> majDonnee
 }
 
-
 function mkCol($idTable, $label, $desc) {
 	$SQL = "INSERT INTO colonne(label,description,idTab) VALUES ('$label','$desc','$idTable')";
 	return SQLInsert($SQL);
+}
 
+function supprimerCol($idCol){
+	$SQL = "DELETE FROM colonne WHERE id = $idCol";
+	return SQLDelete($SQL);
 }
 
 //////////////////////////////////////////////////////////////////////////////
