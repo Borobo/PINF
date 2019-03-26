@@ -204,13 +204,26 @@ session_start();
                     break;
 
 
-				case 'majData' :
+				case 'majDataChar' :
 					if ($idData = valider("idData"))
 					if ($valChar = valider("valChar")){
 						$data["id"] = $idData;
 						$data["valChar"] = $valChar;
 						//$data["data"] = modifierData($idData,$valChar,$valInt);
 						$SQL = "UPDATE data SET valChar='$valChar', valInt=null WHERE id=$idData";
+
+						$data["data"] = SQLUpdate($SQL);
+					}
+
+				break;
+
+				case 'majDataInt' :
+					if ($idData = valider("idData"))
+					if ($valInt = valider("valInt")){
+						$data["id"] = $idData;
+						$data["valChar"] = $valChar;
+						//$data["data"] = modifierData($idData,$valChar,$valInt);
+						$SQL = "UPDATE data SET valChar=null, valInt='$valInt' WHERE id=$idData";
 
 						$data["data"] = SQLUpdate($SQL);
 					}
