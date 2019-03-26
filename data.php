@@ -139,8 +139,9 @@ session_start();
 				if ($label = valider("label"))
 				{
 					$idBdd = $_SESSION["idBDD"];
+					$idUser = $_SESSION["idUser"];
 					//$data["idTable"] = $_SESSION["admin"];
-					$data["idTable"] = mkTable($idBdd,$label);
+					$data["idTable"] = mkTable($label,$idBdd,$idUser);
 				}
 				break;
 
