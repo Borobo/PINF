@@ -76,7 +76,8 @@ include("../unHeader.php");
                                 }
 								var colPlus = $("<div class='card col shadow-sm col-plus'>")
 								.append($("<img>").attr("src","ressource/plus.png"))
-								.data("idTable", meta.id);
+								.data("idTable", meta.id)
+								.data("nomTable", meta.label);
 								if(oRep.admin == 1)
 									lesData.append(colPlus);
                             }
@@ -110,7 +111,8 @@ include("../unHeader.php");
       });
 
 		$(document).on("click","#divPlus", function(){
-			$("#popup-table").fadeToggle("fast");
+			$("#popup-table").toggle();
+			$("#popup-col").hide();
 		})
 
 		$(document).on("click", "#popup-table-croix", function(){
@@ -154,6 +156,7 @@ include("../unHeader.php");
 		})
 
 		var idDeLaTable;
+		var nomDeLaTable;
 		$(document).on("click", ".del", function(){
 			idDeLaTable = $(this).data("idTable");
 		})
@@ -182,7 +185,10 @@ include("../unHeader.php");
 			var unLabel = addLabel.clone();
 			var uneDesc = addDesc.clone();
 			$("#popup-col").toggle();
+			$("#popup-table").hide();
 			idDeLaTable = $(this).data("idTable");
+			nomDeLaTable = $(this).data("nomTable");
+			$("#popup-col h5").html("Ajouter une colonne dans <b>"+nomDeLaTable+"</b>");
 		})
 
 		$(document).on("click", "#popup-col .btn-secondary",function(){
@@ -191,27 +197,41 @@ include("../unHeader.php");
 
 		$(document).on("click", "#popup-col .btn-primary", function(){
 			console.log($("#popup-col input[placeholder=Description]").val());
-			$.getJSON("../data.php", {
-				action : "setColonne",
-				idTable: idDeLaTable,
-				labelCol: $("#popup-col input[placeholder=Label]").val(),
-				descCol: $("#popup-col input[placeholder=Description]").val()
-			},function(){
-				console.log("DONE");
-				//window.location.reload();
-			})
+			if(leLabel = $("#popup-col input[placeholder=Label]").val()){
+				$.getJSON("../data.php", {
+					action : "setColonne",
+					idTable: idDeLaTable,
+					labelCol: $("#popup-col input[placeholder=Label]").val(),
+					descCol: $("#popup-col input[placeholder=Description]").val()
+				},function(){
+					console.log("DONE");
+					window.location.reload();
+				})
+			}else{
+				var alertBox = $("<div class='alert alert-danger'>")
+					.html("<strong>Alerte</strong> : Le label est obligatoire");
+				$(".alert").remove();
+				$("#content").append(alertBox);
+				setTimeout(function(){ alertBox.fadeOut("slow"); }, 5000);
+			}
 		})
 
 
 	</script>
 
 	<style>
+
         body{
             background-color: lightblue;
             overflow-y: auto;
             overflow-x: auto;
             overflow-scrolling: touch;
         }
+		.alert{
+			position: fixed;
+			bottom: 15px;
+			width: 98%;
+		}
         .table-main-content{
             height: 100%;
             display: flex;
@@ -398,8 +418,12 @@ include("../unHeader.php");
 
 <body>
     <div class="table-main-content">
-        <div id="name" class="lead font-weight-bold text-uppercase ml-sm-5"><u>Nom de la base de données</u></div>
-        <div class="table-canvas">
+		<?php
+		echo '
+        <div id="name" class="lead font-weight-bold text-uppercase ml-sm-5"><u>'.$_SESSION["nomBdd"].'</u></div>
+		'
+        ?>
+		<div class="table-canvas">
             <div class="container-fluid" id="content">
 
             </div>

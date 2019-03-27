@@ -295,7 +295,6 @@ include ("../unHeader.php");
 
       .container-colonnes{
           position: absolute;
-          top: 25%;
       }
 
       #affichage{
