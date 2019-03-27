@@ -94,26 +94,14 @@ session_start();
 
 					$idUser = $_SESSION["idUser"];
 
-			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser  AND bdd.id = liste_user.idBdd AND bdd.creee = 1
+			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser AND bdd.id = liste_user.idBdd
 							UNION
-							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser ";
+							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser";
 			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 	        		break;
 
-                case 'afficherBDDproposes':
-
-                    $idUser = $_SESSION["idUser"];
-
-                    $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE bdd.creee = 0
-							UNION
-							SELECT nom,id,description FROM bdd WHERE idCreateur = $idUser";
-                    $data["bdd"]=parcoursRs(SQLSelect($SQL));
-
-                    break;
-
-
-                case 'afficherLaBDD':
+				case 'afficherLaBDD':
 
 					$SQL = "SELECT * FROM bdd WHERE id=$idBdd";
 					$data["bdd"]=parcoursRs(SQLSelect($SQL));
@@ -140,9 +128,8 @@ session_start();
 				if ($label = valider("label"))
 				{
 					$idBdd = $_SESSION["idBDD"];
-					$idUser = $_SESSION["idUser"];
 					//$data["idTable"] = $_SESSION["admin"];
-					$data["idTable"] = mkTable($label,$idBdd,$idUser);
+					$data["idTable"] = mkTable($idBdd,$label);
 				}
 				break;
 
@@ -165,12 +152,6 @@ session_start();
 					if ($label = valider("label"))
 					majTable($idTable,$label);
 				break;
-
-        		case 'supprimerTable':
-					$idTable = valider("idTable");
-					if($_SESSION["superadmin"]||$_SESSION["admin"])
-						$data["return"] = supprimerTable($idTable);
-					break;
 
 
 				// Colonnes //////////////////////////////////////////////////
@@ -211,12 +192,6 @@ session_start();
 					majColonne($idTable,$numColonne,$label);
 				break;
 
-				case 'supprimerCol':
-					if($idCol = valider("idCol"))
-					if($_SESSION["superadmin"]||$_SESSION["admin"]){
-						$data["return"] = supprimerCol($idCol);
-					}
-					break;
 				// DATA //////////////////////////////////////////////////
 
 				break;
@@ -232,26 +207,18 @@ session_start();
 				case 'majDataChar' :
 					if ($idData = valider("idData"))
 					if ($valChar = valider("valChar")){
-						$data["id"] = $idData;
-						$data["valChar"] = $valChar;
-						//$data["data"] = modifierData($idData,$valChar,$valInt);
 						$SQL = "UPDATE data SET valChar='$valChar', valInt=null WHERE id=$idData";
-
 						$data["data"] = SQLUpdate($SQL);
 					}
+
 
 				break;
 
 				case 'majDataInt' :
 					if ($idData = valider("idData"))
-					if ($valInt = valider("valInt")){
-						$data["id"] = $idData;
-						$data["valChar"] = $valChar;
-						//$data["data"] = modifierData($idData,$valChar,$valInt);
-						$SQL = "UPDATE data SET valChar=null, valInt='$valInt' WHERE id=$idData";
+					if ($valInt = valider("valInt"))
+						$data["data"] = modifierData($idData,null,$valInt);
 
-						$data["data"] = SQLUpdate($SQL);
-					}
 
 				break;
 
@@ -260,6 +227,14 @@ session_start();
 					$idData = valider("idData");
 					$data["data"] = supprimerData($idData);
 					//$data["data"] = $idData;
+					break;
+
+				case 'countData':
+					if($idColonne = valider("idColonne")){
+						$SQL = "SELECT colonne.label, colonne.id, COUNT(data.id) AS 'NbData' FROM colonne,data WHERE colonne.id=data.idColonne AND data.idColonne=$idColonne";
+						$data["data"] = parcoursRs(SQLSelect($SQL));
+					}
+
 					break;
 
 				default :
