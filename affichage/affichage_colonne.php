@@ -407,7 +407,7 @@ include ("../unHeader.php");
       }
 
       #container-table{
-        background-color: rgb(50, 80, 50);
+        background-color: rgba(70, 125, 247, 0.77);;
         width: 100%;
         height: 100%;
       }
@@ -440,7 +440,7 @@ include ("../unHeader.php");
           height: 100%;
           width: 100%;
           position: relative;
-          background-color: red;
+          //background-color: red;
 
       }
 
@@ -458,7 +458,6 @@ include ("../unHeader.php");
 
       .container-colonnes{
           position: relative;
-          background-color: grey;
           display: flex;
           margin: auto;
       }
