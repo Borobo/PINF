@@ -188,8 +188,9 @@ session_start();
 
                 case 'stockIdBDD':
                     if($idBdd = valider("id")){
-
 						$idUser = $_SESSION["idUser"];
+						if($nomBdd = valider("nom"))
+							$_SESSION["nomBdd"] = $nomBdd;
                         $_SESSION["idBDD"] = $idBdd;
 						$_SESSION["admin"] = grade($idBdd, $idUser);
 						$data["feedback"]= grade($idBdd, $idUser);
