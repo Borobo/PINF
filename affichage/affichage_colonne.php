@@ -15,17 +15,86 @@ include ("../unHeader.php");
     var modelJBtn = $("<a class='onglet rounded-top'></a>");
     var modelJImg = $("<img src=''>");
     var modelJCheckbox = $("<input type=checkbox class='form-check-input'>");
+    var modelJTA = $("<textarea> </textarea>");
 
+
+    /*///////////////affichageData()////////////////////////////////////////////////////////////
+    *  Récupère les colonnes de la table sélectionné
+    *  Puis récupère les data de chaque colonne
+    *  Ecrit sur la page les colonnes et les data de la table
+    */
+    function affichageData(){
+
+      $("#container-table").empty();
+      //On récupère la table
+      $.getJSON("../data.php",{
+        action:"getLaTable"},function(oRep){
+          var meta = oRep.tab[0];
+          //CREATION DU LABEL////////////////////////////////////////////////////
+          var unP = modelJP.clone();
+          var unLabel = modelJLabel.clone(true);
+
+          var lesData = modelJData.clone(true);
+          var uneTable = modelJTable.clone(true).append(unLabel)
+              .data("label", meta.label); //On stocke le label dans le div.
+          //On récupère les colonnes de la table
+          $.getJSON("../data.php", {
+                  action : "getColonnes",
+                  idTable : meta.id
+              },
+              function(oCol){
+                  for(var j=0; j<oCol.colonnes.length; j++){
+                      (function(j){
+                      var meta2 = oCol.colonnes[j];
+                      //CREATION DUNE COLONNE/////////////////
+                      var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
+                      var unLabelCol = modelJLabCol.clone(true).append(colP);
+
+                      var uneColonne = modelJColonne.clone(true).append(unLabelCol);
+
+                      //On récupère les data de chaque colonne
+                      $.getJSON("../data.php",{
+                        action:"getData",
+                        idColonne:meta2.id},function(oData){
+                          var k,meta3;
+
+                          for(k=0; k<oData.data.length; k++){
+                            var dataP = modelJP.clone();
+                            meta3=oData.data[k];
+                            if(meta3.valInt == null){
+                              dataP.html(meta3.valChar).attr("class","data");
+                              unLabelCol.append(dataP);
+                            }
+                            else{
+                              dataP.html(meta3.valInt).attr("class","data");
+                              unLabelCol.append(dataP);
+                            }
+                          }
+                          lesData.append(uneColonne);
+
+                        });
+
+                  })(j)
+                }
+              }
+
+          );
+          uneTable.append(lesData);
+          $("#container-table").append(uneTable);
+        })
+
+    }
+    /////////////////////FIN affichageData()///////////////////////////////////////////////////////////////////
+
+    /////////////////////Demarrage de la page affichage_colonne.php////////////////////////////////////////////
     $(document).ready(function(){
 
+      //Onglets permettant de passer d'une table à l'autre dans affichage_colonne.php
       $.getJSON("../data.php",{
           action:"getTables"},function(oRep){
-
             var i;
-          //  console.log(oRep.nomTables[0].label);
             for(i=0; i<oRep.boards.length; i++){
-
-              console.log(oRep.boards[i].id);
+              //btn (contenant l'id de la table) redirigeant vers la table souhaité
               var unBtn = modelJBtn.clone(true).html(oRep.boards[i].label).data("idTable",oRep.boards[i].id).attr("href","affichage_colonne.php");
               $("#div-onglet").append(unBtn);
 
@@ -33,69 +102,13 @@ include ("../unHeader.php");
 
           });
 
+          //affichage des colonnes et des data de la table
+          affichageData();
 
+    });
+/////////////////////FIN Demarrage de la page affichage_colonne.php////////////////////////////////////////////
 
-        $.getJSON("../data.php",{
-          action:"getLaTable"},function(oRep){
-            console.log(oRep);
-            var meta = oRep.tab[0];
-            //CREATION DU LABEL////////////////////////////////////////////////////
-            var unP = modelJP.clone();
-            var unLabel = modelJLabel.clone(true);
-            ///////////////////////////////////////////////////////////////////////text
-            var lesData = modelJData.clone(true);
-            var uneTable = modelJTable.clone(true).append(unLabel)
-                .data("label", meta.label); //On stocke le label dans le div.
-
-            $.getJSON("../data.php", {
-                    action : "getColonnes",
-                    idTable : meta.id
-                },
-                function(oCol){
-                    console.log(oCol);
-                    for(var j=0; j<oCol.colonnes.length; j++){
-                        (function(j){
-                        var meta2 = oCol.colonnes[j];
-                        //CREATION DUNE COLONNE/////////////////
-                        var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
-                        var unLabelCol = modelJLabCol.clone(true).append(colP);
-
-                        var uneColonne = modelJColonne.clone(true).append(unLabelCol);
-                        ////////////////////////////////////////
-                        //Affichage des data
-                        $.getJSON("../data.php",{
-                          action:"getData",
-                          idColonne:meta2.id},function(oData){
-                            console.log(oData);
-                            var k,meta3;
-
-                            for(k=0; k<oData.data.length; k++){
-                              var dataP = modelJP.clone();
-                              meta3=oData.data[k];
-                              if(meta3.valInt == null){
-                                dataP.html(meta3.valChar).attr("class","data");
-                                unLabelCol.append(dataP);
-                              }
-                              else{
-                                dataP.html(meta3.valInt).attr("class","data");
-                                unLabelCol.append(dataP);
-                              }
-                            }
-                            lesData.append(uneColonne);
-
-                          });
-
-                    })(j)
-                  }
-                }
-
-            );
-            uneTable.append(lesData);
-            $("#container-table").append(uneTable);
-          })
-
-  })
-
+/////////////////////Redirection vers la table souhaité dans affichage_colonne/////////////////////////////////
   $(document).on("click",".onglet",function(){
 
     $.getJSON("../data.php",{
@@ -103,23 +116,20 @@ include ("../unHeader.php");
       id:$(this).data("idTable")
     },function(){
     });
-
-
-
+/////////////////////FIN Redirection vers la table souhaité dans affichage_colonne/////////////////////////////
   });
 
+/////////////////////Activation de la fonction suppression des data////////////////////////////////////////////
   $(document).on("click","#supprimer",function(){
-      console.log("je suppr");
+      //On refait l'affichage des data mais avec des checkbox poru pouvoir choisir les lignes à suppprimer////
       $("#container-table").empty();
-
       $.getJSON("../data.php",{
         action:"getLaTable"},function(oRep){
           console.log(oRep);
           var meta = oRep.tab[0];
-          //CREATION DU LABEL////////////////////////////////////////////////////
           var unP = modelJP.clone();
           var unLabel = modelJLabel.clone(true);
-          ///////////////////////////////////////////////////////////////////////text
+
           var lesData = modelJData.clone(true);
           var uneTable = modelJTable.clone(true).append(unLabel)
               .data("label", meta.label); //On stocke le label dans le div.
@@ -150,18 +160,21 @@ include ("../unHeader.php");
                             //div contenant la croix suppression et la première data de la 1ère colonne
 
                             meta3=oData.data[k];
+                            //On met une position sur chaque data pour savoir à quelle ligne elles correspondent pour simplifier la suppression des lignes
                             var div = modelJLabel.clone().attr("class","data").data("idData",meta3.id).data("position",k);
-                            //var imgSuppr = modelJImg.clone().attr("src","ressource/croix.png").attr("height","20px").attr("width","20px")
+                            //checkbox
                             var check = $("<div class='form-check'></div>").append(modelJCheckbox.clone().data("idData",meta3.id).data("position",k));
                             var dataP = modelJP.clone();
 
                             if(meta3.valInt == null){
                               dataP.html(meta3.valChar);
+                              //On met les checkbox sur la première colonne
                               if(j==0) div.append(check);
                               div.append(dataP);
                             }
                             else{
                               dataP.html(meta3.valInt);
+                              //On met les checkbox sur la première colonne
                               if(j==0) div.append(check);
                               div.append(dataP);
                             }
@@ -178,28 +191,35 @@ include ("../unHeader.php");
           );
           uneTable.append(lesData);
           $("#container-table").append(uneTable);
+          //Bouton annuler
+          $(".container-colonnes").after($("<button type='button' class='btn btn-danger' id='Annuler'>Annuler</button>"));
+          //Bouton pour confirmer la suppression après avoir checked les lignes
           $(".container-colonnes").after($("<button type='button' class='btn btn-info' id='Suppression'>Supprimer</button>"));
-        });
 
+        });
+        //FIN on refait l'affichage des data mais avec des checkbox pour pouvoir choisir les lignes à suppprimer////
 
   });
+/////////////////////FIN Activation de la fonction suppression des data////////////////////////////////////////
 
+/////////////////////Suppression des data dans la base de données/////////////////////////////////////////////
     $(document).on("click","#Suppression",function(){
-
       var pos;
-
+          //On regarde quelles sont les checkbox qui sont checked
           $('.card-body input[type=checkbox]').each(function(){
             if($(this).prop('checked') == true){
 
-              //enregistrer la position
+              //On sauveguarde la position de la ligne qu'on veut supprimer
               pos = $(this).data("position");
+
+              //On vérifie la position sauveguarder avec la position de chaque data
+              //Puis on supprime dans la bdd
               $('.card-body .data').each(function(){
                  if($(this).data("position") == pos){
 
                    $.getJSON("../data.php",{
                      action:"delData",
                      idData:$(this).data("idData")},function(oRep){
-                      console.log(oRep);
                      });
                  }
 
@@ -209,72 +229,155 @@ include ("../unHeader.php");
 
 
        });
-       $("#container-table").empty();
-       $.getJSON("../data.php",{
-         action:"getLaTable"},function(oRep){
-           var meta = oRep.tab[0];
-           //CREATION DU LABEL////////////////////////////////////////////////////
-           var unP = modelJP.clone();
-           var unLabel = modelJLabel.clone(true);
-           ///////////////////////////////////////////////////////////////////////text
-           var lesData = modelJData.clone(true);
-           var uneTable = modelJTable.clone(true).append(unLabel)
-               .data("label", meta.label); //On stocke le label dans le div.
 
-           $.getJSON("../data.php", {
-                   action : "getColonnes",
-                   idTable : meta.id
-               },
-               function(oCol){
-
-                   for(var j=0; j<oCol.colonnes.length; j++){
-                       (function(j){
-                       var meta2 = oCol.colonnes[j];
-                       //CREATION DUNE COLONNE/////////////////
-                       var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
-                       var unLabelCol = modelJLabCol.clone(true).append(colP);
-
-                       var uneColonne = modelJColonne.clone(true).append(unLabelCol);
-                       ////////////////////////////////////////
-                       //Affichage des data
-                       $.getJSON("../data.php",{
-                         action:"getData",
-                         idColonne:meta2.id},function(oData){
-                           console.log(oData);
-
-                           var k,meta3;
-
-                           for(k=0; k<oData.data.length; k++){
-                             var dataP = modelJP.clone();
-                             meta3=oData.data[k];
-                             if(meta3.valInt == null){
-                               dataP.html(meta3.valChar).attr("class","data");
-                               unLabelCol.append(dataP);
-                             }
-                             else{
-                               dataP.html(meta3.valInt).attr("class","data");
-                               unLabelCol.append(dataP);
-                             }
-                           }
-                           lesData.append(uneColonne);
-
-                         });
-
-                   })(j)
-                 }
-               }
-
-           );
-           uneTable.append(lesData);
-           $("#container-table").append(uneTable);
-         })
+       //Après avoir fait la suppression on réaffiche le tout
+       affichageData();
+    });
+/////////////////////FIN Suppression des data dans la base de données/////////////////////////////////////////
 
 
+/////////////////////Activation de la fonction modification des data/////////////////////////////////////////
+    $(document).on("click","#modifier",function(){
 
+      //On réaffiche les data avec en sauveguardant leur valeur et leur id pou faciliter la modification
+      $("#container-table").empty();
+      $.getJSON("../data.php",{
+        action:"getLaTable"},function(oRep){
+          var meta = oRep.tab[0];
+          var unP = modelJP.clone();
+          var unLabel = modelJLabel.clone(true);
+          var lesData = modelJData.clone(true);
+          var uneTable = modelJTable.clone(true).append(unLabel)
+              .data("label", meta.label);
+
+          $.getJSON("../data.php", {
+                  action : "getColonnes",
+                  idTable : meta.id
+              },
+              function(oCol){
+
+                  for(var j=0; j<oCol.colonnes.length; j++){
+                      (function(j){
+                      var meta2 = oCol.colonnes[j];
+                      //CREATION DUNE COLONNE/////////////////
+                      var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
+                      var unLabelCol = modelJLabCol.clone(true).append(colP);
+
+                      var uneColonne = modelJColonne.clone(true).append(unLabelCol);
+                      ////////////////////////////////////////
+                      //Affichage des data
+                      $.getJSON("../data.php",{
+                        action:"getData",
+                        idColonne:meta2.id},function(oData){
+                          console.log(oData);
+
+                          var k,meta3;
+
+                          for(k=0; k<oData.data.length; k++){
+                            var dataP = modelJP.clone();
+                            meta3=oData.data[k];
+                            if(meta3.valInt == null){
+                              dataP.html(meta3.valChar).attr("class","dataModifiable").data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
+                              unLabelCol.append(dataP);
+                            }
+                            else{
+                              dataP.html(meta3.valInt).attr("class","dataModifiable").data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+                              unLabelCol.append(dataP);
+                            }
+                          }
+                          lesData.append(uneColonne);
+
+                        });
+
+                  })(j)
+                }
+              }
+
+          );
+          uneTable.append(lesData);
+          $("#container-table").append(uneTable);
+          $(".container-colonnes").after($("<button type='button' class='btn btn-danger' id='Annuler'>Annuler</button>"));
+          $(".container-colonnes").after($("<button type='button' class='btn btn-info' id='ConfirmModif'>Confimer modification</button>"));
+
+        });
 
     });
+/////////////////////FIN Activation de la fonction modification des data/////////////////////////////////////
 
 
+/////////////////////Modification d'une data en cliquant dessus/////////////////////////////////////////////
+    $(document).on("click",".dataModifiable",function(){
+        //variable du textarea
+       var nextTA;
+       //On regarde si le data est un charactère ou un nombre puis on remplace le paragraphe par un textarea
+       if($(this).data("valChar") != null)
+        nextTA = modelJTA.clone().val($(this).html()).data("idData",$(this).data("idData")).data("valChar",$(this).data("valChar")).data("valInt",null);
+       else
+        nextTA = modelJTA.clone().val($(this).html()).data("idData",$(this).data("idData")).data("valInt",$(this).data("valInt")).data("valChar",null);
+
+       $(this).replaceWith(nextTA);
+    });
+/////////////////////FIN Modification d'une data en cliquant dessus////////////////////////////////////////
+
+/////////////////////Appui sur la touche entrée ou echap dans le textarea//////////////////////////////////
+    $(document).on("keydown",
+        ".card-body textarea",
+        function (contexte){
+            if (contexte.which == 13) { // 13 <=> touche ENTREE
+              var nextP;
+              // restaurer le paragraphe avec sa nouvelle valeur en fonction du type de data (charactère ou nombre)
+              if($(this).data("valChar") != null)
+                nextP = modelJP.clone().html($(this).val()).attr("class","dataModifiable").data("idData",$(this).data("idData")).data("valChar",$(this).val()).data("valInt",null).css("background-color","lightgreen");
+              else
+                nextP = modelJP.clone().html($(this).val()).attr("class","dataModifiable").data("idData",$(this).data("idData")).data("valInt",$(this).val()).data("valChar",null).css("background-color","lightgreen");
+
+              $(this).replaceWith(nextP);
+
+            }
+            if (contexte.which == 27) {	// 27 <=> touche ESCAPE
+                // restaurer le paragraphe avec son ancienne valeur
+               $(".card-body textarea").each(function(){
+                    var nextP = modelJP.clone().attr("class","dataModifiable").html($(this).val());
+                    $(this).replaceWith(nextP);
+                });
+            }
+
+        });
+/////////////////////FIN Appui sur la touche entrée ou echap dans le textarea//////////////////////////////
+
+/////////////////////Modification des data dans la base de données/////////////////////////////////////////
+    $(document).on("click","#ConfirmModif",function(){
+          //On regarde chaque data on modifie la base de donnée avec leur valeur
+          $(".dataModifiable").each(function(){
+            //On modifie la data si c'est un charactère ou un nombre
+            if($(this).data("valChar") != null){
+              $.getJSON("../data.php",{
+                action:"majDataChar",
+                idData:$(this).data("idData"),
+                valChar:$(this).data("valChar")},function(oRep){
+                });
+            }
+            else{
+              $.getJSON("../data.php",{
+                action:"majDataInt",
+                idData:$(this).data("idData"),
+                valInt:$(this).data("valInt")},function(oRep){
+                });
+            }
+
+          });
+
+          //On réaffiche les data après avoir modifier la base de données
+          affichageData();
+      });
+/////////////////////FIN Modification des data dans la base de données/////////////////////////////////////////
+
+
+/////////////////////Annuler la fonction sélectionné//////////////////////////////////////////////////////////
+        $(document).on("click","#Annuler",function(){
+          affichageData();
+        });
+/////////////////////FIN Annuler la fonction sélectionné//////////////////////////////////////////////////////
 
     </script>
 
@@ -295,7 +398,7 @@ include ("../unHeader.php");
 
       .container-colonnes{
           position: absolute;
-          top: 25%;
+
       }
 
       #affichage{
@@ -322,6 +425,12 @@ include ("../unHeader.php");
         min-width:100px;
         height:40px;
         }
+        .btn-danger{
+          margin-right: 10px;
+          margin-top:5px;
+          min-width:100px;
+          height:40px;
+          }
 
       .tables:first-child{
           display: block !important;
@@ -396,8 +505,20 @@ include ("../unHeader.php");
       #div-onglet{
           position: absolute;
           bottom: 5;
+          min-width: 200px;
 
       }
+
+      .dataModifiable:hover{
+        cursor:text;
+      }
+
+      .dataModifiable{
+        background-color: lightgrey;
+        height:20px;
+      }
+
+
 
     </style>
 </head>
@@ -406,9 +527,9 @@ include ("../unHeader.php");
 <body>
   <div id="content">
     <div id="container-fonction"><br>
-              <button type="button" class="btn btn-light">Ajouter une ligne</button>
-              <button type="button" class="btn btn-light" id="supprimer">Supprimer une ligne</button>
-              <button type="button" class="btn btn-light">Modifier une ligne</button>
+              <button type="button" class="btn btn-light">Ajouter ligne(s)</button>
+              <button type="button" class="btn btn-light" id="supprimer">Supprimer ligne(s)</button>
+              <button type="button" class="btn btn-light" id="modifier">Modifier ligne(s)</button>
               <button type="button" class="btn btn-light">Gérer les doublons</button>
               <button type="button" class="btn btn-light">Compter</button>
               <button type="button" class="btn btn-light">Moyenne</button>
