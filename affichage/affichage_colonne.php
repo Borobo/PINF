@@ -398,7 +398,6 @@ include ("../unHeader.php");
 
       .container-colonnes{
           position: absolute;
-
       }
 
       #affichage{
