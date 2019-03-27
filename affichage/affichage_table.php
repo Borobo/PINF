@@ -22,15 +22,19 @@ include("../unHeader.php");
 	var addType = $("<select class='form-control'>")
 	.append(modelJOption.clone().html("Texte"))
 	.append(modelJOption.clone().html("Nombre"));
-	var addDesc = $("<input type='text' class='desc rounded' placeholder='Description'>");
+	var addDesc = $("<input type='text' class='desc' placeholder='Description'>");
 	var addCroix = $("<img class='croix' src='ressource/cancel.png'>");
 	var addCol = $("<div class='popup-table-addCol'>").append(addNom.clone())
 	.append(addType.clone()).append(addDesc.clone()).append(addCroix.clone(true));
+	var addLabel = $("<input type='text' placeholder='Label'>");
+	var addDesc = $("<input type='text' placeholder='Description'>");
+
 
 	///////////////////////////////////////////////////////
 
 		$(document).ready(function(){
 
+			$("#popup-col").hide();
 			$("#popup-table").hide();
 			$.getJSON("../data.php", {
 				action : "getTables"
@@ -70,6 +74,10 @@ include("../unHeader.php");
                                     ///////////////////////////////////////////////////////////////////////
                                     lesData.append(uneColonne);
                                 }
+								var colPlus = $("<div class='card col shadow-sm col-plus'>")
+								.append($("<img>").attr("src","ressource/plus.png"));
+								if(oRep.admin == 1)
+									lesData.append(colPlus);
                             }
 
                         );
@@ -134,7 +142,6 @@ include("../unHeader.php");
 							labelCol : $(this).find(".input").val(),
 							descCol : $(this).find(".desc").val()
 						}, function(oRep){
-							console.log("ENVOIE"); //TODO : à finir
 							$("#popup-table").find("input").val("");
 							$("#popup-table").find(".desc").val("");
 							$("#nomTable").val("");
@@ -168,6 +175,25 @@ include("../unHeader.php");
 				console.log("LOL");
 				window.location.reload();
 			})
+		})
+
+		$(document).on("click", ".col-plus", function(){
+			var unLabel = addLabel.clone();
+			var uneDesc = addDesc.clone();
+			$("#popup-col").toggle();
+		})
+
+		$(document).on("click", "#popup-col .btn-secondary",function(){
+			$("#popup-col").hide();
+		})
+
+		$(document).on("click", "", function(){
+		/*	$.getJSON("../data.php", {
+				action : "setColonne",
+				idTable: ,
+				labelCol: ,
+				descCol:
+			})*/
 		})
 
 
@@ -314,6 +340,52 @@ include("../unHeader.php");
 			right: 17px;
 			width: 17px;
 		}
+		.col-plus{
+			background-color: rgba(255, 255, 255, 0.5);
+			height: 59.6px;
+		}
+		.col-plus:hover{
+			cursor: pointer;
+			background-color: #ffffff;
+			transition: 0.25s;
+		}
+		.col-plus img{
+			width: 40px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			opacity: 0.8;
+			transform: translate(-50%,-50%);
+		}
+		#popup-col{
+			background-color: #dfe3e6;
+			position: absolute;
+			width: 400px;
+			height: 300px;
+			top:50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			padding: 50px;
+			text-align: center;
+			border-radius: 15px;
+			border: 1px black solid;
+		}
+		#popup-col h5{
+			margin-bottom: 35px;
+		}
+		#popup-col input{
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			margin-bottom: 10px;
+		}
+		#popup-col button{
+			margin-top: 20px;
+		}
+
+		#popup-col div{
+			display: block;
+		}
 
 	</style>
 </header>
@@ -326,19 +398,37 @@ include("../unHeader.php");
 
             </div>
         </div>
-		<div id="popup-table" class="border border-dark shadow">
-			<div>
-				<div><input id="nomTable" class="rounded" type="text" placeholder="Nom de la table"></input>
-				</div>
-				<div id="popup-table-form">
-					<div id="popup-table-cols"></div>
-					<img src="ressource/cancel.png" id="popup-table-croix">
-					<button type="button" id="validate" class="btn btn-primary">Valider</button>
-					<button type="button" id="addCol" class="btn btn-outline-secondary">Ajouter une colonne</button>
-				</div>
+		<?php
+		if($_SESSION["admin"]||$_SESSION["superadmin"]){
+			echo'
+			<div id="popup-table" class="border border-dark shadow">
+				<div>
+					<div><input id="nomTable" class="rounded" type="text" placeholder="Nom de la table"></input>
+					</div>
 
-			</div>
-		</div>
+					<div id="popup-table-form">
+						<div id="popup-table-cols"></div>
+						<img src="ressource/cancel.png" id="popup-table-croix">
+						<button type="button" id="validate" class="btn btn-primary">Valider</button>
+						<button type="button" id="addCol" class="btn btn-outline-secondary">Ajouter une colonne</button>
+					</div>
+
+				</div>
+			</div>';
+			echo'
+			<div id="popup-col">
+				<h5>Ajouter une colonne</h5>
+				<div id="popup-col-input">
+					<input type="text" placeholder="Label"></input>
+					<input type="text" placeholder="Description"></input>
+				</div>
+				<button class="btn btn-primary">Valider</button>
+				<button class="btn btn-secondary">Annuler</button>
+			</div>';
+		}
+
+		?>
+
     </div>
 
 	<?php
