@@ -75,7 +75,8 @@ include("../unHeader.php");
                                     lesData.append(uneColonne);
                                 }
 								var colPlus = $("<div class='card col shadow-sm col-plus'>")
-								.append($("<img>").attr("src","ressource/plus.png"));
+								.append($("<img>").attr("src","ressource/plus.png"))
+								.data("idTable", meta.id);
 								if(oRep.admin == 1)
 									lesData.append(colPlus);
                             }
@@ -181,19 +182,24 @@ include("../unHeader.php");
 			var unLabel = addLabel.clone();
 			var uneDesc = addDesc.clone();
 			$("#popup-col").toggle();
+			idDeLaTable = $(this).data("idTable");
 		})
 
 		$(document).on("click", "#popup-col .btn-secondary",function(){
 			$("#popup-col").hide();
 		})
 
-		$(document).on("click", "", function(){
-		/*	$.getJSON("../data.php", {
+		$(document).on("click", "#popup-col .btn-primary", function(){
+			console.log($("#popup-col input[placeholder=Description]").val());
+			$.getJSON("../data.php", {
 				action : "setColonne",
-				idTable: ,
-				labelCol: ,
-				descCol:
-			})*/
+				idTable: idDeLaTable,
+				labelCol: $("#popup-col input[placeholder=Label]").val(),
+				descCol: $("#popup-col input[placeholder=Description]").val()
+			},function(){
+				console.log("DONE");
+				//window.location.reload();
+			})
 		})
 
 
