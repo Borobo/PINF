@@ -54,7 +54,7 @@ function supprimerTable($idTable)
 //////////////////////////////////////////////////////////////////////////////
 
 function listerColonnes($idTable) {
-	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable GROUP BY id ORDER BY id ASC";
+	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable ORDER BY id ASC";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -76,7 +76,7 @@ function supprimerCol($idCol){
 
 function listerData($idCol)
 {
-	$SQL = "SELECT * FROM data WHERE idColonne='$idCol GROUP BY idColonne ORDER BY idColonne ASC'";
+	$SQL = "SELECT * FROM data WHERE idColonne='$idCol' ORDER BY id ASC";
 	return parcoursRs(SQLSelect($SQL));
 }
 
