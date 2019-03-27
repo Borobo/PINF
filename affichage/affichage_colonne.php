@@ -24,7 +24,6 @@ include ("../unHeader.php");
     *  Ecrit sur la page les colonnes et les data de la table
     */
     function affichageData(){
-
       $("#container-table").empty();
       //On récupère la table
       $.getJSON("../data.php",{
@@ -48,7 +47,7 @@ include ("../unHeader.php");
                       var meta2 = oCol.colonnes[j];
                       //CREATION DUNE COLONNE/////////////////
                       var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
-                      var unLabelCol = modelJLabCol.clone(true).append(colP);
+                      var unLabelCol = modelJLabCol.clone(true).append(colP).data("idColonne",meta2.id);
 
                       var uneColonne = modelJColonne.clone(true).append(unLabelCol);
 
@@ -82,7 +81,6 @@ include ("../unHeader.php");
           uneTable.append(lesData);
           $("#container-table").append(uneTable);
         })
-
     }
     /////////////////////FIN affichageData()///////////////////////////////////////////////////////////////////
 
@@ -105,6 +103,8 @@ include ("../unHeader.php");
           //affichage des colonnes et des data de la table
           affichageData();
 
+          $("#compter").data("activation",0);
+
     });
 /////////////////////FIN Demarrage de la page affichage_colonne.php////////////////////////////////////////////
 
@@ -121,6 +121,7 @@ include ("../unHeader.php");
 
 /////////////////////Activation de la fonction suppression des data////////////////////////////////////////////
   $(document).on("click","#supprimer",function(){
+      $("#supprimer").attr("class","btn btn-success");
       //On refait l'affichage des data mais avec des checkbox poru pouvoir choisir les lignes à suppprimer////
       $("#container-table").empty();
       $.getJSON("../data.php",{
@@ -232,13 +233,16 @@ include ("../unHeader.php");
 
        //Après avoir fait la suppression on réaffiche le tout
        affichageData();
+
+       $("#supprimer").attr("class","btn btn-light");
+
     });
 /////////////////////FIN Suppression des data dans la base de données/////////////////////////////////////////
 
 
 /////////////////////Activation de la fonction modification des data/////////////////////////////////////////
     $(document).on("click","#modifier",function(){
-
+      $("#modifier").attr("class","btn btn-success");
       //On réaffiche les data avec en sauveguardant leur valeur et leur id pou faciliter la modification
       $("#container-table").empty();
       $.getJSON("../data.php",{
@@ -355,6 +359,7 @@ include ("../unHeader.php");
                 action:"majDataChar",
                 idData:$(this).data("idData"),
                 valChar:$(this).data("valChar")},function(oRep){
+                  console.log(oRep);
                 });
             }
             else{
@@ -364,7 +369,8 @@ include ("../unHeader.php");
                 valInt:$(this).data("valInt")},function(oRep){
                 });
             }
-
+            $("#modifier").attr("class","btn btn-light");
+            $(".alert-info").empty();
           });
 
           //On réaffiche les data après avoir modifier la base de données
@@ -374,10 +380,75 @@ include ("../unHeader.php");
 
 
 /////////////////////Annuler la fonction sélectionné//////////////////////////////////////////////////////////
-        $(document).on("click","#Annuler",function(){
+      $(document).on("click","#Annuler",function(){
           affichageData();
-        });
+          $("#supprimer").attr("class","btn btn-light");
+          $("#modifier").attr("class","btn btn-light");
+      });
 /////////////////////FIN Annuler la fonction sélectionné//////////////////////////////////////////////////////
+
+/////////////////////Activation de la fonction pour compter les data//////////////////////////////////////////
+      $(document).on("click","#compter",function(){
+          //On regarde d'abord si on active ou on désactive la fonction compter
+          if($("#compter").data("activation") == 0){
+            $("#compter").attr("class","btn btn-success");
+            $("#compter").data("activation",1);
+            $(".card-body").attr("class","card-body text-left compter");
+          }
+          else{
+            $("#compter").attr("class","btn btn-light");
+            $("#compter").data("activation",0);
+            $(".card-body").attr("class","card-body text-left");
+            $(".divInfo").css("display","none");
+          }
+      });
+/////////////////////FIN Activation de la fonction pour compter les données//////////////////////////////////
+
+/////////////////////Clique sur une colonne pour savoir son nombre de données////////////////////////////////
+      $(document).on("click",".compter",function(){
+          var NbData,labelColonne,info,div,img,btn;
+
+          //On compte les données de la colonne sélectionné
+          $.getJSON("../data.php",{
+            action:"countData",
+            idColonne:$(this).data('idColonne')},function(oRep){
+              labelColonne = oRep.data[0].label;
+              NbData = oRep.data[0].NbData;
+              idColonne = oRep.data[0].id;
+
+              //On affiche le résultat dans un div contenant un message et un bouton suppression
+              div = modelJLabel.clone().attr("class","divInfo").data("idColonne",idColonne);
+              info = modelJLabel.clone().attr("class","alert alert-info").html("La colonne <strong>"+labelColonne+"</strong> contient <strong>"+NbData+"</strong> données.");
+              btn = $("<button class='btn btn-dark croix'>X</button>").data("idColonne",idColonne).css("height","52px").css("width","45px").css("margin-left","5px").css("font-size","20");
+
+              //Si le message existe déjà on le supprime pour le réaffiché en première ligne
+              $(".divInfo").each(function(){
+                if($(this).data("idColonne") == idColonne)
+                  $(this).css("display","none");
+              });
+
+              div.append(info).append(btn).css("margin","5px").css("display","flex");
+              $(".container-colonnes").after(div);
+            });
+
+      });
+/////////////////////FIN Clique sur une colonne pour savoir son nombre de données////////////////////////////
+
+
+/////////////////////Supprimer un message informant le nombre de données d'une colonne///////////////////////
+      $(document).on("click",".croix",function(){
+
+        var idCroix = $(this).data("idColonne");
+
+        $(".divInfo").each(function(){
+          if(idCroix == $(this).data("idColonne"))
+            $(this).css("display","none");
+
+        });
+
+      });
+/////////////////////FIN Supprimer un message informant le nombre de données d'une colonne///////////////////
+
 
     </script>
 
@@ -470,6 +541,12 @@ include ("../unHeader.php");
         height: 50px;
         margin-left: 7px;
       }
+      .btn-success{
+        margin-bottom: 30px;
+        width: 180px;
+        height: 50px;
+        margin-left: 7px;
+      }
       .data:first-child{
         margin-top:20px;
       }
@@ -518,6 +595,15 @@ include ("../unHeader.php");
         height:20px;
       }
 
+      .compter:hover{
+        background-color:lightgreen;
+        cursor:pointer;
+      }
+
+      .alert-info{
+        width: 750px !important;
+        text-align:center;
+      }
 
 
     </style>
@@ -531,7 +617,7 @@ include ("../unHeader.php");
               <button type="button" class="btn btn-light" id="supprimer">Supprimer ligne(s)</button>
               <button type="button" class="btn btn-light" id="modifier">Modifier ligne(s)</button>
               <button type="button" class="btn btn-light">Gérer les doublons</button>
-              <button type="button" class="btn btn-light">Compter</button>
+              <button type="button" class="btn btn-light" id="compter">Compter</button>
               <button type="button" class="btn btn-light">Moyenne</button>
               <button type="button" class="btn btn-light">Minimum</button>
               <button type="button" class="btn btn-light">Maximum</button>
