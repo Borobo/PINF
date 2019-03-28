@@ -61,11 +61,11 @@ include ("../unHeader.php");
                             var dataP = modelJP.clone();
                             meta3=oData.data[k];
                             if(meta3.valInt == null){
-                              dataP.html(meta3.valChar).attr("class","data");
+                              dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
                               unLabelCol.append(dataP);
                             }
                             else{
-                              dataP.html(meta3.valInt).attr("class","data");
+                              dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
                               unLabelCol.append(dataP);
                             }
                           }
@@ -243,67 +243,12 @@ include ("../unHeader.php");
 /////////////////////Activation de la fonction modification des data/////////////////////////////////////////
     $(document).on("click","#modifier",function(){
       $("#modifier").attr("class","btn btn-success");
-      //On réaffiche les data avec en sauveguardant leur valeur et leur id pou faciliter la modification
-      $("#container-table").empty();
-      $.getJSON("../data.php",{
-        action:"getLaTable"},function(oRep){
-          var meta = oRep.tab[0];
-          var unP = modelJP.clone();
-          var unLabel = modelJLabel.clone(true);
-          var lesData = modelJData.clone(true);
-          var uneTable = modelJTable.clone(true).append(unLabel)
-              .data("label", meta.label);
 
-          $.getJSON("../data.php", {
-                  action : "getColonnes",
-                  idTable : meta.id
-              },
-              function(oCol){
+      $(".data").attr("class","dataModifiable");
 
-                  for(var j=0; j<oCol.colonnes.length; j++){
-                      (function(j){
-                      var meta2 = oCol.colonnes[j];
-                      //CREATION DUNE COLONNE/////////////////
-                      var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
-                      var unLabelCol = modelJLabCol.clone(true).append(colP);
-
-                      var uneColonne = modelJColonne.clone(true).append(unLabelCol);
-                      ////////////////////////////////////////
-                      //Affichage des data
-                      $.getJSON("../data.php",{
-                        action:"getData",
-                        idColonne:meta2.id},function(oData){
-                          console.log(oData);
-
-                          var k,meta3;
-
-                          for(k=0; k<oData.data.length; k++){
-                            var dataP = modelJP.clone();
-                            meta3=oData.data[k];
-                            if(meta3.valInt == null){
-                              dataP.html(meta3.valChar).attr("class","dataModifiable").data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
-                              unLabelCol.append(dataP);
-                            }
-                            else{
-                              dataP.html(meta3.valInt).attr("class","dataModifiable").data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
-                              unLabelCol.append(dataP);
-                            }
-                          }
-                          lesData.append(uneColonne);
-
-                        });
-
-                  })(j)
-                }
-              }
-
-          );
-          uneTable.append(lesData);
-          $("#container-table").append(uneTable);
-          $(".container-colonnes").after($("<button type='button' class='btn btn-danger' id='Annuler'>Annuler</button>"));
-          $(".container-colonnes").after($("<button type='button' class='btn btn-info' id='ConfirmModif'>Confimer modification</button>"));
-
-        });
+      $(".modif").css("display","none");
+      $(".container-colonnes").after($("<button type='button' class='btn btn-danger modif' id='Annuler'>Annuler</button>"));
+      $(".container-colonnes").after($("<button type='button' class='btn btn-info modif' id='ConfirmModif'>Confimer modification</button>"));
 
     });
 /////////////////////FIN Activation de la fonction modification des data/////////////////////////////////////
@@ -359,7 +304,6 @@ include ("../unHeader.php");
                 action:"majDataChar",
                 idData:$(this).data("idData"),
                 valChar:$(this).data("valChar")},function(oRep){
-                  console.log(oRep);
                 });
             }
             else{
@@ -406,15 +350,19 @@ include ("../unHeader.php");
 
 /////////////////////Clique sur une colonne pour savoir son nombre de données////////////////////////////////
       $(document).on("click",".compter",function(){
-          var NbData,labelColonne,info,div,img,btn;
+          var NbData,labelColonne,idColonne,info,div,img,btn;
+          idColonne = $(this).data('idColonne');
+          NbData = 0;
+          $(".data").each(function(){
+            if($(this).data("idColonne") == idColonne)
+              NbData += 1;
+          });
 
-          //On compte les données de la colonne sélectionné
+          //On récupère le label de la colonne
           $.getJSON("../data.php",{
-            action:"countData",
-            idColonne:$(this).data('idColonne')},function(oRep){
-              labelColonne = oRep.data[0].label;
-              NbData = oRep.data[0].NbData;
-              idColonne = oRep.data[0].id;
+            action:"getLaColonne",
+            idColonne:$(this).data("idColonne")},function(oRep){
+              labelColonne = oRep.colonne[0].label;
 
               //On affiche le résultat dans un div contenant un message et un bouton suppression
               div = modelJLabel.clone().attr("class","divInfo").data("idColonne",idColonne);
