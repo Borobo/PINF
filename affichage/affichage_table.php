@@ -5,6 +5,9 @@ include("../unHeader.php");
 
 <header>
 	<script type="text/javascript">
+	var superadmin;
+	var admin;
+
 	//LES MODELES//////////////////////////////////////////
 	var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
 	var modelJLabel = $("<div class='title border border-right-0 border-left-0 border-top-0 border-dark'>");
@@ -16,6 +19,7 @@ include("../unHeader.php");
 	var modelLien = $("<a href='affichage_colonne.php' class='lien'></a>");
 	var modelJDelete = $("<img class='del' data-toggle='modal' data-target='#myModal' src='ressource/delete.png'>");
 	var modelJDeleteCol = $("<img class='del-col' src='ressource/delete.png'>");
+	var modelJTA = $("<textarea> </textarea>");
 
 
 	var addNom = $("<input type='text' class='input rounded' placeholder='Nom colonne'>");
@@ -48,7 +52,10 @@ include("../unHeader.php");
 						var unDelete = modelJDelete.clone().data("idTable", meta.id);
 						var unLien = modelLien.clone().data("id",meta.id).html("<b>"+meta.label+"</b>");
 						var unLabel = modelJLabel.clone(true).append(unLien);
-						if(oRep.superadmin == 1 || oRep.admin == 1){
+						var superadmin = oRep.superadmin;
+						var admin = oRep.admin;
+
+						if(superadmin == 1 || admin == 1){
 							unLabel.append(unDelete);
 						}
 
@@ -67,7 +74,7 @@ include("../unHeader.php");
                                     var meta2 = oCol.colonnes[j];
                                     //CREATION DUNE COLONNE////////////////////////////////////////////////////
 									var unDeleteCol = modelJDeleteCol.clone().data("idCol", meta2.id);
-									var unLabelCol = modelJLabCol.clone(true).html(meta2.label);
+									var unLabelCol = modelJLabCol.clone(true).html($("<p class='label-col'>").html(meta2.label)).data("idCol", meta2.id);
 									if(oRep.superadmin == 1||oRep.admin == 1)
 										unLabelCol.append(unDeleteCol);
                                     var uneColonne = modelJColonne.clone(true).append(unLabelCol);
@@ -215,6 +222,43 @@ include("../unHeader.php");
 				setTimeout(function(){ alertBox.fadeOut("slow"); }, 5000);
 			}
 		})
+
+		$(document).on("dblclick", ".text-left", function(){
+			var nomColonne = $(this).find("p").html();
+			console.log($(this).html());
+			var nextTA = modelJTA.clone().val(nomColonne)
+			.data("idCol",$(this).data("idCol"))
+			.data("valInit", nomColonne);
+			$(this).replaceWith(nextTA);
+
+		})
+
+		$(document).on("keydown",
+			"textarea",
+			function (contexte){
+				if (contexte.which == 13) { // 13 <=> touche ENTREE
+					$.getJSON("../data.php",{
+							action : "majColonne",
+							idCol : $(this).data("idCol"),
+							newLabel : $(this).val()
+					}, function(oRep){
+						console.log("DONE");
+						window.location.reload();
+					})
+
+				}
+				if (contexte.which == 27) {	// 27 <=> touche ESCAPE
+					// restaurer le paragraphe avec son ancienne valeur
+					var unDeleteCol = modelJDeleteCol.clone().data("idCol", $(this).data("idCol"));
+					var unLabelCol = modelJLabCol.clone(true).html($("<p class='label-col'>").html($(this).data("valInit"))).data("idCol", $(this).data("idCol"));
+
+					if(superadmin == 1 || admin == 1)
+						unLabelCol.append(unDeleteCol);
+
+					$(this).replaceWith(unLabelCol);
+				}
+
+			});
 
 
 	</script>
@@ -411,6 +455,14 @@ include("../unHeader.php");
 
 		#popup-col div{
 			display: block;
+		}
+		.label-col{
+			margin: 0;
+		}
+		textarea{
+			resize: none;
+			height: 18pt;
+			margin: 16.8px 0px;
 		}
 
 	</style>
