@@ -206,10 +206,11 @@ session_start();
                 break;
 
 				case 'majColonne' :
-					if ($idTable = valider("idTable"))
-					if ($numColonne = valider("numColonne"))
-					if ($label = valider("label"))
-					majColonne($idTable,$numColonne,$label);
+					if($_SESSION["superadmin"] || $_SESSION["admin"]){
+						if ($idColonne = valider("idCol"))
+						if ($label = valider("newLabel"))
+						majColonne($idColonne,$label);
+					}
 				break;
 
 				case 'supprimerCol':
