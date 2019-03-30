@@ -58,8 +58,9 @@ function listerColonnes($idTable) {
 	return parcoursRs(SQLSelect($SQL));
 }
 
-function majColonne($idTable,$numColonne,$label) {
-	//TODO : majColonne --> majDonnee
+function majColonne($idColonne,$label) {
+	$SQL = "UPDATE colonne SET label='$label' WHERE id='$idColonne'";
+	return SQLUpdate($SQL);
 }
 
 function mkCol($idTable, $label, $desc) {
