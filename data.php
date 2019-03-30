@@ -150,6 +150,7 @@ session_start();
                     $bdd = $_SESSION["idBDD"];
 					$data["admin"] = $_SESSION["admin"];
                     $data["boards"] = listerTables($bdd);
+					$data["idTable"] = $_SESSION["idTAB"];
 
                     break;
 

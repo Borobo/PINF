@@ -94,8 +94,10 @@ include ("../unHeader.php");
           action:"getTables"},function(oRep){
             var i;
             for(i=0; i<oRep.boards.length; i++){
-              //btn (contenant l'id de la table) redirigeant vers la table souhaité
+              //btn (contenant l'id de la table) redirigeant vers la table souhaitée
               var unBtn = modelJBtn.clone(true).html(oRep.boards[i].label).data("idTable",oRep.boards[i].id).attr("href","affichage_colonne.php");
+              //On ajoute la classe .active si l'onglet correspont à la table affichée
+              if(oRep.idTable == oRep.boards[i].id) unBtn.addClass('active');
               $("#div-onglet").append(unBtn);
 
             }
@@ -110,7 +112,6 @@ include ("../unHeader.php");
 
 /////////////////////Redirection vers la table souhaité dans affichage_colonne/////////////////////////////////
   $(document).on("click",".onglet",function(){
-
     $.getJSON("../data.php",{
       action:"stockIdTable",
       id:$(this).data("idTable")
@@ -121,7 +122,7 @@ include ("../unHeader.php");
 
 /////////////////////Activation de la fonction suppression des data////////////////////////////////////////////
   $(document).on("click","#supprimer",function(){
-      //On refait l'affichage des data mais avec des checkbox poru pouvoir choisir les lignes à suppprimer////
+      //On refait l'affichage des data mais avec des checkbox pour pouvoir choisir les lignes à suppprimer////
       $("#container-table").empty();
       $.getJSON("../data.php",{
         action:"getLaTable"},function(oRep){
@@ -393,7 +394,9 @@ include ("../unHeader.php");
       #container-fonction{
         background-color: rgb(100, 170, 255);
         height: 100%;
-        width: 200px;
+        min-width: 200px;
+        display: flex;
+        flex-direction: column;
       }
 
       .container-colonnes{
@@ -407,7 +410,7 @@ include ("../unHeader.php");
       }
 
       #container-table{
-        background-color: rgba(70, 125, 247, 0.77);;
+        background-color: rgba(70, 125, 247, 0.77);
         width: 100%;
         height: 100%;
       }
@@ -486,7 +489,7 @@ include ("../unHeader.php");
 
       }
       .onglet{
-          background-color: rgba(70, 125, 247, 0.77);
+          background-color: rgba(119, 159, 250, 0.77);
           margin: 0px 5px;
           height: 20px;
           min-width: 20px;
@@ -515,7 +518,10 @@ include ("../unHeader.php");
         background-color: lightgrey;
         height:20px;
       }
-
+      .active{
+            background-color: rgba(70, 125, 247, 0.77);
+            box-shadow: 1px 1px 5px rgba(0,0,0,0.17);
+      }
 
 
     </style>
