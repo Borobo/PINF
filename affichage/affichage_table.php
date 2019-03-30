@@ -122,7 +122,7 @@ include("../unHeader.php");
 			$("#popup-col").hide();
 		})
 
-		$(document).on("click", "#popup-table-croix", function(){
+		$(document).on("click", "#popup-table-croix, #cancel-popup", function(){
 			$("#popup-table").hide();
 		})
 
@@ -494,6 +494,7 @@ include("../unHeader.php");
 						<img src="ressource/cancel.png" id="popup-table-croix">
 						<button type="button" id="validate" class="btn btn-primary">Valider</button>
 						<button type="button" id="addCol" class="btn btn-outline-secondary">Ajouter une colonne</button>
+						<button type="button" id="cancel-popup" class="btn btn-secondary">Annuler</button>
 					</div>
 
 				</div>
