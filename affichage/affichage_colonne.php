@@ -94,6 +94,8 @@ include ("../unHeader.php");
             for(i=0; i<oRep.boards.length; i++){
               //btn (contenant l'id de la table) redirigeant vers la table souhaité
               var unBtn = modelJBtn.clone(true).html(oRep.boards[i].label).data("idTable",oRep.boards[i].id).attr("href","affichage_colonne.php");
+              //On ajoute la classe .active si l'onglet correspont à la table affichée
+              if(oRep.idTable == oRep.boards[i].id) unBtn.addClass('active');
               $("#div-onglet").append(unBtn);
 
             }
@@ -402,6 +404,291 @@ include ("../unHeader.php");
 
     <style>
 
+
+
+          #content{
+
+            display: flex;
+
+            position: relative;
+
+            height: 100%;
+
+            overflow-y: hidden;
+
+          }
+
+
+
+          #container-fonction{
+
+            background-color: rgb(100, 170, 255);
+
+            height: 100%;
+
+            min-width: 200px;
+
+            display: flex;
+
+            flex-direction: column;
+
+          }
+
+
+
+          .container-colonnes{
+
+              position: absolute;
+
+          }
+
+
+
+          #affichage{
+
+            background-color: rgb(86, 190, 143);
+
+            height: 100%;
+
+            flex-grow: 1;
+
+          }
+
+
+
+          #container-table{
+
+            background-color: rgba(70, 125, 247, 0.77);
+
+            width: 100%;
+
+            height: 100%;
+
+          }
+
+
+
+          #nomTab{
+
+            height: 50px;
+
+            display: flex;
+
+            position: relative;
+
+          }
+
+
+
+          .btn-info{
+
+            margin-right: 10px;
+
+            margin-top:5px;
+
+            min-width:100px;
+
+            height:40px;
+
+            }
+
+            .btn-danger{
+
+              margin-right: 10px;
+
+              margin-top:5px;
+
+              min-width:100px;
+
+              height:40px;
+
+              }
+
+
+
+          .tables:first-child{
+
+              display: block !important;
+
+          }
+
+
+
+          .tables
+
+          {
+
+              height: 100%;
+
+              width: 100%;
+
+              position: relative;
+
+              //background-color: red;
+
+
+
+          }
+
+
+
+          .colonnes{
+
+              position: relative;
+
+              height: 350px;
+
+              margin: 0;
+
+              font-size: 9pt;
+
+              background-color: #dfe3e6;
+
+              white-space: normal;
+
+              min-width: 200px;
+
+              display: flex;
+
+
+
+          }
+
+
+
+          .container-colonnes{
+
+              position: relative;
+
+              display: flex;
+
+              margin: auto;
+
+          }
+
+
+
+          .btn-light{
+
+            margin-bottom: 30px;
+
+            width: 180px;
+
+            height: 50px;
+
+            margin-left: 7px;
+
+          }
+          .btn-success{
+            margin-bottom: 30px;
+            width: 180px;
+            height: 50px;
+            margin-left: 7px;
+          }
+
+          .data:first-child{
+
+            margin-top:20px;
+
+          }
+
+
+
+          .data{
+
+            margin-bottom:10px;
+
+            display:flex;
+
+          }
+
+
+
+          .data p{
+
+            margin-left:10px;
+
+          }
+
+
+
+          .labCol{
+
+            text-align: center;
+
+
+
+          }
+
+          .onglet{
+
+              background-color: rgba(119, 159, 250, 0.77);
+
+              margin: 0px 5px;
+
+              height: 20px;
+
+              min-width: 20px;
+
+              width: auto;
+
+              padding: 7px;
+
+              color: white;
+
+              text-decoration: none;
+
+          }
+
+          .onglet:hover{
+
+              text-decoration: none;
+
+              color: white;
+
+              background-color: rgba(70, 125, 247, 1);
+
+          }
+
+          #div-onglet{
+
+              position: absolute;
+
+              bottom: 5;
+
+              min-width: 200px;
+
+
+
+          }
+
+
+
+          .dataModifiable:hover{
+
+            cursor:text;
+
+          }
+
+
+
+          .dataModifiable{
+
+            background-color: lightgrey;
+
+            height:20px;
+
+          }
+
+          .active{
+
+                background-color: rgba(70, 125, 247, 0.77);
+
+                box-shadow: 1px 1px 5px rgba(0,0,0,0.17);
+
+          }
+
+/*
       #content{
         display: flex;
         position: relative;
@@ -541,7 +828,7 @@ include ("../unHeader.php");
       .dataModifiable{
         background-color: lightgrey;
         height:20px;
-      }
+      }*/
 
       .compter:hover{
         background-color:lightgreen;
