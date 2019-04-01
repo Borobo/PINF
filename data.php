@@ -235,6 +235,14 @@ session_start();
 					if ($idTable = valider("idTable"))
 						$data["colonnes"] = listerColonnes($idTable);
 				break;
+					
+		case 'getLaColonne' :
+					if ($idColonne = valider("idColonne")){
+						$SQL = "SELECT * FROM colonne WHERE id=$idColonne";
+						$data["colonne"]=parcoursRs(SQLSelect($SQL));
+					}
+						//$data["colonnes"] = listerColonnes($idTable);
+				break;
 
 
                 case 'stockIdBDD':
