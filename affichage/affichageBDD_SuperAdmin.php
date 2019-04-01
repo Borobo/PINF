@@ -34,7 +34,7 @@
         width: 200px;
         height: 50px;
     }
-    
+
     .option{
         min-width: 300px;
     }
@@ -68,7 +68,7 @@
 
                 $(".affichage").append($("<p></p>")
                     .append($("<div class='btn-group'></div>")
-                        .append($("<a href='affichage_table.php' class='btn btn-secondary bdd' style='width: 70%;' ></a>").html(meta.nom).data("id",meta.id))
+                        .append($("<a href='affichage_table.php' class='btn btn-secondary bdd' style='width: 70%;' ></a>").html(meta.nom).data("id",meta.id).data("nom",meta.nom))
                         .append("<button type='button' class='btn btn-secondary dropdown-toggle dropdown-toggle-split' data-toggle='dropdown'>")
                         .append($("<div class='dropdown-menu'></div>")
                             .append($("<span class='dropdown-item-text'></span>").html(meta.description)))));
@@ -177,7 +177,8 @@
 
         $.getJSON("../data.php",{
             action:"stockIdBDD",
-            id:$(this).data("id")
+            id:$(this).data("id"),
+            nom:$(this).data("nom")
         },function(oRep){
             console.log("hey");
         });
@@ -287,4 +288,3 @@
 
 </body>
 </html>
-

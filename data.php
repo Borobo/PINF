@@ -136,7 +136,7 @@ session_start();
                     $idUser = $_SESSION["idUser"];
 
                     $SQL = "SELECT bdd.nom,bdd.id,bdd.description,user.nom as 'userNom',user.prenom FROM bdd,user WHERE bdd.creee = 0 AND bdd.idCreateur = user.id" ;
-          
+
                     $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
                     break;
@@ -165,7 +165,7 @@ session_start();
                     $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 					break;
-          
+
 				case 'updateGrade':
 					if($newGrade = valider("newGrade"));
 					if($idUser = valider("idUser")){
@@ -199,8 +199,8 @@ session_start();
                     $bdd = $_SESSION["idBDD"];
 					$data["admin"] = $_SESSION["admin"];
                     $data["boards"] = listerTables($bdd);
-
-					$data["idTable"] = $_SESSION["idTAB"];
+					if(isset($_SESSION["idTAB"]))
+						$data["idTable"] = $_SESSION["idTAB"];
 
 
                     break;
