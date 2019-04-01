@@ -35,9 +35,8 @@ include("../unHeader.php");
 
 
 	///////////////////////////////////////////////////////
-
+		//AFFICHE les tables de la BDD////
 		$(document).ready(function(){
-
 			$("#popup-col").hide();
 			$("#popup-table").hide();
 			$.getJSON("../data.php", {
@@ -48,23 +47,23 @@ include("../unHeader.php");
 					for(var i=0; i<oRep.boards.length; i++){
                         (function (i) {
 						var meta = oRep.boards[i];
-						//CREATION DU LABEL////////////////////////////////////////////////////
+						//CREATION DU LABEL////////////////////////////////////
 						var unDelete = modelJDelete.clone().data("idTable", meta.id);
 						var unLien = modelLien.clone().data("id",meta.id).html("<b>"+meta.label+"</b>");
 						var unLabel = modelJLabel.clone(true).append(unLien);
 						var superadmin = oRep.superadmin;
 						var admin = oRep.admin;
-
+						//si l'utilisateur est admin de la BDD ou superadmin on affiche le boutton pour suprimer une table
 						if(superadmin == 1 || admin == 1){
 							unLabel.append(unDelete);
 						}
 
-						///////////////////////////////////////////////////////////////////////text
+						////////////////////////////////////////////////////////
                         var lesData = modelJData.clone(true);
                         var uneTable = modelJTable.clone(true).append(unLabel)
                             .data({"label":meta.label,"id":meta.id});
 
-
+						//AFFICHE les colonnes de chaques tables
                         $.getJSON("../data.php", {
                                 action : "getColonnes",
                                 idTable : meta.id},
@@ -75,6 +74,7 @@ include("../unHeader.php");
                                     //CREATION DUNE COLONNE////////////////////////////////////////////////////
 									var unDeleteCol = modelJDeleteCol.clone().data("idCol", meta2.id);
 									var unLabelCol = modelJLabCol.clone(true).html($("<p class='label-col'>").html(meta2.label)).data("idCol", meta2.id);
+									//Si l'utilisateur est admin de la BDD ou superadmin, on affiche le bouton pour supprimer une colonne
 									if(oRep.superadmin == 1||oRep.admin == 1)
 										unLabelCol.append(unDeleteCol);
                                     var uneColonne = modelJColonne.clone(true).append(unLabelCol);
@@ -85,7 +85,8 @@ include("../unHeader.php");
 								.append($("<img>").attr("src","ressource/plus.png"))
 								.data("idTable", meta.id)
 								.data("nomTable", meta.label);
-								if(oRep.admin == 1)
+								//Si l'utilisateur est admin ou superadmin, on affiche le boutton pour ajouter une colonne
+								if(admin == 1 || superadmin == 1)
 									lesData.append(colPlus);
                             }
 
@@ -97,18 +98,18 @@ include("../unHeader.php");
 
 					var divPlus = $("<div id='divPlus' class='tables shadow text-center rounded border border-dark'>")
 					.append($("<img>").attr("src","ressource/plus.png"));
+					//si l'utilisateur est admin ou superadmin, on affiche la table permettant de créer d'autres tables
 					if(oRep.admin == 1)
 						$("#content").append(divPlus);
 				}
-
 
 			)
 			$("#popup-table-cols").prepend(addCol.clone());
 
 		});
 
+//Permet de stocker l'id de la table dans une variable de session
       $(document).on("click",".lien",function(){
-          console.log("wshhhbdddddd");
           console.log($(this).data("id"));
           $.getJSON("../data.php",{
               action:"stockIdTable",
@@ -117,24 +118,25 @@ include("../unHeader.php");
           });
       });
 
+//Permet d'afficher le popup de création de table en cliquant sur #divPlus
 		$(document).on("click","#divPlus", function(){
 			$("#popup-table").toggle();
 			$("#popup-col").hide();
 		})
-
+//Permet de cacher le popup de création de table en cliquant sur annuler ou sur la croix
 		$(document).on("click", "#popup-table-croix, #cancel-popup", function(){
 			$("#popup-table").hide();
 		})
-
+//Permet d'ajouter une colonne dans le popup de création de table en cliquant sur le bouton de Ajouter une colonne
 		$(document).on("click", "#popup-table-form #addCol", function(){
 			$("#popup-table-cols").append(addCol.clone());
 			console.log($(".popup-table-addCol").length);
 		});
-
+//Permet de supprimer une colonne dans le popup de création de table en cliquant sur la croix
 		$(document).on("click", ".croix",function(){
 			$(this).parent().remove();
 		})
-
+//Permet d'ajouter une table en cliquant sur Valider dans le popup
 		$(document).on("click", "#validate", function(){
 			console.log($("#nomTable").val());
 			$.getJSON("../data.php", {
@@ -161,13 +163,13 @@ include("../unHeader.php");
 				window.location.reload();
 			})
 		})
-
+//Permet de stocker l'id de la table cliquée et affiche un popup de confirmation
 		var idDeLaTable;
 		var nomDeLaTable;
 		$(document).on("click", ".del", function(){
 			idDeLaTable = $(this).data("idTable");
 		})
-
+//Envoi un getJSon permettant de supprimer une table
 		$(document).on("click", "#del-btn", function(){
 			$.getJSON("../data.php",{
 				action : "supprimerTable",
@@ -177,7 +179,7 @@ include("../unHeader.php");
 				window.location.reload();
 			})
 		})
-
+//Supprime une colonne mais cette fois ci sans confirmation préalable
 		$(document).on("click", ".del-col", function(){
 			$.getJSON("../data.php",{
 				action : "supprimerCol",
@@ -197,11 +199,11 @@ include("../unHeader.php");
 			nomDeLaTable = $(this).data("nomTable");
 			$("#popup-col h5").html("Ajouter une colonne dans <b>"+nomDeLaTable+"</b>");
 		})
-
+//Un clique sur annuler permet de cacher le popup de création de colonne.
 		$(document).on("click", "#popup-col .btn-secondary",function(){
 			$("#popup-col").hide();
 		})
-
+//Permet de créer une colonne dans une table à partir de la popup de création de colonne.
 		$(document).on("click", "#popup-col .btn-primary", function(){
 			console.log($("#popup-col input[placeholder=Description]").val());
 			if(leLabel = $("#popup-col input[placeholder=Label]").val()){
@@ -222,7 +224,7 @@ include("../unHeader.php");
 				setTimeout(function(){ alertBox.fadeOut("slow"); }, 5000);
 			}
 		})
-
+//Permet
 		$(document).on("dblclick", ".text-left", function(){
 			var nomColonne = $(this).find("p").html();
 			console.log($(this).html());
