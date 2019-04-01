@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -80,12 +79,13 @@ session_start();
 
 				case 'creerBDD'	:
                     $data["feedback"] = "on rentre dans creer BDD";
-                    $idCreateur = $_SESSION["idUser"];
 
+                    $idCreateur = $_SESSION["idUser"];
                     if ($nom = valider("nom"))
                     if ($description = valider("description"))
 						{
                             $data["feedback"] = "creation";
+
                             if($_SESSION["superadmin"]==0){
                                 $SQL = "INSERT INTO bdd(nom,description,idCreateur,creee) VALUES('$nom','$description',$idCreateur,0)";
 
@@ -124,7 +124,9 @@ session_start();
 
 			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser  AND bdd.id = liste_user.idBdd AND bdd.creee = 1
 							UNION
+
 							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser AND creee = 1";
+
 			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 	        		break;
@@ -134,7 +136,7 @@ session_start();
                     $idUser = $_SESSION["idUser"];
 
                     $SQL = "SELECT bdd.nom,bdd.id,bdd.description,user.nom as 'userNom',user.prenom FROM bdd,user WHERE bdd.creee = 0 AND bdd.idCreateur = user.id" ;
-
+          
                     $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
                     break;
@@ -147,14 +149,13 @@ session_start();
 
 					break;
 
-                case 'afficherLaBDD':
-
-
+          case 'afficherLaBDD':
 
 					$SQL = "SELECT * FROM bdd WHERE id=$idBdd";
 					$data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 					break;
+
 
 				case 'idDeBdd':
 
@@ -164,7 +165,7 @@ session_start();
                     $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 					break;
-
+          
 				case 'updateGrade':
 					if($newGrade = valider("newGrade"));
 					if($idUser = valider("idUser")){
@@ -185,8 +186,11 @@ session_start();
 				if ($label = valider("label"))
 				{
 					$idBdd = $_SESSION["idBDD"];
+
+					$idUser = $_SESSION["idUser"];
 					//$data["idTable"] = $_SESSION["admin"];
-					$data["idTable"] = mkTable($idBdd,$label);
+					$data["idTable"] = mkTable($label,$idBdd,$idUser);
+
 				}
 				break;
 
@@ -195,6 +199,9 @@ session_start();
                     $bdd = $_SESSION["idBDD"];
 					$data["admin"] = $_SESSION["admin"];
                     $data["boards"] = listerTables($bdd);
+
+					$data["idTable"] = $_SESSION["idTAB"];
+
 
                     break;
 
@@ -209,7 +216,12 @@ session_start();
 					if ($label = valider("label"))
 					majTable($idTable,$label);
 				break;
-       
+
+        		case 'supprimerTable':
+					$idTable = valider("idTable");
+					if($_SESSION["superadmin"]||$_SESSION["admin"])
+						$data["return"] = supprimerTable($idTable);
+					break;
 
 				// Colonnes //////////////////////////////////////////////////
 				case 'setColonne' :
@@ -228,7 +240,11 @@ session_start();
                 case 'stockIdBDD':
                     if($idBdd = valider("id")){
 
-						$idUser = $_SESSION["idUser"];
+
+						  $idUser = $_SESSION["idUser"];
+              if($nomBdd = valider("nom"))
+							$_SESSION["nomBdd"] = $nomBdd;
+
                         $_SESSION["idBDD"] = $idBdd;
 						$_SESSION["admin"] = grade($idBdd, $idUser);
 						$data["feedback"]= grade($idBdd, $idUser);
@@ -243,11 +259,20 @@ session_start();
                 break;
 
 				case 'majColonne' :
-					if ($idTable = valider("idTable"))
-					if ($numColonne = valider("numColonne"))
-					if ($label = valider("label"))
-					majColonne($idTable,$numColonne,$label);
+
+					if($_SESSION["superadmin"] || $_SESSION["admin"]){
+						if ($idColonne = valider("idCol"))
+						if ($label = valider("newLabel"))
+						majColonne($idColonne,$label);
+					}
 				break;
+
+				case 'supprimerCol':
+					if($idCol = valider("idCol"))
+					if($_SESSION["superadmin"]||$_SESSION["admin"]){
+						$data["return"] = supprimerCol($idCol);
+					}
+					break;
 
 				// DATA //////////////////////////////////////////////////
 
@@ -261,19 +286,47 @@ session_start();
                     break;
 
 
-				case 'majData' :
-					if ($idPostIt = valider("idPostIt"))
-					{
-						//TODO : � faire avec majData() dans bdd.php
+				case 'majDataChar' :
+					if ($idData = valider("idData"))
+					if ($valChar = valider("valChar")){
+						$data["id"] = $idData;
+						$data["valChar"] = $valChar;
+						//$data["data"] = modifierData($idData,$valChar,$valInt);
+						$SQL = "UPDATE data SET valChar='$valChar', valInt=null WHERE id=$idData";
+
+						$data["data"] = SQLUpdate($SQL);
 					}
+
 				break;
-          
+
+				case 'majDataInt' :
+					if ($idData = valider("idData"))
+					if ($valInt = valider("valInt")){
+						$data["id"] = $idData;
+						$data["valChar"] = $valChar;
+						//$data["data"] = modifierData($idData,$valChar,$valInt);
+						$SQL = "UPDATE data SET valChar=null, valInt='$valInt' WHERE id=$idData";
+
+						$data["data"] = SQLUpdate($SQL);
+					}
+
+				break;
+
           case 'delData':
 
 					$idData = valider("idData");
 					$data["data"] = supprimerData($idData);
 					//$data["data"] = $idData;
 					break;
+
+          case 'countData':
+					if($idColonne = valider("idColonne")){
+						$SQL = "SELECT colonne.label, colonne.id, COUNT(data.id) AS 'NbData' FROM colonne,data WHERE colonne.id=data.idColonne AND data.idColonne=$idColonne";
+						$data["data"] = parcoursRs(SQLSelect($SQL));
+					}
+
+					break;
+
 
 				default :
 					$data["action"] = "default";

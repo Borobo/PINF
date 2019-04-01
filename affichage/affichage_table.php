@@ -3,8 +3,11 @@
 include("../unHeader.php");
 ?>
 
-<header>
+<head>
 	<script type="text/javascript">
+	var superadmin;
+	var admin;
+
 	//LES MODELES//////////////////////////////////////////
 	var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
 	var modelJLabel = $("<div class='title border border-right-0 border-left-0 border-top-0 border-dark'>");
@@ -13,31 +16,30 @@ include("../unHeader.php");
 	var modelJColonne = $("<div class='card col shadow-sm bg-white'>");
 	var modelJLabCol = $("<div class='card-body text-left'>");
 	var modelJOption = $("<option>");
+	var modelLien = $("<a href='affichage_colonne.php' class='lien'></a>");
+	var modelJDelete = $("<img class='del' data-toggle='modal' data-target='#myModal' src='ressource/delete.png'>");
+	var modelJDeleteCol = $("<img class='del-col' src='ressource/delete.png'>");
+	var modelJTA = $("<textarea> </textarea>");
+
 
 	var addNom = $("<input type='text' class='input rounded' placeholder='Nom colonne'>");
 	var addType = $("<select class='form-control'>")
 	.append(modelJOption.clone().html("Texte"))
 	.append(modelJOption.clone().html("Nombre"));
-	var addDesc = $("<input type='text' class='desc rounded' placeholder='Description'>");
+	var addDesc = $("<input type='text' class='desc' placeholder='Description'>");
 	var addCroix = $("<img class='croix' src='ressource/cancel.png'>");
 	var addCol = $("<div class='popup-table-addCol'>").append(addNom.clone())
 	.append(addType.clone()).append(addDesc.clone()).append(addCroix.clone(true));
+	var addLabel = $("<input type='text' placeholder='Label'>");
+	var addDesc = $("<input type='text' placeholder='Description'>");
+
 
 	///////////////////////////////////////////////////////
 
 		$(document).ready(function(){
 
+			$("#popup-col").hide();
 			$("#popup-table").hide();
-
-			//LES MODELES//////////////////////////////////////////
-			var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
-			var modelJLabel = $("<div class='title border border-right-0 border-left-0 border-top-0 border-dark'>");
-			var modelJData = $("<div class='container tab-data'>");
-			var modelJP = $("<p>");
-			var modelJColonne = $("<div class='card col shadow-sm bg-white'>");
-			var modelJLabCol = $("<div class='card-body text-left'>");
-			var modelLien = $("<a href='affichage_colonne.php' class='lien'></a>");
-			///////////////////////////////////////////////////////
 
 			$.getJSON("../data.php", {
 				action : "getTables"
@@ -50,6 +52,15 @@ include("../unHeader.php");
 						//CREATION DU LABEL////////////////////////////////////////////////////
 						var unLien = modelLien.clone().data("id",meta.id).html("<b>"+meta.label+"</b>");
 						var unLabel = modelJLabel.clone(true).append(unLien);
+
+						var superadmin = oRep.superadmin;
+						var admin = oRep.admin;
+
+						if(superadmin == 1 || admin == 1){
+							unLabel.append(unDelete);
+						}
+
+
 						///////////////////////////////////////////////////////////////////////text
                         var lesData = modelJData.clone(true);
 
@@ -64,11 +75,20 @@ include("../unHeader.php");
                                 for(var j=0; j<oCol.colonnes.length; j++){
                                     var meta2 = oCol.colonnes[j];
                                     //CREATION DUNE COLONNE////////////////////////////////////////////////////
-                                    var unLabelCol = modelJLabCol.clone(true).html(meta2.label);
+									var unDeleteCol = modelJDeleteCol.clone().data("idCol", meta2.id);
+									var unLabelCol = modelJLabCol.clone(true).html($("<p class='label-col'>").html(meta2.label)).data("idCol", meta2.id);
+									if(oRep.superadmin == 1||oRep.admin == 1)
+										unLabelCol.append(unDeleteCol);
                                     var uneColonne = modelJColonne.clone(true).append(unLabelCol);
                                     ///////////////////////////////////////////////////////////////////////
                                     lesData.append(uneColonne);
                                 }
+								var colPlus = $("<div class='card col shadow-sm col-plus'>")
+								.append($("<img>").attr("src","ressource/plus.png"))
+								.data("idTable", meta.id)
+								.data("nomTable", meta.label);
+								if(oRep.admin == 1)
+									lesData.append(colPlus);
                             }
 
                         );
@@ -100,10 +120,11 @@ include("../unHeader.php");
       });
 
 		$(document).on("click","#divPlus", function(){
-			$("#popup-table").fadeToggle("fast");
+			$("#popup-table").toggle();
+			$("#popup-col").hide();
 		})
 
-		$(document).on("click", "#popup-table-croix", function(){
+		$(document).on("click", "#popup-table-croix, #cancel-popup", function(){
 			$("#popup-table").hide();
 		})
 
@@ -133,7 +154,6 @@ include("../unHeader.php");
 							labelCol : $(this).find(".input").val(),
 							descCol : $(this).find(".desc").val()
 						}, function(oRep){
-							console.log("ENVOIE"); //TODO : à finir
 							$("#popup-table").find("input").val("");
 							$("#popup-table").find(".desc").val("");
 							$("#nomTable").val("");
@@ -146,15 +166,120 @@ include("../unHeader.php");
 		})
 
 
+		var idDeLaTable;
+		var nomDeLaTable;
+		$(document).on("click", ".del", function(){
+			idDeLaTable = $(this).data("idTable");
+		})
+
+		$(document).on("click", "#del-btn", function(){
+			$.getJSON("../data.php",{
+				action : "supprimerTable",
+				idTable : idDeLaTable
+			}, function(oRep){
+				console.log(oRep.feedback);
+				window.location.reload();
+			})
+		})
+
+		$(document).on("click", ".del-col", function(){
+			$.getJSON("../data.php",{
+				action : "supprimerCol",
+				idCol : $(this).data("idCol")
+			}, function(oRep){
+				console.log("LOL");
+				window.location.reload();
+			})
+		})
+
+		$(document).on("click", ".col-plus", function(){
+			var unLabel = addLabel.clone();
+			var uneDesc = addDesc.clone();
+			$("#popup-col").toggle();
+			$("#popup-table").hide();
+			idDeLaTable = $(this).data("idTable");
+			nomDeLaTable = $(this).data("nomTable");
+			$("#popup-col h5").html("Ajouter une colonne dans <b>"+nomDeLaTable+"</b>");
+		})
+
+		$(document).on("click", "#popup-col .btn-secondary",function(){
+			$("#popup-col").hide();
+		})
+
+		$(document).on("click", "#popup-col .btn-primary", function(){
+			console.log($("#popup-col input[placeholder=Description]").val());
+			if(leLabel = $("#popup-col input[placeholder=Label]").val()){
+				$.getJSON("../data.php", {
+					action : "setColonne",
+					idTable: idDeLaTable,
+					labelCol: $("#popup-col input[placeholder=Label]").val(),
+					descCol: $("#popup-col input[placeholder=Description]").val()
+				},function(){
+					console.log("DONE");
+					window.location.reload();
+				})
+			}else{
+				var alertBox = $("<div class='alert alert-danger'>")
+					.html("<strong>Alerte</strong> : Le label est obligatoire");
+				$(".alert").remove();
+				$("#content").append(alertBox);
+				setTimeout(function(){ alertBox.fadeOut("slow"); }, 5000);
+			}
+		})
+
+		$(document).on("dblclick", ".text-left", function(){
+			var nomColonne = $(this).find("p").html();
+			console.log($(this).html());
+			var nextTA = modelJTA.clone().val(nomColonne)
+			.data("idCol",$(this).data("idCol"))
+			.data("valInit", nomColonne);
+			$(this).replaceWith(nextTA);
+
+		})
+
+		$(document).on("keydown",
+			"textarea",
+			function (contexte){
+				if (contexte.which == 13) { // 13 <=> touche ENTREE
+					$.getJSON("../data.php",{
+							action : "majColonne",
+							idCol : $(this).data("idCol"),
+							newLabel : $(this).val()
+					}, function(oRep){
+						console.log("DONE");
+						window.location.reload();
+					})
+
+				}
+				if (contexte.which == 27) {	// 27 <=> touche ESCAPE
+					// restaurer le paragraphe avec son ancienne valeur
+					var unDeleteCol = modelJDeleteCol.clone().data("idCol", $(this).data("idCol"));
+					var unLabelCol = modelJLabCol.clone(true).html($("<p class='label-col'>").html($(this).data("valInit"))).data("idCol", $(this).data("idCol"));
+
+					if(superadmin == 1 || admin == 1)
+						unLabelCol.append(unDeleteCol);
+
+					$(this).replaceWith(unLabelCol);
+				}
+
+			});
+
+
 	</script>
 
 	<style>
+
         body{
             background-color: lightblue;
             overflow-y: auto;
             overflow-x: auto;
             overflow-scrolling: touch;
         }
+		.alert{
+			position: fixed;
+			bottom: 15px;
+			width: 98%;
+		}
         .table-main-content{
             height: 100%;
             display: flex;
@@ -278,32 +403,131 @@ include("../unHeader.php");
 			cursor: pointer;
 		}
 
+		.del{
+			position: absolute;
+			right: 12px;
+			top: 4px;
+			width: 17px;
+		}
+		.del:hover,.del-col:hover{
+			cursor: pointer;
+		}
+		.del-col{
+			position: absolute;
+			top: 20px;
+			right: 17px;
+			width: 17px;
+		}
+		.col-plus{
+			background-color: rgba(255, 255, 255, 0.5);
+			height: 59.6px;
+		}
+		.col-plus:hover{
+			cursor: pointer;
+			background-color: #ffffff;
+			transition: 0.25s;
+		}
+		.col-plus img{
+			width: 40px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			opacity: 0.8;
+			transform: translate(-50%,-50%);
+		}
+		#popup-col{
+			background-color: #dfe3e6;
+			position: absolute;
+			width: 400px;
+			height: 300px;
+			top:50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			padding: 50px;
+			text-align: center;
+			border-radius: 15px;
+			border: 1px black solid;
+		}
+		#popup-col h5{
+			margin-bottom: 35px;
+		}
+		#popup-col input{
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			margin-bottom: 10px;
+		}
+		#popup-col button{
+			margin-top: 20px;
+		}
+
+		#popup-col div{
+			display: block;
+		}
+		.label-col{
+			margin: 0;
+		}
+		textarea{
+			white-space: nowrap;
+			resize: none;
+			height: 18pt;
+			margin: 16.8px 0px;
+		}
+
+
 	</style>
-</header>
+</head>
 
 <body>
 
     <div class="table-main-content">
-        <div id="name" class="lead font-weight-bold text-uppercase ml-sm-5"><u>Nom de la base de données</u>
-        <a href="gerer_les_droits.php"><button type="button" class="btn btn-secondary option" id="gererDroits">Gérer les droits</button></a></div>
-        <div class="table-canvas">
+
+		<?php
+		echo '
+        <div id="name" class="lead font-weight-bold text-uppercase ml-sm-5"><u>'.$_SESSION["nomBdd"].'</u>
+         <a href="gerer_les_droits.php"><button type="button" class="btn btn-secondary option" id="gererDroits">Gérer les droits</button></a></div>
+		'
+        ?>
+		<div class="table-canvas">
+
             <div class="container-fluid" id="content">
 
             </div>
         </div>
-		<div id="popup-table" class="border border-dark shadow">
-			<div>
-				<div><input id="nomTable" class="rounded" type="text" placeholder="Nom de la table">
-				</div>
-				<div id="popup-table-form">
-					<div id="popup-table-cols"></div>
-					<img src="ressource/cancel.png" id="popup-table-croix">
-					<button type="button" id="validate" class="btn btn-primary">Valider</button>
-					<button type="button" id="addCol" class="btn btn-outline-secondary">Ajouter une colonne</button>
-				</div>
 
-			</div>
-		</div>
+		<?php
+		if($_SESSION["admin"]||$_SESSION["superadmin"]){
+			echo'
+			<div id="popup-table" class="border border-dark shadow">
+				<div>
+					<div><input id="nomTable" class="rounded" type="text" placeholder="Nom de la table"></input>
+					</div>
+
+					<div id="popup-table-form">
+						<div id="popup-table-cols"></div>
+						<img src="ressource/cancel.png" id="popup-table-croix">
+						<button type="button" id="validate" class="btn btn-primary">Valider</button>
+						<button type="button" id="addCol" class="btn btn-outline-secondary">Ajouter une colonne</button>
+						<button type="button" id="cancel-popup" class="btn btn-secondary">Annuler</button>
+					</div>
+
+
+				</div>
+			</div>';
+			echo'
+			<div id="popup-col">
+				<h5>Ajouter une colonne</h5>
+				<div id="popup-col-input">
+					<input type="text" placeholder="Label"></input>
+					<input type="text" placeholder="Description"></input>
+				</div>
+				<button class="btn btn-primary">Valider</button>
+				<button class="btn btn-secondary">Annuler</button>
+			</div>';
+		}
+
+		?>
+
     </div>
 
 

@@ -41,25 +41,16 @@ function majTable($idTable,$label)
 	return SQLUpdate($SQL);
 }
 
-function supprimerTable($idTable)
-{
-	$SQL = "DELETE FROM tab WHERE id = $idTable";
-	$res = SQLDelete($SQL);
-	$SQL = "DELETE FROM colonne WHERE idTab = $idTable";
-	$res2 = SQLDelete($SQL);
-
-	return $res && $res2;
-}
-
 //////////////////////////////////////////////////////////////////////////////
 
 function listerColonnes($idTable) {
-	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable GROUP BY id ORDER BY id ASC";
+	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable ORDER BY id ASC";
 	return parcoursRs(SQLSelect($SQL));
 }
 
-function majColonne($idTable,$numColonne,$label) {
-	//TODO : majColonne --> majDonnee
+function majColonne($idColonne,$label) {
+	$SQL = "UPDATE colonne SET label='$label' WHERE id='$idColonne'";
+	return SQLUpdate($SQL);
 }
 
 
@@ -73,13 +64,17 @@ function mkCol($idTable, $label, $desc) {
 
 function listerData($idCol)
 {
-	$SQL = "SELECT * FROM data WHERE idColonne='$idCol GROUP BY idColonne ORDER BY idColonne ASC'";
+
+	$SQL = "SELECT * FROM data WHERE idColonne='$idCol'  ORDER BY id ASC";
+
 	return parcoursRs(SQLSelect($SQL));
 }
 
-function majData()
+function modifierData($idData,$valChar,$valInt)
 {
-	//TODO : Mettre a jour la donnee d'une colonne
+	$SQL = "UPDATE data SET valChar='$valChar', valInt=$valInt WHERE id=$idData";
+
+	return SQLUpdate($SQL);
 }
 
 
