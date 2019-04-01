@@ -24,7 +24,6 @@ include ("../unHeader.php");
     *  Ecrit sur la page les colonnes et les data de la table
     */
     function affichageData(){
-
       $("#container-table").empty();
       //On récupère la table
       $.getJSON("../data.php",{
@@ -48,7 +47,7 @@ include ("../unHeader.php");
                       var meta2 = oCol.colonnes[j];
                       //CREATION DUNE COLONNE/////////////////
                       var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
-                      var unLabelCol = modelJLabCol.clone(true).append(colP);
+                      var unLabelCol = modelJLabCol.clone(true).append(colP).data("idColonne",meta2.id);
 
                       var uneColonne = modelJColonne.clone(true).append(unLabelCol);
 
@@ -62,11 +61,11 @@ include ("../unHeader.php");
                             var dataP = modelJP.clone();
                             meta3=oData.data[k];
                             if(meta3.valInt == null){
-                              dataP.html(meta3.valChar).attr("class","data");
+                              dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
                               unLabelCol.append(dataP);
                             }
                             else{
-                              dataP.html(meta3.valInt).attr("class","data");
+                              dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
                               unLabelCol.append(dataP);
                             }
                           }
@@ -82,7 +81,6 @@ include ("../unHeader.php");
           uneTable.append(lesData);
           $("#container-table").append(uneTable);
         })
-
     }
     /////////////////////FIN affichageData()///////////////////////////////////////////////////////////////////
 
@@ -94,7 +92,7 @@ include ("../unHeader.php");
           action:"getTables"},function(oRep){
             var i;
             for(i=0; i<oRep.boards.length; i++){
-              //btn (contenant l'id de la table) redirigeant vers la table souhaitée
+              //btn (contenant l'id de la table) redirigeant vers la table souhaité
               var unBtn = modelJBtn.clone(true).html(oRep.boards[i].label).data("idTable",oRep.boards[i].id).attr("href","affichage_colonne.php");
               //On ajoute la classe .active si l'onglet correspont à la table affichée
               if(oRep.idTable == oRep.boards[i].id) unBtn.addClass('active');
@@ -107,11 +105,14 @@ include ("../unHeader.php");
           //affichage des colonnes et des data de la table
           affichageData();
 
+          $("#compter").data("activation",0);
+
     });
 /////////////////////FIN Demarrage de la page affichage_colonne.php////////////////////////////////////////////
 
 /////////////////////Redirection vers la table souhaité dans affichage_colonne/////////////////////////////////
   $(document).on("click",".onglet",function(){
+
     $.getJSON("../data.php",{
       action:"stockIdTable",
       id:$(this).data("idTable")
@@ -122,7 +123,8 @@ include ("../unHeader.php");
 
 /////////////////////Activation de la fonction suppression des data////////////////////////////////////////////
   $(document).on("click","#supprimer",function(){
-      //On refait l'affichage des data mais avec des checkbox pour pouvoir choisir les lignes à suppprimer////
+      $("#supprimer").attr("class","btn btn-success");
+      //On refait l'affichage des data mais avec des checkbox poru pouvoir choisir les lignes à suppprimer////
       $("#container-table").empty();
       $.getJSON("../data.php",{
         action:"getLaTable"},function(oRep){
@@ -233,74 +235,22 @@ include ("../unHeader.php");
 
        //Après avoir fait la suppression on réaffiche le tout
        affichageData();
+
+       $("#supprimer").attr("class","btn btn-light");
+
     });
 /////////////////////FIN Suppression des data dans la base de données/////////////////////////////////////////
 
 
 /////////////////////Activation de la fonction modification des data/////////////////////////////////////////
     $(document).on("click","#modifier",function(){
+      $("#modifier").attr("class","btn btn-success");
 
-      //On réaffiche les data avec en sauveguardant leur valeur et leur id pou faciliter la modification
-      $("#container-table").empty();
-      $.getJSON("../data.php",{
-        action:"getLaTable"},function(oRep){
-          var meta = oRep.tab[0];
-          var unP = modelJP.clone();
-          var unLabel = modelJLabel.clone(true);
-          var lesData = modelJData.clone(true);
-          var uneTable = modelJTable.clone(true).append(unLabel)
-              .data("label", meta.label);
+      $(".data").attr("class","dataModifiable");
 
-          $.getJSON("../data.php", {
-                  action : "getColonnes",
-                  idTable : meta.id
-              },
-              function(oCol){
-
-                  for(var j=0; j<oCol.colonnes.length; j++){
-                      (function(j){
-                      var meta2 = oCol.colonnes[j];
-                      //CREATION DUNE COLONNE/////////////////
-                      var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
-                      var unLabelCol = modelJLabCol.clone(true).append(colP);
-
-                      var uneColonne = modelJColonne.clone(true).append(unLabelCol);
-                      ////////////////////////////////////////
-                      //Affichage des data
-                      $.getJSON("../data.php",{
-                        action:"getData",
-                        idColonne:meta2.id},function(oData){
-                          console.log(oData);
-
-                          var k,meta3;
-
-                          for(k=0; k<oData.data.length; k++){
-                            var dataP = modelJP.clone();
-                            meta3=oData.data[k];
-                            if(meta3.valInt == null){
-                              dataP.html(meta3.valChar).attr("class","dataModifiable").data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
-                              unLabelCol.append(dataP);
-                            }
-                            else{
-                              dataP.html(meta3.valInt).attr("class","dataModifiable").data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
-                              unLabelCol.append(dataP);
-                            }
-                          }
-                          lesData.append(uneColonne);
-
-                        });
-
-                  })(j)
-                }
-              }
-
-          );
-          uneTable.append(lesData);
-          $("#container-table").append(uneTable);
-          $(".container-colonnes").after($("<button type='button' class='btn btn-danger' id='Annuler'>Annuler</button>"));
-          $(".container-colonnes").after($("<button type='button' class='btn btn-info' id='ConfirmModif'>Confimer modification</button>"));
-
-        });
+      $(".modif").css("display","none");
+      $(".container-colonnes").after($("<button type='button' class='btn btn-danger modif' id='Annuler'>Annuler</button>"));
+      $(".container-colonnes").after($("<button type='button' class='btn btn-info modif' id='ConfirmModif'>Confimer modification</button>"));
 
     });
 /////////////////////FIN Activation de la fonction modification des data/////////////////////////////////////
@@ -365,7 +315,8 @@ include ("../unHeader.php");
                 valInt:$(this).data("valInt")},function(oRep){
                 });
             }
-
+            $("#modifier").attr("class","btn btn-light");
+            $(".alert-info").empty();
           });
 
           //On réaffiche les data après avoir modifier la base de données
@@ -375,15 +326,369 @@ include ("../unHeader.php");
 
 
 /////////////////////Annuler la fonction sélectionné//////////////////////////////////////////////////////////
-        $(document).on("click","#Annuler",function(){
+      $(document).on("click","#Annuler",function(){
           affichageData();
-        });
+          $("#supprimer").attr("class","btn btn-light");
+          $("#modifier").attr("class","btn btn-light");
+      });
 /////////////////////FIN Annuler la fonction sélectionné//////////////////////////////////////////////////////
+
+/////////////////////Activation de la fonction pour compter les data//////////////////////////////////////////
+      $(document).on("click","#compter",function(){
+          //On regarde d'abord si on active ou on désactive la fonction compter
+          if($("#compter").data("activation") == 0){
+            $("#compter").attr("class","btn btn-success");
+            $("#compter").data("activation",1);
+            $(".card-body").attr("class","card-body text-left compter");
+          }
+          else{
+            $("#compter").attr("class","btn btn-light");
+            $("#compter").data("activation",0);
+            $(".card-body").attr("class","card-body text-left");
+            $(".divInfo").css("display","none");
+          }
+      });
+/////////////////////FIN Activation de la fonction pour compter les données//////////////////////////////////
+
+/////////////////////Clique sur une colonne pour savoir son nombre de données////////////////////////////////
+      $(document).on("click",".compter",function(){
+          var NbData,labelColonne,idColonne,info,div,img,btn;
+          idColonne = $(this).data('idColonne');
+          NbData = 0;
+          $(".data").each(function(){
+            if($(this).data("idColonne") == idColonne)
+              NbData += 1;
+          });
+
+          //On récupère le label de la colonne
+          $.getJSON("../data.php",{
+            action:"getLaColonne",
+            idColonne:$(this).data("idColonne")},function(oRep){
+              labelColonne = oRep.colonne[0].label;
+
+              //On affiche le résultat dans un div contenant un message et un bouton suppression
+              div = modelJLabel.clone().attr("class","divInfo").data("idColonne",idColonne);
+              info = modelJLabel.clone().attr("class","alert alert-info").html("La colonne <strong>"+labelColonne+"</strong> contient <strong>"+NbData+"</strong> données.");
+              btn = $("<button class='btn btn-dark croix'>X</button>").data("idColonne",idColonne).css("height","52px").css("width","45px").css("margin-left","5px").css("font-size","20");
+
+              //Si le message existe déjà on le supprime pour le réaffiché en première ligne
+              $(".divInfo").each(function(){
+                if($(this).data("idColonne") == idColonne)
+                  $(this).css("display","none");
+              });
+
+              div.append(info).append(btn).css("margin","5px").css("display","flex");
+              $(".container-colonnes").after(div);
+            });
+
+      });
+/////////////////////FIN Clique sur une colonne pour savoir son nombre de données////////////////////////////
+
+
+/////////////////////Supprimer un message informant le nombre de données d'une colonne///////////////////////
+      $(document).on("click",".croix",function(){
+
+        var idCroix = $(this).data("idColonne");
+
+        $(".divInfo").each(function(){
+          if(idCroix == $(this).data("idColonne"))
+            $(this).css("display","none");
+
+        });
+
+      });
+/////////////////////FIN Supprimer un message informant le nombre de données d'une colonne///////////////////
+
 
     </script>
 
     <style>
 
+
+
+          #content{
+
+            display: flex;
+
+            position: relative;
+
+            height: 100%;
+
+            overflow-y: hidden;
+
+          }
+
+
+
+          #container-fonction{
+
+            background-color: rgb(100, 170, 255);
+
+            height: 100%;
+
+            min-width: 200px;
+
+            display: flex;
+
+            flex-direction: column;
+
+          }
+
+
+
+          .container-colonnes{
+
+              position: absolute;
+
+          }
+
+
+
+          #affichage{
+
+            background-color: rgb(86, 190, 143);
+
+            height: 100%;
+
+            flex-grow: 1;
+
+          }
+
+
+
+          #container-table{
+
+            background-color: rgba(70, 125, 247, 0.77);
+
+            width: 100%;
+
+            height: 100%;
+
+          }
+
+
+
+          #nomTab{
+
+            height: 50px;
+
+            display: flex;
+
+            position: relative;
+
+          }
+
+
+
+          .btn-info{
+
+            margin-right: 10px;
+
+            margin-top:5px;
+
+            min-width:100px;
+
+            height:40px;
+
+            }
+
+            .btn-danger{
+
+              margin-right: 10px;
+
+              margin-top:5px;
+
+              min-width:100px;
+
+              height:40px;
+
+              }
+
+
+
+          .tables:first-child{
+
+              display: block !important;
+
+          }
+
+
+
+          .tables
+
+          {
+
+              height: 100%;
+
+              width: 100%;
+
+              position: relative;
+
+              //background-color: red;
+
+
+
+          }
+
+
+
+          .colonnes{
+
+              position: relative;
+
+              height: 350px;
+
+              margin: 0;
+
+              font-size: 9pt;
+
+              background-color: #dfe3e6;
+
+              white-space: normal;
+
+              min-width: 200px;
+
+              display: flex;
+
+
+
+          }
+
+
+
+          .container-colonnes{
+
+              position: relative;
+
+              display: flex;
+
+              margin: auto;
+
+          }
+
+
+
+          .btn-light{
+
+            margin-bottom: 30px;
+
+            width: 180px;
+
+            height: 50px;
+
+            margin-left: 7px;
+
+          }
+          .btn-success{
+            margin-bottom: 30px;
+            width: 180px;
+            height: 50px;
+            margin-left: 7px;
+          }
+
+          .data:first-child{
+
+            margin-top:20px;
+
+          }
+
+
+
+          .data{
+
+            margin-bottom:10px;
+
+            display:flex;
+
+          }
+
+
+
+          .data p{
+
+            margin-left:10px;
+
+          }
+
+
+
+          .labCol{
+
+            text-align: center;
+
+
+
+          }
+
+          .onglet{
+
+              background-color: rgba(119, 159, 250, 0.77);
+
+              margin: 0px 5px;
+
+              height: 20px;
+
+              min-width: 20px;
+
+              width: auto;
+
+              padding: 7px;
+
+              color: white;
+
+              text-decoration: none;
+
+          }
+
+          .onglet:hover{
+
+              text-decoration: none;
+
+              color: white;
+
+              background-color: rgba(70, 125, 247, 1);
+
+          }
+
+          #div-onglet{
+
+              position: absolute;
+
+              bottom: 5;
+
+              min-width: 200px;
+
+
+
+          }
+
+
+
+          .dataModifiable:hover{
+
+            cursor:text;
+
+          }
+
+
+
+          .dataModifiable{
+
+            background-color: lightgrey;
+
+            height:20px;
+
+          }
+
+          .active{
+
+                background-color: rgba(70, 125, 247, 0.77);
+
+                box-shadow: 1px 1px 5px rgba(0,0,0,0.17);
+
+          }
+
+/*
       #content{
         display: flex;
         position: relative;
@@ -394,13 +699,12 @@ include ("../unHeader.php");
       #container-fonction{
         background-color: rgb(100, 170, 255);
         height: 100%;
-        min-width: 200px;
-        display: flex;
-        flex-direction: column;
+        width: 200px;
       }
 
       .container-colonnes{
           position: absolute;
+
       }
 
       #affichage{
@@ -410,7 +714,7 @@ include ("../unHeader.php");
       }
 
       #container-table{
-        background-color: rgba(70, 125, 247, 0.77);
+        background-color: rgb(50, 80, 50);
         width: 100%;
         height: 100%;
       }
@@ -443,7 +747,7 @@ include ("../unHeader.php");
           height: 100%;
           width: 100%;
           position: relative;
-          //background-color: red;
+          background-color: red;
 
       }
 
@@ -461,11 +765,18 @@ include ("../unHeader.php");
 
       .container-colonnes{
           position: relative;
+          background-color: grey;
           display: flex;
           margin: auto;
       }
 
       .btn-light{
+        margin-bottom: 30px;
+        width: 180px;
+        height: 50px;
+        margin-left: 7px;
+      }
+      .btn-success{
         margin-bottom: 30px;
         width: 180px;
         height: 50px;
@@ -489,7 +800,7 @@ include ("../unHeader.php");
 
       }
       .onglet{
-          background-color: rgba(119, 159, 250, 0.77);
+          background-color: rgba(70, 125, 247, 0.77);
           margin: 0px 5px;
           height: 20px;
           min-width: 20px;
@@ -517,10 +828,16 @@ include ("../unHeader.php");
       .dataModifiable{
         background-color: lightgrey;
         height:20px;
+      }*/
+
+      .compter:hover{
+        background-color:lightgreen;
+        cursor:pointer;
       }
-      .active{
-            background-color: rgba(70, 125, 247, 0.77);
-            box-shadow: 1px 1px 5px rgba(0,0,0,0.17);
+
+      .alert-info{
+        width: 750px !important;
+        text-align:center;
       }
 
 
@@ -535,7 +852,7 @@ include ("../unHeader.php");
               <button type="button" class="btn btn-light" id="supprimer">Supprimer ligne(s)</button>
               <button type="button" class="btn btn-light" id="modifier">Modifier ligne(s)</button>
               <button type="button" class="btn btn-light">Gérer les doublons</button>
-              <button type="button" class="btn btn-light">Compter</button>
+              <button type="button" class="btn btn-light" id="compter">Compter</button>
               <button type="button" class="btn btn-light">Moyenne</button>
               <button type="button" class="btn btn-light">Minimum</button>
               <button type="button" class="btn btn-light">Maximum</button>

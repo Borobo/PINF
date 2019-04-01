@@ -19,10 +19,10 @@ function listerUsersBdd($idBdd)
 }
 //////////////////////////////////////////////////////////////////////////////
 
-function mkTable($label,$idBdd,$idUser)
+function mkTable($label)
 {
 	// Cette fonction crée un nouveau Table à la fin des Tables existants et renvoie son identifiant
-	$SQL = "INSERT INTO tab(label,idBdd,idUser) VALUES('$label','$idBdd','$idUser')";
+	$SQL = "INSERT INTO tab(label) VALUES('$label')";
 	return SQLInsert($SQL);
 	//TODO : à modifier
 }
@@ -41,16 +41,6 @@ function majTable($idTable,$label)
 	return SQLUpdate($SQL);
 }
 
-function supprimerTable($idTable)
-{
-	$SQL = "DELETE FROM tab WHERE id = $idTable";
-	$res = SQLDelete($SQL);
-	$SQL = "DELETE FROM colonne WHERE idTab = $idTable";
-	$res2 = SQLDelete($SQL);
-
-	return $res && $res2;
-}
-
 //////////////////////////////////////////////////////////////////////////////
 
 function listerColonnes($idTable) {
@@ -63,27 +53,25 @@ function majColonne($idColonne,$label) {
 	return SQLUpdate($SQL);
 }
 
+
 function mkCol($idTable, $label, $desc) {
 	$SQL = "INSERT INTO colonne(label,description,idTab) VALUES ('$label','$desc','$idTable')";
 	return SQLInsert($SQL);
-}
 
-function supprimerCol($idCol){
-	$SQL = "DELETE FROM colonne WHERE id = $idCol";
-	return SQLDelete($SQL);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 function listerData($idCol)
 {
-	$SQL = "SELECT * FROM data WHERE idColonne='$idCol' ORDER BY id ASC";
+
+	$SQL = "SELECT * FROM data WHERE idColonne='$idCol'  ORDER BY id ASC";
+
 	return parcoursRs(SQLSelect($SQL));
 }
 
 function modifierData($idData,$valChar,$valInt)
 {
-
 	$SQL = "UPDATE data SET valChar='$valChar', valInt=$valInt WHERE id=$idData";
 
 	return SQLUpdate($SQL);

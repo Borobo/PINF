@@ -264,6 +264,14 @@ session_start();
 					$data["data"] = supprimerData($idData);
 					//$data["data"] = $idData;
 					break;
+          
+          case 'countData':
+					if($idColonne = valider("idColonne")){
+						$SQL = "SELECT colonne.label, colonne.id, COUNT(data.id) AS 'NbData' FROM colonne,data WHERE colonne.id=data.idColonne AND data.idColonne=$idColonne";
+						$data["data"] = parcoursRs(SQLSelect($SQL));
+					}
+
+					break;
 
 				default :
 					$data["action"] = "default";
@@ -279,3 +287,4 @@ session_start();
 
 	// todo : notifications
 ?>
+
