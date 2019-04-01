@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -79,14 +80,42 @@ session_start();
 
 				case 'creerBDD'	:
                     $data["feedback"] = "on rentre dans creer BDD";
-										$idCreateur = $_SESSION["idUser"];
+                    $idCreateur = $_SESSION["idUser"];
+
                     if ($nom = valider("nom"))
                     if ($description = valider("description"))
 						{
                             $data["feedback"] = "creation";
-                            $SQL = "INSERT INTO bdd(nom,description,idCreateur) VALUES('$nom','$description',$idCreateur)";
-                            $data["idBDD"]=SQLInsert($SQL);
+                            if($_SESSION["superadmin"]==0){
+                                $SQL = "INSERT INTO bdd(nom,description,idCreateur,creee) VALUES('$nom','$description',$idCreateur,0)";
+
+                                $data["idBDD"]=SQLInsert($SQL);
+
+								$SQL2 = "INSERT INTO liste_user(idUser,admin) VALUES('$idCreateur',1)";
+							}
+							else{
+                                $SQL = "INSERT INTO bdd(nom,description,idCreateur,creee) VALUES('$nom','$description',$idCreateur,1)";
+
+                                $data["idBDD"]=SQLInsert($SQL);
+
+                                $SQL2 = "INSERT INTO liste_user(idUser,admin) VALUES('$idCreateur',1)";
+							}
+
+
+                            $data["return"]=SQLInsert($SQL2);
 						}
+					break;
+
+				case 'updateListeUser':
+
+					$idCreateur = $_SESSION["idUser"];
+					$idBdd = valider("idBDD");
+                    $data["feedback"] = "on rentre dans updateListeUser";
+
+                    $SQL2 = "INSERT INTO liste_user(idBdd,idUser,admin) VALUES('$idBdd','$idCreateur',1)";
+
+                    $data["return"]=SQLInsert($SQL2);
+
 					break;
 
 				case 'afficherBDD':
@@ -95,7 +124,7 @@ session_start();
 
 			        $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE liste_user.idUser=$idUser  AND bdd.id = liste_user.idBdd AND bdd.creee = 1
 							UNION
-							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser ";
+							SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser AND creee = 1";
 			        $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 	        		break;
@@ -104,18 +133,35 @@ session_start();
 
                     $idUser = $_SESSION["idUser"];
 
-                    $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd,liste_user WHERE bdd.creee = 0
-							UNION
-							SELECT nom,id,description FROM bdd WHERE idCreateur = $idUser";
+                    $SQL = "SELECT bdd.nom,bdd.id,bdd.description,user.nom as 'userNom',user.prenom FROM bdd,user WHERE bdd.creee = 0 AND bdd.idCreateur = user.id" ;
+
                     $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
                     break;
 
+				case 'confirmerBDD':
+
+                    $idBdd = $_SESSION["idBDD"];
+					$SQL = "UPDATE bdd SET creee=1 WHERE id=$idBdd";
+					$data["bdd"]=SQLUpdate($SQL);
+
+					break;
 
                 case 'afficherLaBDD':
 
+
+
 					$SQL = "SELECT * FROM bdd WHERE id=$idBdd";
 					$data["bdd"]=parcoursRs(SQLSelect($SQL));
+
+					break;
+
+				case 'idDeBdd':
+
+                    $idUser = $_SESSION["idUser"];
+
+                    $SQL = "SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser ORDER BY id DESC";
+                    $data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 					break;
 
@@ -163,12 +209,6 @@ session_start();
 					if ($label = valider("label"))
 					majTable($idTable,$label);
 				break;
-          
-        case 'supprimerTable':
-					$idTable = valider("idTable");
-					if($_SESSION["superadmin"])
-						$data["return"] = supprimerTable($idTable);
-					break;
        
 
 				// Colonnes //////////////////////////////////////////////////
