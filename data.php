@@ -136,9 +136,9 @@ session_start();
 
                 case 'getTables' :
                     $bdd = $_SESSION["idBDD"];
-					$data["admin"] = $_SESSION["admin"];
+										$data["admin"] = $_SESSION["admin"];
                     $data["boards"] = listerTables($bdd);
-
+										$data["idTable"] = $_SESSION["idTAB"];
                     break;
 
                 case 'getLaTable':
@@ -165,6 +165,14 @@ session_start();
 				case 'getColonnes' :
 					if ($idTable = valider("idTable"))
 						$data["colonnes"] = listerColonnes($idTable);
+				break;
+
+				case 'getLaColonne' :
+					if ($idColonne = valider("idColonne")){
+						$SQL = "SELECT * FROM colonne WHERE id=$idColonne";
+						$data["colonne"]=parcoursRs(SQLSelect($SQL));
+					}
+						//$data["colonnes"] = listerColonnes($idTable);
 				break;
 
 
