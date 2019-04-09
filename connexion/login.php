@@ -15,7 +15,8 @@ session_start()
     <script src="../libs/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-        $(document).on("click", "input[type=submit]", function(contexte){
+    $(document).on("click, keydown, keydown", "input[type=submit], input[type=password], input[type=text]", function(contexte){
+        if(contexte.type == "click" || contexte.which == 13){
             $.getJSON("../data.php",
             {
                 action : "connexion",
@@ -43,6 +44,7 @@ session_start()
                 }
 
             })
+        }
         });
 
 
