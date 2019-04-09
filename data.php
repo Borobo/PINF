@@ -185,7 +185,7 @@ session_start();
 				case 'setTable' :
 				if ($label = valider("label"))
 				{
-					$idBdd = $_SESSION["idBDD"];
+					$idBdd = 1;
 
 					$idUser = $_SESSION["idUser"];
 					//$data["idTable"] = $_SESSION["admin"];

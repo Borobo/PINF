@@ -1,6 +1,8 @@
 
 <?php
 include("../unHeader.php");
+
+$_SESSION["idBDD"] = $_GET["idBdd"];
 ?>
 
 <head>
