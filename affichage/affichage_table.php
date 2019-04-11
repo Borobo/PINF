@@ -5,8 +5,10 @@ include("../unHeader.php");
 
 <head>
 	<script type="text/javascript">
-	var superadmin;
-	var admin;
+	<?php
+	echo 'const SUPERADMIN = '.$_SESSION["superadmin"].';';
+	echo 'const ADMIN = '.$_SESSION["admin"].';';
+	?>
 
 	//LES MODELES//////////////////////////////////////////
 	var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
@@ -51,10 +53,8 @@ include("../unHeader.php");
 						var unDelete = modelJDelete.clone().data("idTable", meta.id);
 						var unLien = modelLien.clone().data("id",meta.id).html("<b>"+meta.label+"</b>");
 						var unLabel = modelJLabel.clone(true).append(unLien);
-						var superadmin = oRep.superadmin;
-						var admin = oRep.admin;
 						//si l'utilisateur est admin de la BDD ou superadmin on affiche le boutton pour suprimer une table
-						if(superadmin == 1 || admin == 1){
+						if(SUPERADMIN == 1 || ADMIN == 1){
 							unLabel.append(unDelete);
 						}
 
@@ -86,7 +86,7 @@ include("../unHeader.php");
 								.data("idTable", meta.id)
 								.data("nomTable", meta.label);
 								//Si l'utilisateur est admin ou superadmin, on affiche le boutton pour ajouter une colonne
-								if(admin == 1 || superadmin == 1)
+								if(ADMIN == 1 || SUPERADMIN == 1)
 									lesData.append(colPlus);
                             }
 
@@ -226,7 +226,7 @@ include("../unHeader.php");
 		})
 //Permet de modifier le nom d'une colonne en double cliquant dessus
 		$(document).on("dblclick", ".text-left", function(){
-			if (superadmin || admin) {
+			if (SUPERADMIN == true || ADMIN == true) {
 				var nomColonne = $(this).find("p").html();
 				var nextTA = modelJTA.clone().val(nomColonne)
 				.data("idCol",$(this).data("idCol"))
@@ -262,7 +262,7 @@ include("../unHeader.php");
 					var unDeleteCol = modelJDeleteCol.clone().data("idCol", $(this).data("idCol"));
 					var unLabelCol = modelJLabCol.clone(true).html($("<p class='label-col'>").html($(this).data("valInit"))).data("idCol", $(this).data("idCol"));
 
-					if(superadmin == 1 || admin == 1)
+					if(SUPERADMIN == 1 || ADMIN == 1)
 						unLabelCol.append(unDeleteCol);
 
 					$(this).replaceWith(unLabelCol);
