@@ -3,6 +3,7 @@ include ("../unHeader.php");
 ?>
 
 <head>
+    <title>Affichage d'une Base de données</title>
     <script>
     //var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
     var modelJLabel = $("<div>");
@@ -130,7 +131,7 @@ include ("../unHeader.php");
         $(this).removeAttr("id");
       });
 
-      //On refait l'affichage des data mais avec des checkbox poru pouvoir choisir les lignes à suppprimer////
+      //On refait l'affichage des data mais avec des checkbox pour pouvoir choisir les lignes à suppprimer////
       $("#container-table").empty();
       $.getJSON("../data.php",{
         action:"getLaTable"},function(oRep){
@@ -248,7 +249,7 @@ include ("../unHeader.php");
 /////////////////////FIN Suppression des data dans la base de données/////////////////////////////////////////
 
 
-/////////////////////Activation de la fonction modification des data/////////////////////////////////////////
+/////////////////////Activation de la fonction modification des data//////////////////////////////////////////
     $(document).on("click","#Modifier",function(){
       $("#Modifier").attr("class","btn btn-success");
       $(".btn-light").each(function(){
@@ -750,23 +751,32 @@ include ("../unHeader.php");
                 box-shadow: 1px 1px 5px rgba(0,0,0,0.17);
           }
 
-      .compter:hover{
-        background-color:lightgreen;
-        cursor:pointer;
-      }
+          .compter:hover{
+            background-color:lightgreen;
+            cursor:pointer;
+          }
 
-      .alert-info{
-        width: 750px !important;
-        text-align:center;
-      }
+          .alert-info{
+            width: 750px !important;
+            text-align:center;
+          }
 
-      .mesurable{
-        background-color: lightgreen;
-      }
-      .mesurable:hover{
-        background-color: rgba(5, 100, 10, 60);
-        cursor:pointer;
-      }
+          .mesurable{
+            background-color: lightgreen;
+          }
+          .mesurable:hover{
+            background-color: rgba(5, 100, 10, 60);
+            cursor:pointer;
+          }
+
+          .btn-excel{
+              background-color: #fa6e6e;
+              border-color: #fa6e6e;
+          }
+          .btn-excel:hover{
+            background-color: #ec5050;
+            border-color: #ec5050;
+          }
 
     </style>
 </head>
@@ -783,6 +793,10 @@ include ("../unHeader.php");
               <button type="button" class="btn btn-light mesure" id="Moyenne">Moyenne</button>
               <button type="button" class="btn btn-light mesure" id="Minimum">Minimum</button>
               <button type="button" class="btn btn-light mesure" id="Maximum">Maximum</button>
+
+              <button type="button" class="btn btn-light btn-excel" id="Import">Import Excel</button>
+              <button type="button" class="btn btn-light btn-excel" id="Export">Export Excel</button>
+
     </div>
     <div id="affichage" class="container-fluide">
       <div id="nomTab">
