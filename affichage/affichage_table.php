@@ -181,12 +181,12 @@ include("../unHeader.php");
 		})
 //Supprime une colonne mais cette fois ci sans confirmation préalable
 		$(document).on("click", ".del-col", function(){
+			var laColonne = $(this).parent().parent();
 			$.getJSON("../data.php",{
 				action : "supprimerCol",
 				idCol : $(this).data("idCol")
 			}, function(oRep){
-				console.log("LOL");
-				window.location.reload();
+				laColonne.remove();
 			})
 		})
 
@@ -224,14 +224,15 @@ include("../unHeader.php");
 				setTimeout(function(){ alertBox.fadeOut("slow"); }, 5000);
 			}
 		})
-//Permet
+//Permet de modifier le nom d'une colonne en double cliquant dessus
 		$(document).on("dblclick", ".text-left", function(){
-			var nomColonne = $(this).find("p").html();
-			console.log($(this).html());
-			var nextTA = modelJTA.clone().val(nomColonne)
-			.data("idCol",$(this).data("idCol"))
-			.data("valInit", nomColonne);
-			$(this).replaceWith(nextTA);
+			if (superadmin || admin) {
+				var nomColonne = $(this).find("p").html();
+				var nextTA = modelJTA.clone().val(nomColonne)
+				.data("idCol",$(this).data("idCol"))
+				.data("valInit", nomColonne);
+				$(this).replaceWith(nextTA);
+			}
 
 		})
 
@@ -239,13 +240,20 @@ include("../unHeader.php");
 			"textarea",
 			function (contexte){
 				if (contexte.which == 13) { // 13 <=> touche ENTREE
+					var oldTA = $(this);
+					var newLab = oldTA.val();
+					var idColonne = oldTA.data("idCol");
 					$.getJSON("../data.php",{
 							action : "majColonne",
-							idCol : $(this).data("idCol"),
-							newLabel : $(this).val()
+							idCol : idColonne,
+							newLabel : newLab
 					}, function(oRep){
 						console.log("DONE");
-						window.location.reload();
+						var nextLabel = $("<p class='label-col'>").html(newLab);
+						var nextDel = $("<img class='del-col' src='ressource/delete.png'/>");
+						var nextDiv = $("<div class='card-body text-left'>").append(nextLabel).append(nextDel);
+						oldTA.replaceWith(nextDiv);
+						//window.location.reload();
 					})
 
 				}
