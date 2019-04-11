@@ -4,6 +4,7 @@ include("../unHeader.php");
 ?>
 
 <head>
+	<title>Tables d'une Base de données</title>
 	<script type="text/javascript">
 	<?php
 	echo 'const SUPERADMIN = '.$_SESSION["superadmin"].';';
