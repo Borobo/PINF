@@ -26,7 +26,7 @@ include("../unHeader.php");
 
 
 	var addNom = $("<input type='text' class='input rounded' placeholder='Nom colonne'>");
-	var addType = $("<select class='form-control'>")
+	var addType = $("<select class='form-control type'>")
 	.append(modelJOption.clone().html("Texte"))
 	.append(modelJOption.clone().html("Nombre"));
 	var addDesc = $("<input type='text' class='desc' placeholder='Description'>");
@@ -148,13 +148,15 @@ include("../unHeader.php");
 				if($(".popup-table-addCol").length > 0){
 					$(".popup-table-addCol").each(function(){
 						console.log($(this).find(".input").val());
+						console.log($(this).children('.type').val());
 						//console.log(oRep.idTable);
 						$.getJSON("../data.php", {
 							action : "setColonne",
 							idTable : oRep.idTable,
 							labelCol : $(this).find(".input").val(),
-							descCol : $(this).find(".desc").val()
-						}, function(oRep){
+							descCol : $(this).find(".desc").val(),
+							type : $(this).children('.type').val()
+						}, function(){
 							$("#popup-table").find("input").val("");
 							$("#popup-table").find(".desc").val("");
 							$("#nomTable").val("");
@@ -212,7 +214,8 @@ include("../unHeader.php");
 					action : "setColonne",
 					idTable: idDeLaTable,
 					labelCol: $("#popup-col input[placeholder=Label]").val(),
-					descCol: $("#popup-col input[placeholder=Description]").val()
+					descCol: $("#popup-col input[placeholder=Description]").val(),
+					type: $("#popup-col select").val()
 				},function(){
 					console.log("DONE");
 					window.location.reload();
@@ -397,9 +400,6 @@ include("../unHeader.php");
 			overflow: auto;
 			height: 288px;
 		}
-		#popup-table-cols select{
-			width: 115px;
-		}
 		#popup-table-croix{
 			position: absolute;
 			top: 12px;
@@ -467,6 +467,10 @@ include("../unHeader.php");
 		#popup-col div{
 			display: block;
 		}
+		#popup-col select{
+			margin: auto;
+			margin-bottom: 10px;
+		}
 		.label-col{
 			margin: 0;
 		}
@@ -476,6 +480,10 @@ include("../unHeader.php");
 			height: 18pt;
 			margin: 16.8px 0px;
 		}
+		.type{
+			width: 115px;
+		}
+
 
 	</style>
 </head>
@@ -510,11 +518,16 @@ include("../unHeader.php");
 
 				</div>
 			</div>';
+
 			echo'
 			<div id="popup-col">
 				<h5>Ajouter une colonne</h5>
 				<div id="popup-col-input">
 					<input type="text" placeholder="Label"></input>
+					<select class="form-control type">
+						<option value="Texte">Texte</option>
+						<option value="Nombre">Nombre</option>
+					</select>
 					<input type="text" placeholder="Description"></input>
 				</div>
 				<button class="btn btn-primary">Valider</button>

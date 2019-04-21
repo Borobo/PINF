@@ -61,10 +61,10 @@ function listerColonnes($idTable) {
 function majColonne($idColonne,$label) {
 	$SQL = "UPDATE colonne SET label='$label' WHERE id='$idColonne'";
 	return SQLUpdate($SQL);
-} 
+}
 
-function mkCol($idTable, $label, $desc) {
-	$SQL = "INSERT INTO colonne(label,description,idTab) VALUES ('$label','$desc','$idTable')";
+function mkCol($idTable, $label, $desc, $type) {
+	$SQL = "INSERT INTO colonne(label,description,idTab, type) VALUES ('$label','$desc','$idTable', '$type')";
 	return SQLInsert($SQL);
 }
 

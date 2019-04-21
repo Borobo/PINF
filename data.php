@@ -227,23 +227,24 @@ session_start();
 				case 'setColonne' :
 					if($idTable = valider("idTable"))
 					if($labelCol = valider("labelCol"))
-					if($descCol = valider("descCol") || !isset($descCol))
-						mkCol($idTable, $labelCol, $descCol);
+					if($type = valider("type")){
+						$descCol = valider("descCol");
+						mkCol($idTable, $labelCol, $descCol, $type);
+					}
 				break;
 
 				case 'getColonnes' :
 					if ($idTable = valider("idTable"))
 						$data["colonnes"] = listerColonnes($idTable);
 				break;
-					
-		case 'getLaColonne' :
+
+				case 'getLaColonne' :
 					if ($idColonne = valider("idColonne")){
 						$SQL = "SELECT * FROM colonne WHERE id=$idColonne";
 						$data["colonne"]=parcoursRs(SQLSelect($SQL));
 					}
 						//$data["colonnes"] = listerColonnes($idTable);
 				break;
-
 
                 case 'stockIdBDD':
                     if($idBdd = valider("id")){
