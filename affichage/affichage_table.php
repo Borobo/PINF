@@ -26,7 +26,7 @@ include("../unHeader.php");
 
 
 	var addNom = $("<input type='text' class='input rounded' placeholder='Nom colonne'>");
-	var addType = $("<select class='form-control'>")
+	var addType = $("<select class='form-control type'>")
 	.append(modelJOption.clone().html("Texte"))
 	.append(modelJOption.clone().html("Nombre"));
 	var addDesc = $("<input type='text' class='desc' placeholder='Description'>");
@@ -148,13 +148,15 @@ include("../unHeader.php");
 				if($(".popup-table-addCol").length > 0){
 					$(".popup-table-addCol").each(function(){
 						console.log($(this).find(".input").val());
+						console.log($(this).children('.type').val());
 						//console.log(oRep.idTable);
 						$.getJSON("../data.php", {
 							action : "setColonne",
 							idTable : oRep.idTable,
 							labelCol : $(this).find(".input").val(),
-							descCol : $(this).find(".desc").val()
-						}, function(oRep){
+							descCol : $(this).find(".desc").val(),
+							type : $(this).children('.type').val()
+						}, function(){
 							$("#popup-table").find("input").val("");
 							$("#popup-table").find(".desc").val("");
 							$("#nomTable").val("");

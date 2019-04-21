@@ -227,15 +227,16 @@ session_start();
 				case 'setColonne' :
 					if($idTable = valider("idTable"))
 					if($labelCol = valider("labelCol"))
+					if($type = valider("type"))
 					if($descCol = valider("descCol") || !isset($descCol))
-						mkCol($idTable, $labelCol, $descCol);
+						mkCol($idTable, $labelCol, $descCol, $type);
 				break;
 
 				case 'getColonnes' :
 					if ($idTable = valider("idTable"))
 						$data["colonnes"] = listerColonnes($idTable);
 				break;
-					
+
 		case 'getLaColonne' :
 					if ($idColonne = valider("idColonne")){
 						$SQL = "SELECT * FROM colonne WHERE id=$idColonne";
