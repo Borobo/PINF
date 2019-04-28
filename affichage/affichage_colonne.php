@@ -9,7 +9,7 @@ include ("../unHeader.php");
     var modelJLabel = $("<div>");
     var modelJData = $("<div class='container-fluid container-colonnes'>");
     var modelJP = $("<p>");
-    var modelJColonne = $("<div class='colonnes shadow text-center rounded border border-dark'>");
+    var modelJColonne = $("<div class='colonnes text-center'>");
     var modelJColonneCanvas = $("<div class='container border border-danger'>");
     var modelJTable = $("<div class=\"tables\">");
     var modelJLabCol = $("<div class='card-body text-left'>");
@@ -62,11 +62,18 @@ include ("../unHeader.php");
                             var dataP = modelJP.clone();
                             meta3=oData.data[k];
                             if(meta3.valInt == null){
-                              dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
-                              unLabelCol.append(dataP).data("valInt",0);
+                                if(k%2==0)
+                                    dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
+                                else
+                                    dataP.html(meta3.valChar).attr("class","data data-2").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
+
+                                    unLabelCol.append(dataP).data("valInt",0);
                             }
                             else{
-                              dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+                                if(k%2==0)
+                                    dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+                                else
+                                    dataP.html(meta3.valInt).attr("class","data data-2").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
                               unLabelCol.append(dataP).data("valInt",1);
                             }
                           }
@@ -158,6 +165,7 @@ include ("../unHeader.php");
                       var unLabelCol = modelJLabCol.clone(true).append(colP);
 
                       var uneColonne = modelJColonne.clone(true).append(unLabelCol);
+
                       ////////////////////////////////////////
                       //Affichage des data
                       $.getJSON("../data.php",{
@@ -171,7 +179,10 @@ include ("../unHeader.php");
 
                             meta3=oData.data[k];
                             //On met une position sur chaque data pour savoir à quelle ligne elles correspondent pour simplifier la suppression des lignes
-                            var div = modelJLabel.clone().attr("class","data").data("idData",meta3.id).data("position",k);
+                            if(k%2==0)
+                                var div = modelJLabel.clone().attr("class","data").data("idData",meta3.id).data("position",k);
+                            else
+                                var div = modelJLabel.clone().attr("class","data data-2").data("idData",meta3.id).data("position",k);
                             //checkbox
                             var check = $("<div class='form-check'></div>").append(modelJCheckbox.clone().data("idData",meta3.id).data("position",k));
                             var dataP = modelJP.clone();
@@ -777,6 +788,23 @@ include ("../unHeader.php");
             background-color: #ec5050;
             border-color: #ec5050;
           }
+          .data{
+              background-color: rgb(134, 138, 143);
+              width: 100%;
+              height: 30px;
+              line-height: 30px;
+              margin-bottom: 0;
+          }
+          .data-2{
+              background-color: rgb(172, 174, 177) !important;
+          }
+          .card-body{
+              padding: 0 !important;
+          }
+          .card-body:first-child{
+              margin-top: 1.25em;
+          }
+
 
     </style>
 </head>
