@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 4.7.4
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  Dim 24 mars 2019 à 14:10
+-- Généré le :  lun. 01 avr. 2019 à 14:02
 -- Version du serveur :  5.7.19
 -- Version de PHP :  5.6.31
 
@@ -43,11 +43,9 @@ CREATE TABLE IF NOT EXISTS `bdd` (
 -- Déchargement des données de la table `bdd`
 --
 
-
 INSERT INTO `bdd` (`id`, `nom`, `description`, `idCreateur`, `creee`) VALUES
-(1, 'bdd1', NULL, NULL, 1),
-(2, 'bdd2', NULL, NULL, 1),
-(3, 'bdd3', 'non créée', NULL, 0);
+(1, 'bdd1', NULL, 1, 1),
+(2, 'bdd2', NULL, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -139,13 +137,8 @@ CREATE TABLE IF NOT EXISTS `liste_user` (
 --
 
 INSERT INTO `liste_user` (`idBdd`, `idUser`, `admin`) VALUES
-(1, 1, 0),
-(2, 1, 0),
-(1, 2, 1),
-(2, 2, 1),
-(1, 6, 0),
-(1, 4, 1),
-(1, 5, 1);
+(2, 1, 1),
+(1, 1, 1);
 
 -- --------------------------------------------------------
 

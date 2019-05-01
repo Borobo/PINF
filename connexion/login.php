@@ -15,34 +15,34 @@ session_start()
     <script src="../libs/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-        $(document).on("click, keydown, keydown", "input[type=submit], input[type=password], input[type=text]", function(contexte){
-            if(contexte.type == "click" || contexte.which == 13){
-                $.getJSON("../data.php",
-                {
-                    action : "connexion",
-                    identifiant : $("input[type=text]").val(),
-                    password : $("input[type=password]").val()
-                }, function(oRep){
-                    console.log("Connecté : "+oRep.connecte);
-                    console.log(oRep.feedback);
-                    if(!oRep.connecte){
-                        var alertBox = $("<div class='alert alert-danger'>")
-                            .html("<strong>Alerte</strong> : Identifiant ou mot de passe incorrect");
-                        $(".alert").remove();
-                        $("body").append(alertBox);
-                        setTimeout(function(){ alertBox.fadeOut("slow"); }, 5000);
-                    } else {
-                        <?php
-                        if(isset($_SESSION["connecte"]) && $_SESSION["connecte"])
+        $(document).on("click", "input[type=submit]", function(contexte){
+            $.getJSON("../data.php",
+            {
+                action : "connexion",
+                identifiant : $("input[type=text]").val(),
+                password : $("input[type=password]").val()
+            }, function(oRep){
+                console.log("Connecté : "+oRep.connecte);
+                console.log(oRep.feedback);
+                if(!oRep.connecte){
+                    var alertBox = $("<div class='alert alert-danger'>")
+                        .html("<strong>Alerte</strong> : Identifiant ou mot de passe incorrect");
+                    $(".alert").remove();
+                    $("body").append(alertBox);
+                    setTimeout(function(){ alertBox.fadeOut("slow"); }, 5000);
+                } else {
+                    <?php
+                    if(isset($_SESSION["connecte"]) && $_SESSION["connecte"]){
+                        if($_SESSION["superadmin"]==0)
                             header('Location:../affichage/affichageBDD.php');
+                        else
+                            header('Location:../affichage/affichageBDD_superadmin.php');
+                        }
+                    ?>
+                    window.location.reload();
+                }
 
-                            //header('Location:../affichage/test.php');
-                        ?>
-                        window.location.reload();
-                    }
-
-                })
-            }
+            })
         });
 
 

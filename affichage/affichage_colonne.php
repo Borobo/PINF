@@ -128,6 +128,7 @@ include ("../unHeader.php");
       $(".btn-light").each(function(){
         $(this).addClass("disabled");
         $(this).removeAttr("id");
+        if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
       });
 
       //On refait l'affichage des data mais avec des checkbox poru pouvoir choisir les lignes à suppprimer////
@@ -236,13 +237,18 @@ include ("../unHeader.php");
 
             }
 
-
        });
 
        //Après avoir fait la suppression on réaffiche le tout
        affichageData();
 
        $("#Supprimer").attr("class","btn btn-light");
+
+       $(".btn-light").each(function(){
+         $( this).removeClass("disabled");
+         $(this).attr("id",$(this).html());
+         if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
+       });
 
     });
 /////////////////////FIN Suppression des data dans la base de données/////////////////////////////////////////
@@ -254,6 +260,7 @@ include ("../unHeader.php");
       $(".btn-light").each(function(){
         $(this).addClass("disabled");
         $(this).removeAttr("id");
+        if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
       });
       $(".data").attr("class","dataModifiable");
 
@@ -330,6 +337,12 @@ include ("../unHeader.php");
 
           //On réaffiche les data après avoir modifier la base de données
           affichageData();
+
+          $(".btn-light").each(function(){
+            $( this).removeClass("disabled");
+            $(this).attr("id",$(this).html());
+            if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
+          });
       });
 /////////////////////FIN Modification des data dans la base de données/////////////////////////////////////////
 
@@ -339,6 +352,7 @@ include ("../unHeader.php");
           $(".btn-light").each(function(){
             $( this).removeClass("disabled");
             $(this).attr("id",$(this).html());
+            if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
           });
           affichageData();
           $("#Supprimer").attr("class","btn btn-light");
@@ -357,12 +371,14 @@ include ("../unHeader.php");
             $(".btn-light").each(function(){
               $(this).addClass("disabled");
               $(this).removeAttr("id");
+              if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
             });
           }
           else{
             $(".btn-light").each(function(){
               $(this).removeClass("disabled");
               $(this).attr("id",$(this).html());
+              if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
             });
             $(this).attr("class","btn btn-light");
             $(this).data("activation",0);
@@ -434,12 +450,14 @@ include ("../unHeader.php");
 
         $(".btn-light").each(function(){
           $(this).addClass("disabled");
+          if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
           $(this).removeAttr("id");
         });
       }
       else{
         $(".btn-light").each(function(){
           $(this).removeClass("disabled");
+          if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
           $(this).attr("id",$(this).html());
         });
         $(this).data("activation",0);
