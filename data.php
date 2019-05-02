@@ -75,6 +75,15 @@ session_start();
 					$data["superadmin"] = $_SESSION["superadmin"];
 				break;
 
+				case 'addLigne' :
+					if ($idCol = valider("idCol"));
+					if ($type = valider("type")){
+						if ($newVal = valider("newVal"));
+						else $newVal = "NULL";
+						addData($idCol, $newVal, $type);
+					}
+				break;
+
 				// BDD //////////////////////////////////////////////////////
 
 				case 'creerBDD'	:
