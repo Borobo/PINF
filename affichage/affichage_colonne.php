@@ -62,26 +62,20 @@ include ("../unHeader.php");
                             meta3=oData.data[k];
                             if(meta3.valInt == null){
                               if(k%2==0)
-
                                     dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null).data("position",k);
-
-                                else
-
+                              else
                                     dataP.html(meta3.valChar).attr("class","data data-2").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null).data("position",k);
 
-
-
-                                    unLabelCol.append(dataP).data("valInt",0);
-
+                              unLabelCol.append(dataP).data("valInt",0);
                             }
 
                             else{
 
                                 if(k%2==0)
 
-                                    dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+                                    dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null).data("position",k);
                                 else
-                                    dataP.html(meta3.valInt).attr("class","data data-2").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+                                    dataP.html(meta3.valInt).attr("class","data data-2").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null).data("position",k);
                               unLabelCol.append(dataP).data("valInt",1);
                             }
                           }
