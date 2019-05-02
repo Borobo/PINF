@@ -98,7 +98,19 @@ function supprimerData($idData){
 
 }
 
+function addData($id, $val, $type){
+	if($type == "Nombre")
+		$valType = "valInt";
+	else
+		$valType = "valChar";
 
+	if($val != "NULL")
+		$SQL = "INSERT INTO data($valType, idColonne) VALUES ('$val','$id')";
+	else
+		$SQL = "INSERT INTO data($valType, idColonne) VALUES (NULL,'$id')";
+
+	return SQLInsert($SQL);
+}
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -106,6 +118,8 @@ function grade($idBdd, $idUser){
 	$SQL = "SELECT admin FROM liste_user WHERE idUser = '$idUser' AND idBdd='$idBdd'";
 	return SQLGetChamp($SQL);
 }
+
+
 
 
 

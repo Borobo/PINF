@@ -38,6 +38,7 @@ include("../unHeader.php");
 
 
 	///////////////////////////////////////////////////////
+
 		//AFFICHE les tables de la BDD////
 		$(document).ready(function(){
 			$("#popup-col").hide();
@@ -442,7 +443,6 @@ include("../unHeader.php");
 			background-color: #dfe3e6;
 			position: absolute;
 			width: 400px;
-			height: 300px;
 			top:50%;
 			left: 50%;
 			transform: translate(-50%,-50%);

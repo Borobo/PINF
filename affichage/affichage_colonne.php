@@ -18,12 +18,40 @@ include ("../unHeader.php");
     var modelJTA = $("<textarea> </textarea>");
 
 
+    function creationPopUp(){
+        var popup = $("<div id='popup'>");
+        var content = $("<div class='modal-content'>");
+        var header = $("<div class='modal-header'>").append($("<h4>").html("Ajouter des données"));
+        var body = $("<div class='modal-body'>");
+        var footer = $("<div class='modal-footer'>");
+        var confirm = $("<button class='btn btn-success'>Confirmer</button>");
+        var cancel = $("<button class='btn btn-danger'>Annuler</button>");
+
+        footer.append(confirm).append(cancel);
+
+        content.append(header).append(body).append(footer);
+        popup.append(content);
+        $("body").append(popup);
+    }
+
+    function addColPopup(label, idCol, type){
+        var div = $("<div class='popup-col'>");
+        var title = $("<p>").html(label);
+        if(type == "Texte")
+            var input = $("<input type=\"text\" />").data("idCol", idCol).data("type", type);
+        else
+            var input = $("<input type=\"number\" />").data("idCol", idCol).data("type", type);
+        div.append(title).append(input);
+        $(".modal-body").append(div);
+    }
+
     /*///////////////affichageData()////////////////////////////////////////////////////////////
     *  Récupère les colonnes de la table sélectionné
     *  Puis récupère les data de chaque colonne
     *  Ecrit sur la page les colonnes et les data de la table
     */
     function affichageData(){
+        creationPopUp();
       $("#container-table").empty();
       //On récupère la table
       $.getJSON("../data.php",{
@@ -45,8 +73,9 @@ include ("../unHeader.php");
                   for(var j=0; j<oCol.colonnes.length; j++){
                       (function(j){
                       var meta2 = oCol.colonnes[j];
+                      addColPopup(meta2.label, meta2.id, meta2.type);
                       //CREATION DUNE COLONNE/////////////////
-                      var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
+                      var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol").css("font-weight","bold").css('font-size', '12pt');;
                       var unLabelCol = modelJLabCol.clone(true).append(colP).data("idColonne",meta2.id);
 
                       var uneColonne = modelJColonne.clone(true).append(unLabelCol);
@@ -93,7 +122,6 @@ include ("../unHeader.php");
 
     /////////////////////Demarrage de la page affichage_colonne.php////////////////////////////////////////////
     $(document).ready(function(){
-
       //Onglets permettant de passer d'une table à l'autre dans affichage_colonne.php
       $.getJSON("../data.php",{
           action:"getTables"},function(oRep){
@@ -625,7 +653,33 @@ include ("../unHeader.php");
 
     })
 
+    $(document).on("click","#ajouter", function(){
+        $("#popup").fadeToggle(100,'swing');
+    })
 
+    $(document).on('click', '#popup .btn-success', function(event) {
+        console.log("TEST");
+        $(".modal-body div").each(function(){
+            input = $(this).children('input');
+            val = input.val();
+            console.log(val);
+            $.ajax({
+                url: '../data.php',
+                async : false,
+                data: {
+                    action: 'addLigne',
+                    idCol: input.data("idCol"),
+                    newVal: val,
+                    type: input.data("type")
+                }
+
+            })
+            .done(function() {
+                console.log("DOne");
+            })
+
+        });
+    });
     </script>
 
     <style>
@@ -812,14 +866,28 @@ include ("../unHeader.php");
       .card-body:first-child{
           margin-top: 1.25em;
       }
-
-
       .mesurable{
         background-color: lightgreen;
       }
       .mesurable:hover{
         background-color: rgba(5, 100, 10, 60);
         cursor:pointer;
+      }
+      #popup{
+          position: absolute;
+          display: none;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%,-50%);
+          min-width: 500px;
+          height: 300px;
+      }
+      .modal-body{
+          display: flex;
+      }
+      .modal-body div{
+          margin-right: 10px;
+          text-align: center;
       }
 
 
@@ -830,7 +898,7 @@ include ("../unHeader.php");
 <body>
   <div id="content">
     <div id="container-fonction"><br>
-              <button type="button" class="btn btn-light">Ajouter</button>
+              <button type="button" class="btn btn-light" id="ajouter">Ajouter</button>
               <button type="button" class="btn btn-light" id="Supprimer">Supprimer</button>
               <button type="button" class="btn btn-light" id="Modifier">Modifier</button>
               <button type="button" class="btn btn-light">Gérer les doublons</button>
@@ -847,4 +915,5 @@ include ("../unHeader.php");
       </div>
     </div>
   </div>
+
 </body>
