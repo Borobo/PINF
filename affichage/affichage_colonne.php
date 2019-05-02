@@ -8,7 +8,7 @@ include ("../unHeader.php");
     var modelJLabel = $("<div>");
     var modelJData = $("<div class='container-fluid container-colonnes'>");
     var modelJP = $("<p>");
-    var modelJColonne = $("<div class='colonnes shadow text-center rounded border border-dark'>");
+    var modelJColonne = $("<div class='colonnes text-center'>");
     var modelJColonneCanvas = $("<div class='container border border-danger'>");
     var modelJTable = $("<div class=\"tables\">");
     var modelJLabCol = $("<div class='card-body text-left'>");
@@ -61,11 +61,27 @@ include ("../unHeader.php");
                             var dataP = modelJP.clone();
                             meta3=oData.data[k];
                             if(meta3.valInt == null){
-                              dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
-                              unLabelCol.append(dataP).data("valInt",0);
+                              if(k%2==0)
+
+                                    dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null).data("position",k);
+
+                                else
+
+                                    dataP.html(meta3.valChar).attr("class","data data-2").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null).data("position",k);
+
+
+
+                                    unLabelCol.append(dataP).data("valInt",0);
+
                             }
+
                             else{
-                              dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+
+                                if(k%2==0)
+
+                                    dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+                                else
+                                    dataP.html(meta3.valInt).attr("class","data data-2").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
                               unLabelCol.append(dataP).data("valInt",1);
                             }
                           }
@@ -171,7 +187,13 @@ include ("../unHeader.php");
 
                             meta3=oData.data[k];
                             //On met une position sur chaque data pour savoir à quelle ligne elles correspondent pour simplifier la suppression des lignes
-                            var div = modelJLabel.clone().attr("class","data").data("idData",meta3.id).data("position",k);
+                            if(k%2==0)
+
+                                var div = modelJLabel.clone().attr("class","data").data("idData",meta3.id).data("position",k);
+
+                            else
+
+                                var div = modelJLabel.clone().attr("class","data data-2").data("idData",meta3.id).data("position",k);
                             //checkbox
                             var check = $("<div class='form-check'></div>").append(modelJCheckbox.clone().data("idData",meta3.id).data("position",k));
                             var dataP = modelJP.clone();
@@ -357,6 +379,7 @@ include ("../unHeader.php");
           affichageData();
           $("#Supprimer").attr("class","btn btn-light");
           $("#Modifier").attr("class","btn btn-light");
+          $("#Copier").attr("class","btn btn-light");
 
       });
 /////////////////////FIN Annuler la fonction sélectionné//////////////////////////////////////////////////////
@@ -581,8 +604,6 @@ include ("../unHeader.php");
             nbData += 1;
         }
       });
-      console.log(som);
-      console.log(nbData);
       moy = som/nbData;
 
       //On récupère le label de la colonne
@@ -609,15 +630,100 @@ include ("../unHeader.php");
     });
 
     $(document).on("click","#Gérer les doublons",function(){
-
       console.log("je gère");
+    });
 
-    })
+    $(document).on("click","#Copier",function(){
 
+      $("#Copier").attr("class","btn btn-success");
+      $(".btn-light").each(function(){
+        $(this).addClass("disabled");
+        $(this).removeAttr("id");
+        if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
+      });
+
+      $(".data").addClass("dataCopiable").data("copie","0");
+
+      $(".modif").css("display","none");
+
+      $(".container-colonnes").after($("<button type='button' class='btn btn-danger modif' id='Annuler'>Annuler</button>"));
+      $(".container-colonnes").after($("<button type='button' class='btn btn-info modif' id='ConfirmCopie'>Confimer copie</button>").css("margin","5px"));
+
+      div = modelJLabel.clone().attr("class","divInfo modif");
+      info = modelJLabel.clone().attr("class","alert alert-info").html("Cliquez sur les lignes à copier");
+      div.append(info).css("margin","5px").css("display","flex");
+
+      $(".container-colonnes").after(div);
+
+    });
+
+    $(document).on("click",".dataCopiable",function(){
+
+      console.log($(this).data("position"));
+      var pos = $(this).data("position");
+
+      $(".dataCopiable").each(function(){
+        if(pos == $(this).data("position")){
+          if($(this).data("copie") == 0){
+            $(this).css("background-color","yellow");
+            $(this).data("copie","1");
+          }
+
+          else{
+            $(this).css("background-color","rgb(134, 138, 143)");
+            $(this).data("copie","0");
+          }
+        }
+      });
+    });
+
+    $(document).on("click","#ConfirmCopie",function(){
+      var text="";
+      nbData = 0;
+      var i = 0;
+      var flag = 0;
+
+        $(".dataCopiable").each(function(){
+          nbData = $(this).data("position");
+        });
+
+        for(i=0;i<=nbData;i++){
+           $(".dataCopiable").each(function(){
+              if(i == $(this).data("position")){
+                if($(this).data("copie") == 1){
+                  if(flag == 0) text = text + $(this).html();
+                  else text = text + " " + $(this).html();
+                  flag=1;
+                }
+              }
+           });
+           if(flag == 1) text = text + "\n";
+          flag = 0;
+        }
+
+        var $temp = $("<textarea>");
+        $(".container-colonnes").after($temp);
+        $temp.val(text).select();
+        document.execCommand("copy");
+        $temp.remove();
+
+        $("#Copier").attr("class","btn btn-light");
+        $(".btn-light").each(function(){
+          $( this).removeClass("disabled");
+          $(this).attr("id",$(this).html());
+          if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
+        });
+        $(".data").removeClass("dataCopiable").css("background-color","rgb(134, 138, 143)");
+
+        $(".modif").remove();
+    });
 
     </script>
 
     <style>
+        .test{
+          Background-color: yellow;
+        }
 
         #content{
             display: flex;
@@ -719,8 +825,8 @@ include ("../unHeader.php");
           }
 
           .data{
+            text-align: center;
             margin-bottom:10px;
-            display:flex;
           }
 
           .data p{
@@ -760,7 +866,14 @@ include ("../unHeader.php");
 
           .dataModifiable{
             background-color: lightgrey;
-            height:20px;
+            height:25px;
+          }
+          .dataCopiable{
+            background-color: lightgrey;
+            height:25px;
+          }
+          .dataCopiable:hover{
+            cursor:pointer;
           }
 
           .active{
@@ -785,6 +898,53 @@ include ("../unHeader.php");
         background-color: rgba(5, 100, 10, 60);
         cursor:pointer;
       }
+      .btn-excel{
+
+          background-color: #fa6e6e;
+
+          border-color: #fa6e6e;
+
+      }
+
+      .btn-excel:hover{
+
+        background-color: #ec5050;
+
+        border-color: #ec5050;
+
+      }
+
+      .data{
+
+          background-color: rgb(134, 138, 143);
+
+          width: 100%;
+
+          height: 30px;
+
+          line-height: 30px;
+
+          margin-bottom: 0;
+
+      }
+
+      .data-2{
+
+
+
+      }
+
+      .card-body{
+
+          padding: 0 !important;
+
+      }
+
+      .card-body:first-child{
+
+          margin-top: 1.25em;
+
+      }
 
     </style>
 </head>
@@ -796,11 +956,13 @@ include ("../unHeader.php");
               <button type="button" class="btn btn-light">Ajouter</button>
               <button type="button" class="btn btn-light" id="Supprimer">Supprimer</button>
               <button type="button" class="btn btn-light" id="Modifier">Modifier</button>
-              <button type="button" class="btn btn-light">Gérer les doublons</button>
+              <button type="button" class="btn btn-light" id="Copier">Copier</button>
+              <button type="button" class="btn btn-light" id="Gérer les doublons">Gérer les doublons</button>
               <button type="button" class="btn btn-light" id="Compter">Compter</button>
               <button type="button" class="btn btn-light mesure" id="Moyenne">Moyenne</button>
               <button type="button" class="btn btn-light mesure" id="Minimum">Minimum</button>
               <button type="button" class="btn btn-light mesure" id="Maximum">Maximum</button>
+
     </div>
     <div id="affichage" class="container-fluide">
       <div id="nomTab">
