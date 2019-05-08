@@ -34,9 +34,11 @@ include("../unHeader.php");
             .append(modelJOption.clone().html("Texte"))
             .append(modelJOption.clone().html("Nombre"));
         var addDesc = $("<input type='text' class='desc' placeholder='Description'>");
+        var addDivCheckbox = $("<div>").append($("<input type='checkbox' id='autoIncrement'>"))
+        .append('A_I').append($("<input type='checkbox' id='doublons'>")).append('UNIQUE');
         var addCroix = $("<img class='croix' src='ressource/cancel.png'>");
         var addCol = $("<div class='popup-table-addCol'>").append(addNom.clone())
-            .append(addType.clone()).append(addDesc.clone()).append(addCroix.clone(true));
+            .append(addType.clone()).append(addDivCheckbox).append(addDesc.clone()).append(addCroix.clone(true));
         var addLabel = $("<input type='text' placeholder='Label'>");
         var addDesc = $("<input type='text' placeholder='Description'>");
 
@@ -150,6 +152,8 @@ include("../unHeader.php");
             console.log($("#nomTable").val());
             ai = $('#autoIncrement').prop('checked');
             dbl = $("#doublons").prop('checked');
+            console.log(ai);
+            console.log(dbl);
             $.getJSON("../data.php", {
                 action : "setTable",
                 label : $("#nomTable").val()
