@@ -76,11 +76,10 @@ session_start();
 				break;
 
 				case 'addLigne' :
-					if ($idCol = valider("idCol"));
-					if ($type = valider("type")){
+					if ($idCol = valider("idCol")){
 						if ($newVal = valider("newVal"));
 						else $newVal = "NULL";
-						addData($idCol, $newVal, $type);
+						addData($idCol, $newVal);
 					}
 				break;
 
@@ -234,11 +233,14 @@ session_start();
 
 				// Colonnes //////////////////////////////////////////////////
 				case 'setColonne' :
+
 					if($idTable = valider("idTable"))
 					if($labelCol = valider("labelCol"))
-					if($type = valider("type")){
+					if($type = valider("type"))
+					if($ai = valider("ai"))
+					if($dbl = valider("dbl")){
 						$descCol = valider("descCol");
-						mkCol($idTable, $labelCol, $descCol, $type);
+						mkCol($idTable, $labelCol, $descCol, $type, $ai, $dbl);
 					}
 				break;
 

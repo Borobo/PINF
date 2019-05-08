@@ -25,7 +25,7 @@ include ("../unHeader.php");
         var body = $("<div class='modal-body'>");
         var footer = $("<div class='modal-footer'>");
         var confirm = $("<button class='btn btn-success'>Confirmer</button>");
-        var cancel = $("<button class='btn btn-danger'>Annuler</button>");
+        var cancel = $("<button class='btn btn-danger' id='popup-Annuler'>Annuler</button>");
 
         footer.append(confirm).append(cancel);
 
@@ -38,9 +38,9 @@ include ("../unHeader.php");
         var div = $("<div class='popup-col'>");
         var title = $("<p>").html(label);
         if(type == "Texte")
-            var input = $("<input type=\"text\" />").data("idCol", idCol).data("type", type);
+            var input = $("<input type=\"text\" />").data("idCol", idCol);
         else
-            var input = $("<input type=\"number\" />").data("idCol", idCol).data("type", type);
+            var input = $("<input type=\"number\" />").data("idCol", idCol);
         div.append(title).append(input);
         $(".modal-body").append(div);
     }
@@ -52,6 +52,7 @@ include ("../unHeader.php");
     */
     function affichageData(){
         creationPopUp();
+        $(".popup-ajout").hide();
       $("#container-table").empty();
       //On récupère la table
       $.getJSON("../data.php",{
@@ -398,6 +399,12 @@ include ("../unHeader.php");
           $("#Modifier").attr("class","btn btn-light");
 
       });
+
+      $(document).on('click', '#popup-Annuler', function(event) {
+          $("#popup").remove();
+          affichageData();
+
+      });
 /////////////////////FIN Annuler la fonction sélectionné//////////////////////////////////////////////////////
 
 /////////////////////Activation de la fonction pour compter les data//////////////////////////////////////////
@@ -664,10 +671,11 @@ include ("../unHeader.php");
     })
 
     $(document).on('click', '#popup .btn-success', function(event) {
-        console.log("TEST");
         $(".modal-body div").each(function(){
+            console.log($(this));
             input = $(this).children('input');
             val = input.val();
+            console.log(input);
             console.log(val);
             $.ajax({
                 url: '../data.php',
@@ -675,16 +683,17 @@ include ("../unHeader.php");
                 data: {
                     action: 'addLigne',
                     idCol: input.data("idCol"),
-                    newVal: val,
-                    type: input.data("type")
+                    newVal: val
                 }
 
             })
             .done(function() {
-                console.log("DOne");
+                console.log("DONE");
             })
 
         });
+        $("#popup").remove();
+        affichageData();
     });
     </script>
 

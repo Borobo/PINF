@@ -207,16 +207,22 @@ include("../unHeader.php");
 		$(document).on("click", "#popup-col .btn-secondary",function(){
 			$("#popup-col").hide();
 		})
-//Permet de créer une colonne dans une table à partir de la popup de création de colonne.
+//Permet de créer une colonne dans une table à partir du popup de création de colonne.
 		$(document).on("click", "#popup-col .btn-primary", function(){
-			console.log($("#popup-col input[placeholder=Description]").val());
+			var ai,dbl;
+
+			ai = $('#autoIncrement').prop('checked');
+			dbl = $("#doublons").prop('checked');
+
 			if(leLabel = $("#popup-col input[placeholder=Label]").val()){
 				$.getJSON("../data.php", {
 					action : "setColonne",
 					idTable: idDeLaTable,
 					labelCol: $("#popup-col input[placeholder=Label]").val(),
 					descCol: $("#popup-col input[placeholder=Description]").val(),
-					type: $("#popup-col select").val()
+					type: $("#popup-col select").val(),
+					ai: ai,
+					dbl: dbl
 				},function(){
 					console.log("DONE");
 					window.location.reload();
@@ -274,6 +280,14 @@ include("../unHeader.php");
 				}
 
 			});
+
+		$(document).on('change', '.type', function() {
+			if($(this).val() == "Nombre")
+				$("#autoIncrement").removeAttr("disabled");
+			else {
+				$("#autoIncrement").attr('disabled', 'true');
+			}
+		});
 
 
 	</script>
@@ -446,7 +460,7 @@ include("../unHeader.php");
 			top:50%;
 			left: 50%;
 			transform: translate(-50%,-50%);
-			padding: 50px;
+			padding: 45px;
 			text-align: center;
 			border-radius: 15px;
 			border: 1px black solid;
@@ -471,6 +485,25 @@ include("../unHeader.php");
 			margin: auto;
 			margin-bottom: 10px;
 		}
+		#popup-col-input>div{
+			display: flex;
+		}
+		#popup-col-input>div>div{
+			font-size: 10pt;
+		}
+		#popup-col-input span{
+			display: flex;
+			line-height: 100%;
+			margin: 0 0 12px 5px;
+		}
+		#popup-col-input span *{
+			display: flex;
+			margin : 0;
+		}
+		#popup-col-input span input{
+			margin-right: 3px;
+		}
+
 		.label-col{
 			margin: 0;
 		}
@@ -524,10 +557,16 @@ include("../unHeader.php");
 				<h5>Ajouter une colonne</h5>
 				<div id="popup-col-input">
 					<input type="text" placeholder="Label"></input>
-					<select class="form-control type">
-						<option value="Texte">Texte</option>
-						<option value="Nombre">Nombre</option>
-					</select>
+					<div>
+						<select class="form-control type">
+							<option value="Texte">Texte</option>
+							<option value="Nombre">Nombre</option>
+						</select>
+						<div>
+							<span><input type="checkbox" id="autoIncrement" disabled /> Incrementation automatique<br/></span>
+							<span><input type="checkbox" id="doublons"/> Pas de doublons</span>
+						</div>
+					</div>
 					<input type="text" placeholder="Description"></input>
 				</div>
 				<button class="btn btn-primary">Valider</button>
