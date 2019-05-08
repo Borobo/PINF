@@ -42,11 +42,11 @@ include("../unHeader.php");
                  }
             }
         })
-    })
+    });
 
     $(document).on("change", "select", function(){
         $(this).data("update",1);
-    })
+    });
 
     $(document).on("click", "#validate", function(){
         $(".user").each(function(){
@@ -130,7 +130,7 @@ include("../unHeader.php");
             <br>
             <br>
             <button class="btn btn-group-sm btn-primary" id="validate">Mettre à jour les droits</button>
-            <button class="btn btn-group-sm btn-secondary">Renitialiser</button>
+            <button class="btn btn-group-sm btn-secondary">Reinitialiser</button>
         </div>
 
      </div>
