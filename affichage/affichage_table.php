@@ -128,19 +128,23 @@ include("../unHeader.php");
             $("#popup-table").toggle();
             $("#popup-col").hide();
         });
+
         //Permet de cacher le popup de création de table en cliquant sur annuler ou sur la croix
         $(document).on("click", "#popup-table-croix, #cancel-popup", function(){
             $("#popup-table").hide();
         });
+
         //Permet d'ajouter une colonne dans le popup de création de table en cliquant sur le bouton de Ajouter une colonne
         $(document).on("click", "#popup-table-form #addCol", function(){
             $("#popup-table-cols").append(addCol.clone());
             console.log($(".popup-table-addCol").length);
         });
+
         //Permet de supprimer une colonne dans le popup de création de table en cliquant sur la croix
         $(document).on("click", ".croix",function(){
             $(this).parent().remove();
         });
+
         //Permet d'ajouter une table en cliquant sur Valider dans le popup
         $(document).on("click", "#validate", function(){
             console.log($("#nomTable").val());
@@ -174,6 +178,7 @@ include("../unHeader.php");
                 window.location.reload();
             })
         });
+
         //Permet de stocker l'id de la table cliquée et affiche un popup de confirmation
         var idDeLaTable;
         var nomDeLaTable;
@@ -192,10 +197,6 @@ include("../unHeader.php");
                 window.location.reload();
             })
         });
-
-
-
-
 
         //Supprime une colonne mais cette fois ci sans confirmation préalable
         $(document).on("click", ".del-col", function(){
@@ -265,13 +266,14 @@ include("../unHeader.php");
 				$("#autoIncrement").removeAttr("disabled");
 			else {
 				$("#autoIncrement").attr('disabled', 'true');
+                $("#autoIncrement").prop('checked', false);
+                console.log($("#autoIncrement"));
 			}
 		});
 
 
 
-        $(document).on("keydown",
-            "textarea",
+        $(document).on("keydown", "textarea",
             function (contexte){
                 if (contexte.which == 13) { // 13 <=> touche ENTREE
                     var oldTA = $(this);
@@ -515,10 +517,6 @@ include("../unHeader.php");
 			display: flex;
 			margin : 0;
 		}
-		#popup-col-input span input{
-			margin-right: 3px;
-		}
-
 		.label-col{
 			margin: 0;
 		}
