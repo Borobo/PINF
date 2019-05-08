@@ -3,12 +3,13 @@ include ("../unHeader.php");
 ?>
 
 <head>
+    <title>Affichage d'une Base de données</title>
     <script>
     //var modelJTable = $("<div class='tables shadow text-center rounded border border-dark'>");
     var modelJLabel = $("<div>");
     var modelJData = $("<div class='container-fluid container-colonnes'>");
     var modelJP = $("<p>");
-    var modelJColonne = $("<div class='colonnes text-center'>");
+    var modelJColonne = $("<div class='colonnes shadow text-center rounded border border-dark'>");
     var modelJColonneCanvas = $("<div class='container border border-danger'>");
     var modelJTable = $("<div class=\"tables\">");
     var modelJLabCol = $("<div class='card-body text-left'>");
@@ -74,9 +75,8 @@ include ("../unHeader.php");
                   for(var j=0; j<oCol.colonnes.length; j++){
                       (function(j){
                       var meta2 = oCol.colonnes[j];
-                      addColPopup(meta2.label, meta2.id, meta2.type);
                       //CREATION DUNE COLONNE/////////////////
-                      var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol").css("font-weight","bold").css('font-size', '12pt');;
+                      var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
                       var unLabelCol = modelJLabCol.clone(true).append(colP).data("idColonne",meta2.id);
 
                       var uneColonne = modelJColonne.clone(true).append(unLabelCol);
@@ -91,18 +91,11 @@ include ("../unHeader.php");
                             var dataP = modelJP.clone();
                             meta3=oData.data[k];
                             if(meta3.valInt == null){
-                                if(k%2==0)
-                                    dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
-                                else
-                                    dataP.html(meta3.valChar).attr("class","data data-2").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
-
-                                    unLabelCol.append(dataP).data("valInt",0);
+                              dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
+                              unLabelCol.append(dataP).data("valInt",0);
                             }
                             else{
-                                if(k%2==0)
-                                    dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
-                                else
-                                    dataP.html(meta3.valInt).attr("class","data data-2").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+                              dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
                               unLabelCol.append(dataP).data("valInt",1);
                             }
                           }
@@ -123,6 +116,7 @@ include ("../unHeader.php");
 
     /////////////////////Demarrage de la page affichage_colonne.php////////////////////////////////////////////
     $(document).ready(function(){
+
       //Onglets permettant de passer d'une table à l'autre dans affichage_colonne.php
       $.getJSON("../data.php",{
           action:"getTables"},function(oRep){
@@ -164,10 +158,9 @@ include ("../unHeader.php");
       $(".btn-light").each(function(){
         $(this).addClass("disabled");
         $(this).removeAttr("id");
-        if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
       });
 
-      //On refait l'affichage des data mais avec des checkbox poru pouvoir choisir les lignes à suppprimer////
+      //On refait l'affichage des data mais avec des checkbox pour pouvoir choisir les lignes à suppprimer////
       $("#container-table").empty();
       $.getJSON("../data.php",{
         action:"getLaTable"},function(oRep){
@@ -194,7 +187,6 @@ include ("../unHeader.php");
                       var unLabelCol = modelJLabCol.clone(true).append(colP);
 
                       var uneColonne = modelJColonne.clone(true).append(unLabelCol);
-
                       ////////////////////////////////////////
                       //Affichage des data
                       $.getJSON("../data.php",{
@@ -208,10 +200,7 @@ include ("../unHeader.php");
 
                             meta3=oData.data[k];
                             //On met une position sur chaque data pour savoir à quelle ligne elles correspondent pour simplifier la suppression des lignes
-                            if(k%2==0)
-                                var div = modelJLabel.clone().attr("class","data").data("idData",meta3.id).data("position",k);
-                            else
-                                var div = modelJLabel.clone().attr("class","data data-2").data("idData",meta3.id).data("position",k);
+                            var div = modelJLabel.clone().attr("class","data").data("idData",meta3.id).data("position",k);
                             //checkbox
                             var check = $("<div class='form-check'></div>").append(modelJCheckbox.clone().data("idData",meta3.id).data("position",k));
                             var dataP = modelJP.clone();
@@ -277,6 +266,7 @@ include ("../unHeader.php");
 
             }
 
+
        });
 
        //Après avoir fait la suppression on réaffiche le tout
@@ -284,23 +274,16 @@ include ("../unHeader.php");
 
        $("#Supprimer").attr("class","btn btn-light");
 
-       $(".btn-light").each(function(){
-         $( this).removeClass("disabled");
-         $(this).attr("id",$(this).html());
-         if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
-       });
-
     });
 /////////////////////FIN Suppression des data dans la base de données/////////////////////////////////////////
 
 
-/////////////////////Activation de la fonction modification des data/////////////////////////////////////////
+/////////////////////Activation de la fonction modification des data//////////////////////////////////////////
     $(document).on("click","#Modifier",function(){
       $("#Modifier").attr("class","btn btn-success");
       $(".btn-light").each(function(){
         $(this).addClass("disabled");
         $(this).removeAttr("id");
-        if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
       });
       $(".data").attr("class","dataModifiable");
 
@@ -377,12 +360,6 @@ include ("../unHeader.php");
 
           //On réaffiche les data après avoir modifier la base de données
           affichageData();
-
-          $(".btn-light").each(function(){
-            $( this).removeClass("disabled");
-            $(this).attr("id",$(this).html());
-            if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
-          });
       });
 /////////////////////FIN Modification des data dans la base de données/////////////////////////////////////////
 
@@ -392,7 +369,6 @@ include ("../unHeader.php");
           $(".btn-light").each(function(){
             $( this).removeClass("disabled");
             $(this).attr("id",$(this).html());
-            if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
           });
           affichageData();
           $("#Supprimer").attr("class","btn btn-light");
@@ -417,14 +393,12 @@ include ("../unHeader.php");
             $(".btn-light").each(function(){
               $(this).addClass("disabled");
               $(this).removeAttr("id");
-              if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
             });
           }
           else{
             $(".btn-light").each(function(){
               $(this).removeClass("disabled");
               $(this).attr("id",$(this).html());
-              if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
             });
             $(this).attr("class","btn btn-light");
             $(this).data("activation",0);
@@ -441,10 +415,8 @@ include ("../unHeader.php");
           idColonne = $(this).data('idColonne');
           NbData = 0;
           $(".data").each(function(){
-            if($(this).data("idColonne") == idColonne){
-                if($(this).html() != "")
-                    NbData += 1;
-            }
+            if($(this).data("idColonne") == idColonne)
+              NbData += 1;
           });
 
           //On récupère le label de la colonne
@@ -455,12 +427,8 @@ include ("../unHeader.php");
 
               //On affiche le résultat dans un div contenant un message et un bouton suppression
               div = modelJLabel.clone().attr("class","divInfo").data("idColonne",idColonne);
-              if(NbData > 1)
-                info = modelJLabel.clone().attr("class","alert alert-info").html("La colonne <strong>"+labelColonne+"</strong> contient <strong>"+NbData+"</strong> données.");
-              else
-              info = modelJLabel.clone().attr("class","alert alert-info").html("La colonne <strong>"+labelColonne+"</strong> contient <strong>"+NbData+"</strong> donnée.");
-              btn = $("<button class='btn btn-dark croix'>X</button>").data("idColonne",idColonne)
-              .css("height","52px").css("width","45px").css("margin-left","5px").css("font-size","20");
+              info = modelJLabel.clone().attr("class","alert alert-info").html("La colonne <strong>"+labelColonne+"</strong> contient <strong>"+NbData+"</strong> données.");
+              btn = $("<button class='btn btn-dark croix'>X</button>").data("idColonne",idColonne).css("height","52px").css("width","45px").css("margin-left","5px").css("font-size","20");
 
               //Si le message existe déjà on le supprime pour le réaffiché en première ligne
               $(".divInfo").each(function(){
@@ -502,14 +470,12 @@ include ("../unHeader.php");
 
         $(".btn-light").each(function(){
           $(this).addClass("disabled");
-          if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
           $(this).removeAttr("id");
         });
       }
       else{
         $(".btn-light").each(function(){
           $(this).removeClass("disabled");
-          if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
           $(this).attr("id",$(this).html());
         });
         $(this).data("activation",0);
@@ -666,9 +632,6 @@ include ("../unHeader.php");
 
     })
 
-    $(document).on("click","#ajouter", function(){
-        $("#popup").fadeToggle(100,'swing');
-    })
 
     $(document).on('click', '#popup .btn-success', function(event) {
         $(".modal-body div").each(function(){
@@ -848,63 +811,32 @@ include ("../unHeader.php");
                 box-shadow: 1px 1px 5px rgba(0,0,0,0.17);
           }
 
-      .compter:hover{
-        background-color:lightgreen;
-        cursor:pointer;
-      }
+          .compter:hover{
+            background-color:lightgreen;
+            cursor:pointer;
+          }
 
-      .alert-info{
-        width: 750px !important;
-        text-align:center;
-      }
-      .btn-excel{
-          background-color: #fa6e6e;
-          border-color: #fa6e6e;
-      }
-      .btn-excel:hover{
-        background-color: #ec5050;
-        border-color: #ec5050;
-      }
-      .data{
-          background-color: rgb(134, 138, 143);
-          width: 100%;
-          height: 30px;
-          line-height: 30px;
-          margin-bottom: 0;
-      }
-      .data-2{
-          background-color: rgb(172, 174, 177) !important;
-      }
-      .card-body{
-          padding: 0 !important;
-      }
-      .card-body:first-child{
-          margin-top: 1.25em;
-      }
-      .mesurable{
-        background-color: lightgreen;
-      }
-      .mesurable:hover{
-        background-color: rgba(5, 100, 10, 60);
-        cursor:pointer;
-      }
-      #popup{
-          position: absolute;
-          display: none;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%,-50%);
-          min-width: 500px;
-          height: 300px;
-      }
-      .modal-body{
-          display: flex;
-      }
-      .modal-body div{
-          margin-right: 10px;
-          text-align: center;
-      }
+          .alert-info{
+            width: 750px !important;
+            text-align:center;
+          }
 
+          .mesurable{
+            background-color: lightgreen;
+          }
+          .mesurable:hover{
+            background-color: rgba(5, 100, 10, 60);
+            cursor:pointer;
+          }
+
+          .btn-excel{
+              background-color: #fa6e6e;
+              border-color: #fa6e6e;
+          }
+          .btn-excel:hover{
+            background-color: #ec5050;
+            border-color: #ec5050;
+          }
 
     </style>
 </head>
@@ -913,7 +845,7 @@ include ("../unHeader.php");
 <body>
   <div id="content">
     <div id="container-fonction"><br>
-              <button type="button" class="btn btn-light" id="ajouter">Ajouter</button>
+              <button type="button" class="btn btn-light">Ajouter</button>
               <button type="button" class="btn btn-light" id="Supprimer">Supprimer</button>
               <button type="button" class="btn btn-light" id="Modifier">Modifier</button>
               <button type="button" class="btn btn-light">Gérer les doublons</button>
@@ -921,6 +853,10 @@ include ("../unHeader.php");
               <button type="button" class="btn btn-light mesure" id="Moyenne">Moyenne</button>
               <button type="button" class="btn btn-light mesure" id="Minimum">Minimum</button>
               <button type="button" class="btn btn-light mesure" id="Maximum">Maximum</button>
+
+              <button type="button" class="btn btn-light btn-excel" id="Import">Import Excel</button>
+              <button type="button" class="btn btn-light btn-excel" id="Export">Export Excel</button>
+
     </div>
     <div id="affichage" class="container-fluide">
       <div id="nomTab">
@@ -930,5 +866,4 @@ include ("../unHeader.php");
       </div>
     </div>
   </div>
-
 </body>

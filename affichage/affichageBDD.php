@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <?php
-    include("../unHeader.php");
+include("../unHeader.php");
 
-    if($_SESSION["superadmin"]==1)
+if($_SESSION["superadmin"]==1)
     header("location : affichageBDD_Superadmin.php");
 
 ?>
@@ -19,10 +18,10 @@
         background-color: lightblue;
     }
     .col-sm-6 img{
-        height: 80px;
-        width: 40px;
-        margin: 10px;
+        height: 24px;
+        width: 24px;
     }
+
     #envoyer{
         margin-top: 7%;
     }
@@ -47,6 +46,7 @@
     $(document).ready(function(){
         $("#envoyer").hide(); //formulaire création de bdd
         //affichage des bdd de l'utilisateur
+        var nextDel = $("<img class='del-bdd' data-toggle='modal' data-target='#myModal' src='ressource/delete.png'/>");
         $.getJSON("../data.php",{
             action:"afficherBDD"
         },function(oRep){
@@ -56,6 +56,9 @@
             for(i=0; i<oRep.bdd.length; i++){
                 meta = oRep.bdd[i];
                 console.log(meta);
+
+                var cloneNextDel = nextDel.clone().data("idBdd", meta.id);
+
                 /*p = jModelP.clone();
                 btn = jModeleBtn.clone();
                 p.append(btn.html(meta.nom));
@@ -63,14 +66,36 @@
                 $(".affichage").append($("<p></p>")
                     .append($("<div class='btn-group'></div>")
                         .append($("<a href='affichage_table.php' class='btn btn-secondary bdd' style='width: 70%;' ></a>")
-                        .html(meta.nom)
-                        .data("id",meta.id).data("nom",meta.nom))
+                            .html(meta.nom)
+                            .data("id",meta.id).data("nom",meta.nom))
                         .append("<button type='button' class='btn btn-secondary dropdown-toggle dropdown-toggle-split' data-toggle='dropdown'>")
                         .append($("<div class='dropdown-menu'></div>")
                             .append($("<span class='dropdown-item-text'></span>").html(meta.description)))));
             }
         });
     });
+
+      var idDeLaBdd;
+      var nomDeLaBdd;
+      $(document).on("click", ".del-bdd", function(){
+          idDeLaBdd = $(this).data("idBdd");
+
+      });
+      //Envoi un getJSon permettant de supprimer une bdd
+
+      $(document).on("click", "#del-btn", function(){
+          $.getJSON("../data.php",{
+              action : "supprimerLaBdd",
+              idBdd : idDeLaBdd
+          }, function(oRep){
+              console.log(oRep.feedback);
+              window.location.reload();
+          })
+      });
+
+
+
+
     //Clique sur le boutton "envoyer" de la page affichageBDD
     $(document).on("click","#BtnEnvoyer",function(){
         $(".col-sm-6").hide(); //page principale affichage bdd
@@ -196,6 +221,36 @@
     </div>
 
 </div>
+
+<?php
+
+    echo '<div class="modal" id="myModal">
+			    <div class="modal-dialog">
+			      <div class="modal-content">
+
+			        <!-- Modal Header -->
+			        <div class="modal-header">
+			          <h4 class="modal-title">Alerte !</h4>
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        </div>
+
+			        <!-- Modal body -->
+			        <div class="modal-body">
+			          Êtes-vous sûr de vouloir supprimer cette base de donnée (cette action est irréversible).
+			        </div>
+
+			        <!-- Modal footer -->
+			        <div class="modal-footer">
+						<button type="button" id="del-btn" class="btn btn-success" data-dismiss="modal">Confirmer</button>
+			          	<button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+					</div>
+
+			      </div>
+			    </div>
+			  </div>';
+
+
+?>
 
 </body>
 </html>
