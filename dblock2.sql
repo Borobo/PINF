@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  jeu. 02 mai 2019 à 14:16
+-- Généré le :  mer. 08 mai 2019 à 12:58
 -- Version du serveur :  5.7.23
 -- Version de PHP :  7.2.10
 
@@ -48,8 +48,7 @@ INSERT INTO `bdd` (`id`, `nom`, `description`, `idCreateur`, `creee`) VALUES
 (2, 'bdd2', NULL, NULL, 1),
 (3, 'bdd3', 'non créée', NULL, 0),
 (4, 'test', 'yo', 1, 1),
-(5, 'Magnolia', 'lol', 5, 1),
-(6, 'Magnolia 2 ', 'mol', 6, 1);
+(5, 'Magnolia', 'lol', 5, 1);
 
 -- --------------------------------------------------------
 
@@ -65,21 +64,30 @@ CREATE TABLE IF NOT EXISTS `colonne` (
   `idTab` int(11) DEFAULT NULL,
   `type` varchar(20) NOT NULL,
   `A_I` tinyint(1) NOT NULL DEFAULT '0',
+  `UNIQ` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `idTab` (`idTab`)
-) ENGINE=MyISAM AUTO_INCREMENT=113 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=130 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `colonne`
 --
 
-INSERT INTO `colonne` (`id`, `label`, `description`, `idTab`, `type`, `A_I`) VALUES
-(108, 'telephone', '', 103, 'Nombre', 0),
-(107, 'adresse', 'adresse de l\'utilisateur', 103, 'Texte', 0),
-(106, 'prenom', 'prenom de l\'utilisateur', 103, 'Texte', 0),
-(104, 'id', 'id de l\'utilisateur', 103, 'Nombre', 0),
-(105, 'nom', 'nom de l\'utilisateur', 103, 'Texte', 0),
-(109, 'a', 'a', 105, 'Texte', 0);
+INSERT INTO `colonne` (`id`, `label`, `description`, `idTab`, `type`, `A_I`, `UNIQ`) VALUES
+(108, 'telephone', '', 103, 'Nombre', 0, 0),
+(107, 'adresse', 'adresse de l\'utilisateur', 103, 'Texte', 0, 0),
+(106, 'prenom', 'prenom de l\'utilisateur', 103, 'Texte', 0, 0),
+(104, 'id', 'id de l\'utilisateur', 103, 'Nombre', 0, 0),
+(105, 'nom', 'nom de l\'utilisateur', 103, 'Texte', 0, 0),
+(119, 'test 1', '', 105, 'Texte', 0, 0),
+(120, 'test 2', '', 105, 'Nombre', 1, 0),
+(121, 'test 3', '', 105, 'Nombre', 1, 0),
+(122, 'test 4', '', 105, 'Texte', 0, 1),
+(123, 'test 5', '', 105, 'Texte', 0, 0),
+(124, 'rererere', 'rerere', 109, 'Nombre', 1, 0),
+(127, 'id', '', 111, 'Nombre', 1, 0),
+(128, 'nom', '', 111, 'Texte', 0, 0),
+(129, 'prenom', '', 111, 'Texte', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -95,28 +103,59 @@ CREATE TABLE IF NOT EXISTS `data` (
   `idColonne` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idColonne` (`idColonne`)
-) ENGINE=MyISAM AUTO_INCREMENT=78 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=68 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `data`
 --
 
 INSERT INTO `data` (`id`, `valInt`, `valChar`, `idColonne`) VALUES
-(77, '623335740', NULL, 108),
-(76, NULL, NULL, 107),
-(69, NULL, 'TESSON ', 105),
-(75, NULL, 'test', 106),
-(74, NULL, 'TEST', 105),
-(70, NULL, 'Lucas', 106),
-(71, NULL, NULL, 107),
-(72, NULL, NULL, 108),
-(73, '3', NULL, 104),
-(67, NULL, NULL, 108),
-(68, '2', NULL, 104),
-(66, NULL, NULL, 107),
-(65, NULL, 'Sacha', 106),
-(64, NULL, 'LESUEUR', 105),
-(63, '1', NULL, 104);
+(18, NULL, 'Sacha', 106),
+(19, NULL, '20b', 107),
+(17, NULL, 'LESUEUR', 105),
+(16, '1', NULL, 104),
+(22, NULL, 'TESSOn', 105),
+(21, '2', NULL, 104),
+(20, '62333', NULL, 108),
+(23, NULL, 'Lucas', 106),
+(24, NULL, '20b ', 107),
+(25, '48794', NULL, 108),
+(26, '1', NULL, 127),
+(27, NULL, 'LESUEUR', 128),
+(28, NULL, 'Guillaume', 129),
+(40, NULL, 'a', 129),
+(39, NULL, 'a', 128),
+(32, '3', NULL, 127),
+(33, NULL, 'MENON', 128),
+(34, NULL, 'Martin', 129),
+(38, '4', NULL, 127),
+(41, '5', NULL, 127),
+(42, NULL, 'a', 128),
+(43, NULL, 'a', 129),
+(44, '6', NULL, 127),
+(45, NULL, 'a', 128),
+(46, NULL, 'a', 129),
+(47, '7', NULL, 127),
+(48, NULL, 'a', 128),
+(49, NULL, 'a', 129),
+(50, '8', NULL, 127),
+(51, NULL, 'a', 128),
+(52, NULL, 'a', 129),
+(53, '9', NULL, 127),
+(54, NULL, 'a', 128),
+(55, NULL, 'a', 129),
+(56, '10', NULL, 127),
+(57, NULL, 'a', 128),
+(58, NULL, 'a', 129),
+(59, '11', NULL, 127),
+(60, NULL, 'a', 128),
+(61, NULL, 'a', 129),
+(62, '12', NULL, 127),
+(63, NULL, 'a', 128),
+(64, NULL, 'a', 129),
+(65, '13', NULL, 127),
+(66, NULL, 'a', 128),
+(67, NULL, 'a', 129);
 
 -- --------------------------------------------------------
 
@@ -154,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `liste_user` (
 --
 
 INSERT INTO `liste_user` (`idBdd`, `idUser`, `admin`) VALUES
-(1, 1, 0),
+(1, 1, 1),
 (2, 1, 0),
 (1, 2, 1),
 (2, 2, 1),
@@ -179,7 +218,7 @@ CREATE TABLE IF NOT EXISTS `tab` (
   PRIMARY KEY (`id`),
   KEY `idBdd` (`idBdd`),
   KEY `idUser` (`idUser`)
-) ENGINE=MyISAM AUTO_INCREMENT=108 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=112 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `tab`
@@ -191,6 +230,8 @@ INSERT INTO `tab` (`id`, `label`, `idBdd`, `idUser`) VALUES
 (89, 'lol', NULL, NULL),
 (88, 'test', NULL, NULL),
 (87, 'Users', NULL, NULL),
+(111, 'TEST', 1, 5),
+(109, 'Paulux', 1, 5),
 (91, 'table', NULL, NULL),
 (92, 'test1', NULL, NULL),
 (93, 'l', NULL, NULL),
