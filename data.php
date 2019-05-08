@@ -234,11 +234,14 @@ session_start();
 
 				// Colonnes //////////////////////////////////////////////////
 				case 'setColonne' :
+
 					if($idTable = valider("idTable"))
 					if($labelCol = valider("labelCol"))
-					if($type = valider("type")){
+					if($type = valider("type"))
+					if($ai = valider("ai"))
+					if($dbl = valider("dbl")){
 						$descCol = valider("descCol");
-						mkCol($idTable, $labelCol, $descCol, $type);
+						mkCol($idTable, $labelCol, $descCol, $type, $ai, $dbl);
 					}
 				break;
 

@@ -209,14 +209,20 @@ include("../unHeader.php");
 		})
 //Permet de créer une colonne dans une table à partir du popup de création de colonne.
 		$(document).on("click", "#popup-col .btn-primary", function(){
-			console.log($("#popup-col input[placeholder=Description]").val());
+			var ai,dbl;
+
+			ai = $('#autoIncrement').prop('checked');
+			dbl = $("#doublons").prop('checked');
+
 			if(leLabel = $("#popup-col input[placeholder=Label]").val()){
 				$.getJSON("../data.php", {
 					action : "setColonne",
 					idTable: idDeLaTable,
 					labelCol: $("#popup-col input[placeholder=Label]").val(),
 					descCol: $("#popup-col input[placeholder=Description]").val(),
-					type: $("#popup-col select").val()
+					type: $("#popup-col select").val(),
+					ai: ai,
+					dbl: dbl
 				},function(){
 					console.log("DONE");
 					window.location.reload();
@@ -277,9 +283,9 @@ include("../unHeader.php");
 
 		$(document).on('change', '.type', function() {
 			if($(this).val() == "Nombre")
-				$(this).parent().find("input:checkbox").removeAttr("disabled");
+				$("#autoIncrement").removeAttr("disabled");
 			else {
-				$(this).parent().find("input:checkbox").attr('disabled', 'true');
+				$("#autoIncrement").attr('disabled', 'true');
 			}
 		});
 
@@ -558,7 +564,7 @@ include("../unHeader.php");
 						</select>
 						<div>
 							<span><input type="checkbox" id="autoIncrement" disabled /> Incrementation automatique<br/></span>
-							<span><input type="checkbox" id="doublons" disabled/> Pas de doublons</span>
+							<span><input type="checkbox" id="doublons"/> Pas de doublons</span>
 						</div>
 					</div>
 					<input type="text" placeholder="Description"></input>

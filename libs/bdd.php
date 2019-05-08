@@ -63,8 +63,8 @@ function majColonne($idColonne,$label) {
 	return SQLUpdate($SQL);
 }
 
-function mkCol($idTable, $label, $desc, $type) {
-	$SQL = "INSERT INTO colonne(label,description,idTab, type) VALUES ('$label','$desc','$idTable', '$type')";
+function mkCol($idTable, $label, $desc, $type, $ai, $dbl) {
+	$SQL = "INSERT INTO colonne(label,description,idTab, type, A_I, UNIQ) VALUES ('$label','$desc',$idTable, '$type',$ai,$dbl)";
 	return SQLInsert($SQL);
 }
 
@@ -98,7 +98,8 @@ function supprimerData($idData){
 
 }
 
-function addData($id, $val, $type){
+function addData($id, $val = "", $type){
+
 	if($type == "Nombre")
 		$valType = "valInt";
 	else
