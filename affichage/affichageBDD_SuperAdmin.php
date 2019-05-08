@@ -14,6 +14,19 @@
     body{
         background-color: lightblue;
     }
+
+    .bg-unpeumoinslightblue{
+        background-color: #a5cedb;
+    }
+
+    .allBDD{
+        height: 400px;
+        width: 300px;
+        overflow: auto;
+        text-align:center;
+
+    }
+
     .col-sm-6 img{
         height: 80px;
         width: 40px;
@@ -43,6 +56,10 @@
         display:flex;
     }
 
+    .margin-bot{
+        margin-bottom:35px;
+    }
+
 </style>
 
 <script>
@@ -56,6 +73,7 @@
         $("#selection").hide(); //formulaire confirmer
       //  $("#liste").empty();
         //affichage des bdd de l'utilisateur
+        var nextDel = $("<img class='del-bdd' data-toggle='modal' data-target='#myModal' src='ressource/delete.png'/>");
         $.getJSON("../data.php",{
             action:"afficherBDD"
         },function(oRep){
@@ -66,7 +84,9 @@
                 meta = oRep.bdd[i];
                 console.log(meta);
 
-                $(".affichage").append($("<p></p>")
+                var cloneNextDel = nextDel.clone().data("idBdd", meta.id);
+
+                $(".affichage").append($("<p></p>").append(cloneNextDel)
                     .append($("<div class='btn-group'></div>")
                         .append($("<a href='affichage_table.php' class='btn btn-secondary bdd' style='width: 70%;' ></a>").html(meta.nom).data("id",meta.id).data("nom",meta.nom))
                         .append("<button type='button' class='btn btn-secondary dropdown-toggle dropdown-toggle-split' data-toggle='dropdown'>")
@@ -74,7 +94,32 @@
                             .append($("<span class='dropdown-item-text'></span>").html(meta.description)))));
             }
         });
+
+        $.getJSON("../data.php",{
+            action:"afficherToutesBDD"
+        },function(oRep){
+            var i,meta;
+            var btn,p;
+            console.log("Taille = "+oRep.bdd.length);
+            for(i=0; i<oRep.bdd.length; i++){
+                meta = oRep.bdd[i];
+                console.log(meta);
+
+                var cloneNextDel = nextDel.clone().data("idBdd", meta.id);
+
+                $(".affichageToutes").append($("<p></p>").append(cloneNextDel)
+                    .append($("<div class='btn-group'></div>")
+                        .append($("<a href='affichage_table.php' class='btn btn-secondary bdd' style='width: 70%;' ></a>").html(meta.nom).data("id",meta.id).data("nom",meta.nom))
+                        .append("<button type='button' class='btn btn-secondary dropdown-toggle dropdown-toggle-split' data-toggle='dropdown'>")
+                        .append($("<div class='dropdown-menu'></div>")
+                            .append($("<span class='dropdown-item-text'></span>").html(meta.description)))));
+            }
+        });
+
+
     });
+
+
 
     $(document).on("click","#confirmer",function(){
         $("#liste").empty();
@@ -102,20 +147,41 @@
 
     });
 
+    var idDeLaBdd;
+    var nomDeLaBdd;
+    $(document).on("click", ".del-bdd", function(){
+        idDeLaBdd = $(this).data("idBdd");
+
+    });
+    //Envoi un getJSon permettant de supprimer une bdd
+
+    $(document).on("click", "#del-btn", function(){
+        $.getJSON("../data.php",{
+            action : "supprimerLaBdd",
+            idBdd : idDeLaBdd
+        }, function(oRep){
+            console.log(oRep.feedback);
+            window.location.reload();
+        })
+    });
+
+
+
+
     //Clique sur le boutton "envoyer" de la page affichageBDD
     $(document).on("click","#creer  ",function(){
-        $(".col-sm-6").hide(); //page principale affichage bdd
+        $(".col-sm-4").hide(); //page principale affichage bdd
         $("#envoyer").show(); //formulaire création de bdd
     });
 
     $(document).on("click","#confirmer  ",function(){
-        $(".col-sm-6").hide(); //page principale affichage bdd
+        $(".col-sm-4").hide(); //page principale affichage bdd
         $("#confirmerDiv").show(); //formulaire création de bdd
     });
 
     //Clique sur la fleche de retour du formulaire de création de bdd
     $(document).on("click",".fleche",function(){
-        $(".col-sm-6").show(); //page principale affichage bdd
+        $(".col-sm-4").show(); //page principale affichage bdd
         $("#envoyer").hide(); //formulaire création de bdd
         $("#confirmerDiv").hide(); //formulaire création de bdd
 
@@ -150,7 +216,7 @@
         );
 
 
-        $(".col-sm-6").show(); //page principale affichage bdd
+        $(".col-sm-4").show(); //page principale affichage bdd
         $(".affichage").empty();
         $("#envoyer").hide(); //formulaire création de bdd
 
@@ -191,7 +257,7 @@
         },function(oRep){
             console.log("letsgo");
         });
-        $(".col-sm-6").show(); //page principale affichage bdd
+        $(".col-sm-4").show(); //page principale affichage bdd
         $("#envoyer").hide(); //formulaire création de bdd
         $("#confirmerDiv").hide(); //formulaire création de bdd
         $("#listeBDD").empty();
@@ -222,7 +288,18 @@
 <div class="container align-content-center">
 
     <div class="row">
-        <div class="col-sm-6">
+
+        <div class="col-sm-4">
+            <br><br><br><br>
+
+            <fieldset>
+                <legend class="margin-bot"><u><b>Toutes les bases de données :</b></u></legend>
+                <br><br>
+                <div class="affichageToutes allBDD" id="listeToutesBDD"></div>
+            </fieldset>
+        </div>
+
+        <div class="col-sm-4">
             <br><br><br><br>
 
             <fieldset>
@@ -232,7 +309,7 @@
             </fieldset>
         </div>
 
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <br><br><br><br>
             <fieldset>
                 <legend><u><b>Options :</b></u></legend>
@@ -241,7 +318,6 @@
                     <br>
                     <button type="button" class="btn btn-secondary option" id="creer">Créer une base de données</button><br><br>
                     <button type="button" class="btn btn-secondary option" id="confirmer">Confirmer une base de données</button><br><br>
-                    <button type="button" class ="btn btn-secondary option" id="gererBdd">Gérer toutes les bases de données</button><br><br>
                 </div>
             </fieldset>
         </div>
@@ -283,6 +359,35 @@
 
 
 </div>
+
+<?php
+    echo '<div class="modal" id="myModal">
+			    <div class="modal-dialog">
+			      <div class="modal-content">
+
+			        <!-- Modal Header -->
+			        <div class="modal-header">
+			          <h4 class="modal-title">Alerte !</h4>
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        </div>
+
+			        <!-- Modal body -->
+			        <div class="modal-body">
+			          Êtes-vous sûr de vouloir supprimer cette base de donnée (cette action est irréversible).
+			        </div>
+
+			        <!-- Modal footer -->
+			        <div class="modal-footer">
+						<button type="button" id="del-btn" class="btn btn-success" data-dismiss="modal">Confirmer</button>
+			          	<button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+					</div>
+
+			      </div>
+			    </div>
+			  </div>';
+
+
+?>
 
 </body>
 </html>

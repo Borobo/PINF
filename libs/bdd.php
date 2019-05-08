@@ -17,6 +17,31 @@ function listerUsersBdd($idBdd)
 	$SQL = "SELECT * FROM user, liste_user WHERE idUser = user.id AND idBdd = '$idBdd' ORDER BY nom, prenom ASC";
 	return parcoursRs(SQLSelect($SQL));
 }
+
+function supprimerBDD($idBdd)
+{
+    $SQL = "DELETE FROM bdd WHERE id = $idBdd";
+    $res = SQLDelete($SQL);
+
+    $SQL = "SELECT id FROM tab WHERE idBdd = $idBdd";
+    $listeTables = parcoursRs(SQLSelect($SQL));
+
+    for($i=0;$i<sizeof($listeTables);$i++){
+
+        foreach ($listeTables[$i] as $idTable){
+			supprimerTable($idTable);
+        }
+
+	}
+
+	 $SQL = "DELETE FROM tab WHERE idBdd = $idBdd";
+	 $res = SQLDelete($SQL);
+
+
+
+    return $res ;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 function mkTable($label,$idBdd,$idUser)
@@ -43,10 +68,23 @@ function majTable($idTable,$label)
 
 function supprimerTable($idTable)
 {
-	$SQL = "DELETE FROM tab WHERE id = $idTable";
-	$res = SQLDelete($SQL);
-	$SQL = "DELETE FROM colonne WHERE idTab = $idTable";
-	$res2 = SQLDelete($SQL);
+
+    $SQL = "SELECT id FROM colonne WHERE idTab = $idTable";
+    $listeColonne = parcoursRs(SQLSelect($SQL));
+
+    for($i=0;$i<sizeof($listeColonne);$i++){
+
+        foreach ($listeColonne[$i] as $idColonne){
+            supprimerDataCol($idColonne);
+        }
+
+    }
+
+    $SQL = "DELETE FROM colonne WHERE idTab = $idTable";
+    $res2 = SQLDelete($SQL);
+
+    $SQL = "DELETE FROM tab WHERE id = $idTable";
+    $res = SQLDelete($SQL);
 
 	return $res && $res2;
 }
@@ -54,7 +92,7 @@ function supprimerTable($idTable)
 //////////////////////////////////////////////////////////////////////////////
 
 function listerColonnes($idTable) {
-	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable GROUP BY id ORDER BY id ASC";
+	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable ORDER BY id";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -77,7 +115,7 @@ function supprimerCol($idCol){
 
 function listerData($idCol)
 {
-	$SQL = "SELECT * FROM data WHERE idColonne='$idCol GROUP BY idColonne ORDER BY idColonne ASC'";
+	$SQL = "SELECT * FROM data WHERE idColonne='$idCol' ORDER BY id";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -129,14 +167,20 @@ function addData($id, $val = ""){
 	return SQLInsert($SQL);
 }
 
+function supprimerDataCol($idColonne){
+	$SQL = "DELETE FROM data WHERE idColonne = $idColonne";
+
+	return SQLDelete($SQL);
+}
+
+
+
 //////////////////////////////////////////////////////////////////////////////
 
 function grade($idBdd, $idUser){
 	$SQL = "SELECT admin FROM liste_user WHERE idUser = '$idUser' AND idBdd='$idBdd'";
 	return SQLGetChamp($SQL);
 }
-
-
 
 
 
