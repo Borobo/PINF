@@ -833,6 +833,7 @@ include ("../unHeader.php");
         div = modelJLabel.clone().attr("class","divInfo modif");
         info = modelJLabel.clone().attr("class","alert alert-info").html("Appuyez sur Echap pour annuler la recherche");
         div.append(info).css("margin","5px");
+        $(".divInfo").empty();
         $(".container-colonnes").after(div);
 
         var val=$("#recherche").val();
@@ -1049,7 +1050,7 @@ include ("../unHeader.php");
           margin-bottom: 0;
       }
       .data-2{
-          background-color: rgb(172, 174, 177) !important;
+          background-color: rgb(172, 174, 177);
       }
       .card-body{
           padding: 0 !important;
