@@ -47,9 +47,9 @@ include ("../unHeader.php");
                       var meta2 = oCol.colonnes[j];
                       //CREATION DUNE COLONNE/////////////////
                       var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol");
-                      var unLabelCol = modelJLabCol.clone(true).append(colP).data("idColonne",meta2.id);
+                      var unLabelCol = modelJLabCol.clone(true).append(colP);
 
-                      var uneColonne = modelJColonne.clone(true).append(unLabelCol);
+                      var uneColonne = modelJColonne.clone(true).append(unLabelCol).data("idColonne",meta2.id);
 
                       //On récupère les data de chaque colonne
                       $.getJSON("../data.php",{
@@ -109,9 +109,10 @@ include ("../unHeader.php");
               $("#div-onglet").append(unBtn);
 
             }
-
           });
+          var barre = $("<div class='input-group'></div>").append("<input id='recherche' type='text' class='form-control' name='recherche' placeholder='Barre de recherche'>");
 
+          $("#nomTab").after(barre);
           //affichage des colonnes et des data de la table
           affichageData();
 
@@ -262,7 +263,8 @@ include ("../unHeader.php");
 
        $(".btn-light").each(function(){
          $( this).removeClass("disabled");
-         $(this).attr("id",$(this).html());
+         if($(this).html() == "Gérer les doublons") $(this).attr("id","Doublons");
+         else $(this).attr("id",$(this).html());
          if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
        });
 
@@ -356,7 +358,8 @@ include ("../unHeader.php");
 
           $(".btn-light").each(function(){
             $( this).removeClass("disabled");
-            $(this).attr("id",$(this).html());
+            if($(this).html() == "Gérer les doublons") $(this).attr("id","Doublons");
+            else $(this).attr("id",$(this).html());
             if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
           });
       });
@@ -367,7 +370,8 @@ include ("../unHeader.php");
       $(document).on("click","#Annuler",function(){
           $(".btn-light").each(function(){
             $( this).removeClass("disabled");
-            $(this).attr("id",$(this).html());
+            if($(this).html() == "Gérer les doublons") $(this).attr("id","Doublons");
+            else $(this).attr("id",$(this).html());
             if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
           });
           affichageData();
@@ -475,7 +479,8 @@ include ("../unHeader.php");
         $(".btn-light").each(function(){
           $(this).removeClass("disabled");
           if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
-          $(this).attr("id",$(this).html());
+          if($(this).html() == "Gérer les doublons") $(this).attr("id","Doublons");
+          else $(this).attr("id",$(this).html());
         });
         $(this).data("activation",0);
         $(this).attr("class","btn btn-light mesure");
@@ -623,9 +628,51 @@ include ("../unHeader.php");
 
     });
 
-    $(document).on("click","#Gérer les doublons",function(){
-      console.log("je gère");
-    });
+    $(document).on("click","#Doublons",function(){
+
+      $(".colonnes").each(function(){
+        $(this).addClass("doublons");
+      });
+
+      div = modelJLabel.clone().attr("class","divInfo modif");
+      info = modelJLabel.clone().attr("class","alert alert-info").html("Sélectionnez les colonnes où les doublons doivent être enlevés");
+      info2 = modelJLabel.clone().attr("class","alert alert-info").html("Ne rien sélectionner pour enlever les doublons de toutes les colonnes");
+      div.append(info).append(info2).css("margin","5px");
+
+      $(".container-colonnes").after(div);
+      });
+
+      $(document).on("click",".doublons",function(){
+
+
+        var idCol = $(this).data("idColonne");
+        var valData,position;
+        var i=0;
+        $(".data").each(function(){
+          $(this).data("flag",0);
+          if(idCol == $(this).data("idColonne")){
+            valData = $(this).html();
+            position = $(this).data("position");
+            $(this).data("flag",1);
+            $(".data").each(function(){
+
+              i = i+1;
+              if(idCol == $(this).data("idColonne") && valData == $(this).html() && ($(this).data("flag") == undefined || $(this).data("flag") == 0)){
+
+                console.log("YA UN DOUBLON");
+                console.log(i);
+                console.log($(this).html());
+                console.log($(this).data("position"));
+              }
+
+            });
+
+          }
+
+        });
+
+      });
+
 
     $(document).on("click","#Copier",function(){
 
@@ -704,13 +751,49 @@ include ("../unHeader.php");
         $("#Copier").attr("class","btn btn-light");
         $(".btn-light").each(function(){
           $( this).removeClass("disabled");
-          $(this).attr("id",$(this).html());
+          if($(this).html() == "Gérer les doublons") $(this).attr("id","Doublons");
+          else $(this).attr("id",$(this).html());
           if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
         });
         $(".data").removeClass("dataCopiable").css("background-color","rgb(134, 138, 143)");
 
         $(".modif").remove();
     });
+
+    $(document).on("keyup",
+        "#recherche",
+        function (contexte){
+
+          if(contexte.which == 13){
+            div = modelJLabel.clone().attr("class","divInfo modif");
+            info = modelJLabel.clone().attr("class","alert alert-info").html("Appuyez sur Echap pour annuler la recherche");
+            div.append(info).css("margin","5px");
+            $(".container-colonnes").after(div);
+
+            var val=$("#recherche").val();
+            var position = [];
+            $(".data").each(function(){
+              var data = $(this).html();
+              reg = new RegExp(val);
+              if(reg.test(data)) position.push($(this).data("position"));
+
+            });
+            var flag = 0;
+            $(".data").each(function(){
+              flag = 0;
+              for(var i=0; i<position.length; i++){
+                if(position[i] == $(this).data("position")) flag = 1;
+              }
+              if(flag == 0) $(this).css("display","none");
+            });
+          }
+
+          if(contexte.which == 27){
+            $("#recherche").val("");
+            affichageData();
+          }
+
+        });
 
     </script>
 
@@ -940,6 +1023,13 @@ include ("../unHeader.php");
 
       }
 
+      .doublons{
+        cursor:pointer;
+      }
+
+      .doublons:hover{
+        background-color: lightgreen;
+      }
     </style>
 </head>
 
@@ -951,7 +1041,7 @@ include ("../unHeader.php");
               <button type="button" class="btn btn-light" id="Supprimer">Supprimer</button>
               <button type="button" class="btn btn-light" id="Modifier">Modifier</button>
               <button type="button" class="btn btn-light" id="Copier">Copier</button>
-              <button type="button" class="btn btn-light" id="Gérer les doublons">Gérer les doublons</button>
+              <button type="button" class="btn btn-light" id="Doublons">Gérer les doublons</button>
               <button type="button" class="btn btn-light" id="Compter">Compter</button>
               <button type="button" class="btn btn-light mesure" id="Moyenne">Moyenne</button>
               <button type="button" class="btn btn-light mesure" id="Minimum">Minimum</button>
