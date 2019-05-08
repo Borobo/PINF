@@ -92,7 +92,7 @@ function supprimerTable($idTable)
 //////////////////////////////////////////////////////////////////////////////
 
 function listerColonnes($idTable) {
-	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable GROUP BY id ORDER BY id ASC";
+	$SQL = "SELECT * FROM colonne WHERE idTab=$idTable ORDER BY id";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -115,7 +115,7 @@ function supprimerCol($idCol){
 
 function listerData($idCol)
 {
-	$SQL = "SELECT * FROM data WHERE idColonne='$idCol GROUP BY idColonne ORDER BY idColonne ASC'";
+	$SQL = "SELECT * FROM data WHERE idColonne='$idCol' ORDER BY id";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -136,11 +136,39 @@ function supprimerData($idData){
 
 }
 
-function addData($id, $val, $type){
+function addData($id, $val = ""){
+	$SQL = "SELECT * FROM colonne WHERE id = $id";
+	$res = parcoursRs(SQLSelect($SQL));
+	$ai = $res[0]["A_I"];
+	$dbl = $res[0]["UNIQ"];
+	$type = $res[0]["type"];
+
+	if($ai == true){
+		$SQL = "SELECT MAX(valInt) FROM data WHERE idColonne=$id";
+		$res = SQLGetChamp($SQL);
+		$SQL = "INSERT INTO data(valInt, idColonne) VALUES ($res+1,'$id')";
+
+		return SQLInsert($SQL);
+	}
+	if($dbl == true){
+		//TODO : ajout sans dbl
+	}
+
 	if($type == "Nombre")
 		$valType = "valInt";
 	else
 		$valType = "valChar";
+
+	if($val != "NULL")
+		$SQL = "INSERT INTO data($valType, idColonne) VALUES ('$val','$id')";
+	else
+		$SQL = "INSERT INTO data($valType, idColonne) VALUES (NULL,'$id')";
+
+	return SQLInsert($SQL);
+}
+
+function supprimerDataCol($idColonne){
+	$SQL = "DELETE FROM data WHERE idColonne = $idColonne";
 
 	return SQLDelete($SQL);
 }

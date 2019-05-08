@@ -144,6 +144,8 @@ include("../unHeader.php");
         //Permet d'ajouter une table en cliquant sur Valider dans le popup
         $(document).on("click", "#validate", function(){
             console.log($("#nomTable").val());
+            ai = $('#autoIncrement').prop('checked');
+            dbl = $("#doublons").prop('checked');
             $.getJSON("../data.php", {
                 action : "setTable",
                 label : $("#nomTable").val()
@@ -159,7 +161,9 @@ include("../unHeader.php");
                             idTable : oRep.idTable,
                             labelCol : $(this).find(".input").val(),
                             descCol : $(this).find(".desc").val(),
-                            type : $(this).children('.type').val()
+                            type : $(this).children('.type').val(),
+                            ai: ai,
+        					dbl: dbl
                         }, function(){
                             $("#popup-table").find("input").val("");
                             $("#popup-table").find(".desc").val("");
@@ -219,26 +223,32 @@ include("../unHeader.php");
         });
         //Permet de créer une colonne dans une table à partir de la popup de création de colonne.
         $(document).on("click", "#popup-col .btn-primary", function(){
-            console.log($("#popup-col input[placeholder=Description]").val());
-            if(leLabel = $("#popup-col input[placeholder=Label]").val()){
-                $.getJSON("../data.php", {
-                    action : "setColonne",
-                    idTable: idDeLaTable,
-                    labelCol: $("#popup-col input[placeholder=Label]").val(),
-                    descCol: $("#popup-col input[placeholder=Description]").val(),
-                    type: $("#popup-col select").val()
-                },function(){
-                    console.log("DONE");
-                    window.location.reload();
-                })
-            }else{
-                var alertBox = $("<div class='alert alert-danger'>")
-                    .html("<strong>Alerte</strong> : Le label est obligatoire");
-                $(".alert").remove();
-                $("#content").append(alertBox);
-                setTimeout(function(){ alertBox.fadeOut("slow"); }, 5000);
-            }
-        });
+			var ai,dbl;
+
+			ai = $('#autoIncrement').prop('checked');
+			dbl = $("#doublons").prop('checked');
+
+			if(leLabel = $("#popup-col input[placeholder=Label]").val()){
+				$.getJSON("../data.php", {
+					action : "setColonne",
+					idTable: idDeLaTable,
+					labelCol: $("#popup-col input[placeholder=Label]").val(),
+					descCol: $("#popup-col input[placeholder=Description]").val(),
+					type: $("#popup-col select").val(),
+					ai: ai,
+					dbl: dbl
+				},function(){
+					console.log("DONE");
+					window.location.reload();
+				})
+			}else{
+				var alertBox = $("<div class='alert alert-danger'>")
+					.html("<strong>Alerte</strong> : Le label est obligatoire");
+				$(".alert").remove();
+				$("#content").append(alertBox);
+				setTimeout(function(){ alertBox.fadeOut("slow"); }, 5000);
+			}
+		})
         //Permet de modifier le nom d'une colonne en double cliquant dessus
         $(document).on("dblclick", ".text-left", function(){
             if (SUPERADMIN == true || ADMIN == true) {
@@ -248,6 +258,8 @@ include("../unHeader.php");
                     .data("valInit", nomColonne);
                 $(this).replaceWith(nextTA);
             }
+        });
+
 		$(document).on('change', '.type', function() {
 			if($(this).val() == "Nombre")
 				$("#autoIncrement").removeAttr("disabled");
@@ -256,7 +268,7 @@ include("../unHeader.php");
 			}
 		});
 
-        });
+
 
         $(document).on("keydown",
             "textarea",
