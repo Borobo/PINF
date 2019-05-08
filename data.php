@@ -75,14 +75,6 @@ session_start();
 					$data["superadmin"] = $_SESSION["superadmin"];
 				break;
 
-				case 'addLigne' :
-					if ($idCol = valider("idCol")){
-						if ($newVal = valider("newVal"));
-						else $newVal = "NULL";
-						addData($idCol, $newVal);
-					}
-				break;
-
 				// BDD //////////////////////////////////////////////////////
 
 				case 'creerBDD'	:
@@ -139,6 +131,14 @@ session_start();
 
 	        		break;
 
+                case 'afficherToutesBDD':
+
+                    $SQL = "SELECT bdd.nom,bdd.id,bdd.description FROM bdd WHERE bdd.creee = 1";
+
+                    $data["bdd"]=parcoursRs(SQLSelect($SQL));
+
+                    break;
+
                 case 'afficherBDDproposes':
 
                     $idUser = $_SESSION["idUser"];
@@ -157,13 +157,19 @@ session_start();
 
 					break;
 
-          case 'afficherLaBDD':
+                case 'afficherLaBDD':
 
 					$SQL = "SELECT * FROM bdd WHERE id=$idBdd";
 					$data["bdd"]=parcoursRs(SQLSelect($SQL));
 
 					break;
 
+
+                case 'supprimerLaBdd':
+
+					$idBdd = valider("idBdd");
+						$data["return"] = supprimerBDD($idBdd);
+                    break;
 
 				case 'idDeBdd':
 
@@ -174,13 +180,24 @@ session_start();
 
 					break;
 
+				case 'supprimerBdd':
+
+					$idUser = $_SESSION["idUser"];
+
+					$SQL = "SELECT nom,id,description FROM bdd WHERE bdd.idCreateur = $idUser ORDER BY id DESC";
+					$data["bdd"]=parcoursRs(SQLSelect($SQL));
+
+					break;
+
+
 				case 'updateGrade':
 					if($newGrade = valider("newGrade"));
+					if($idBdd = $_SESSION["idBDD"]);
 					if($idUser = valider("idUser")){
 						if($newGrade == "Utilisateur")
-							$SQL = "UPDATE liste_user SET admin=FALSE WHERE idUser = $idUser";
+							$SQL = "UPDATE liste_user SET admin=FALSE WHERE idUser = $idUser AND idBdd = $idBdd";
 						else if($newGrade == "Admin")
-							$SQL = "UPDATE liste_user SET admin=TRUE WHERE idUser = $idUser";
+							$SQL = "UPDATE liste_user SET admin=TRUE WHERE idUser = $idUser AND idBdd = $idBdd";
 						if($data["return"] = SQLUpdate($SQL)){
 							 $data["feedback"] = "Données mises à jour";
 						 }
@@ -193,10 +210,10 @@ session_start();
 				case 'setTable' :
 				if ($label = valider("label"))
 				{
-					$idBdd = 1;
+					$idBdd = $_SESSION["idBDD"];
 
 					$idUser = $_SESSION["idUser"];
-					//$data["idTable"] = $_SESSION["admin"];
+
 					$data["idTable"] = mkTable($label,$idBdd,$idUser);
 
 				}
@@ -209,8 +226,6 @@ session_start();
                     $data["boards"] = listerTables($bdd);
 					if(isset($_SESSION["idTAB"]))
 						$data["idTable"] = $_SESSION["idTAB"];
-
-
                     break;
 
                 case 'getLaTable':
@@ -233,14 +248,11 @@ session_start();
 
 				// Colonnes //////////////////////////////////////////////////
 				case 'setColonne' :
-
 					if($idTable = valider("idTable"))
 					if($labelCol = valider("labelCol"))
-					if($type = valider("type"))
-					if($ai = valider("ai"))
-					if($dbl = valider("dbl")){
+					if($type = valider("type")){
 						$descCol = valider("descCol");
-						mkCol($idTable, $labelCol, $descCol, $type, $ai, $dbl);
+						mkCol($idTable, $labelCol, $descCol, $type);
 					}
 				break;
 
