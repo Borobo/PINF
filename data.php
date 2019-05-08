@@ -76,11 +76,10 @@ session_start();
 				break;
 
 				case 'addLigne' :
-					if ($idCol = valider("idCol"));
-					if ($type = valider("type")){
+					if ($idCol = valider("idCol")){
 						if ($newVal = valider("newVal"));
 						else $newVal = "NULL";
-						addData($idCol, $newVal, $type);
+						addData($idCol, $newVal);
 					}
 				break;
 

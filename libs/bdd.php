@@ -98,7 +98,23 @@ function supprimerData($idData){
 
 }
 
-function addData($id, $val = "", $type){
+function addData($id, $val = ""){
+	$SQL = "SELECT * FROM colonne WHERE id = $id";
+	$res = parcoursRs(SQLSelect($SQL));
+	$ai = $res[0]["A_I"];
+	$dbl = $res[0]["UNIQ"];
+	$type = $res[0]["type"];
+
+	if($ai == true){
+		$SQL = "SELECT MAX(valInt) FROM data WHERE idColonne=$id";
+		$res = SQLGetChamp($SQL);
+		$SQL = "INSERT INTO data(valInt, idColonne) VALUES ($res+1,'$id')";
+
+		return SQLInsert($SQL);
+	}
+	if($dbl == true){
+		//TODO : ajout sans dbl
+	}
 
 	if($type == "Nombre")
 		$valType = "valInt";

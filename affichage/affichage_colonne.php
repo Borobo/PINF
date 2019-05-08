@@ -38,9 +38,9 @@ include ("../unHeader.php");
         var div = $("<div class='popup-col'>");
         var title = $("<p>").html(label);
         if(type == "Texte")
-            var input = $("<input type=\"text\" />").data("idCol", idCol).data("type", type);
+            var input = $("<input type=\"text\" />").data("idCol", idCol);
         else
-            var input = $("<input type=\"number\" />").data("idCol", idCol).data("type", type);
+            var input = $("<input type=\"number\" />").data("idCol", idCol);
         div.append(title).append(input);
         $(".modal-body").append(div);
     }
@@ -672,25 +672,28 @@ include ("../unHeader.php");
 
     $(document).on('click', '#popup .btn-success', function(event) {
         $(".modal-body div").each(function(){
+            console.log($(this));
             input = $(this).children('input');
             val = input.val();
+            console.log(input);
+            console.log(val);
             $.ajax({
                 url: '../data.php',
                 async : false,
                 data: {
                     action: 'addLigne',
                     idCol: input.data("idCol"),
-                    newVal: val,
-                    type: input.data("type")
+                    newVal: val
                 }
 
             })
             .done(function() {
-                $("#popup").remove();
-                affichageData();
+                console.log("DONE");
             })
 
         });
+        $("#popup").remove();
+        affichageData();
     });
     </script>
 
