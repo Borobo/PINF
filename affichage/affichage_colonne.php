@@ -79,7 +79,7 @@ include ("../unHeader.php");
                       var colP = modelJP.clone(true).html(meta2.label).attr("class","labCol").css("font-weight","bold").css('font-size', '12pt');;
                       var unLabelCol = modelJLabCol.clone(true).append(colP).data("idColonne",meta2.id);
 
-                      var uneColonne = modelJColonne.clone(true).append(unLabelCol);
+                      var uneColonne = modelJColonne.clone(true).append(unLabelCol).data("idColonne",meta2.id);
 
                       //On récupère les data de chaque colonne
                       $.getJSON("../data.php",{
@@ -92,17 +92,17 @@ include ("../unHeader.php");
                             meta3=oData.data[k];
                             if(meta3.valInt == null){
                                 if(k%2==0)
-                                    dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
+                                    dataP.html(meta3.valChar).attr("class","data").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null).data("position",k);
                                 else
-                                    dataP.html(meta3.valChar).attr("class","data data-2").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null);
+                                    dataP.html(meta3.valChar).attr("class","data data-2").data("idColonne",meta2.id).data("valChar",meta3.valChar).data("idData",meta3.id).data("valInt",null).data("position",k);
 
                                     unLabelCol.append(dataP).data("valInt",0);
                             }
                             else{
                                 if(k%2==0)
-                                    dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+                                    dataP.html(meta3.valInt).attr("class","data").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null).data("position",k);
                                 else
-                                    dataP.html(meta3.valInt).attr("class","data data-2").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null);
+                                    dataP.html(meta3.valInt).attr("class","data data-2").data("idColonne",meta2.id).data("valInt",meta3.valInt).data("idData",meta3.id).data("valChar",null).data("position",k);
                               unLabelCol.append(dataP).data("valInt",1);
                             }
                           }
@@ -137,7 +137,9 @@ include ("../unHeader.php");
             }
 
           });
+          var barre = $("<div class='input-group'></div>").append("<input id='recherche' type='text' class='form-control' name='recherche' placeholder='Barre de recherche'>");
 
+          $("#nomTab").after(barre);
           //affichage des colonnes et des data de la table
           affichageData();
 
@@ -286,7 +288,8 @@ include ("../unHeader.php");
 
        $(".btn-light").each(function(){
          $( this).removeClass("disabled");
-         $(this).attr("id",$(this).html());
+         if($(this).html() == "Gérer les doublons") $(this).attr("id","Doublons");
+         else $(this).attr("id",$(this).html());
          if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
        });
 
@@ -380,7 +383,8 @@ include ("../unHeader.php");
 
           $(".btn-light").each(function(){
             $( this).removeClass("disabled");
-            $(this).attr("id",$(this).html());
+            if($(this).html() == "Gérer les doublons") $(this).attr("id","Doublons");
+            else $(this).attr("id",$(this).html());
             if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
           });
       });
@@ -391,13 +395,14 @@ include ("../unHeader.php");
       $(document).on("click","#Annuler",function(){
           $(".btn-light").each(function(){
             $( this).removeClass("disabled");
-            $(this).attr("id",$(this).html());
+            if($(this).html() == "Gérer les doublons") $(this).attr("id","Doublons");
+            else $(this).attr("id",$(this).html());
             if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
           });
           affichageData();
           $("#Supprimer").attr("class","btn btn-light");
           $("#Modifier").attr("class","btn btn-light");
-
+          $("#Copier").attr("class","btn btn-light");
       });
 
       $(document).on('click', '#popup-Annuler', function(event) {
@@ -510,7 +515,8 @@ include ("../unHeader.php");
         $(".btn-light").each(function(){
           $(this).removeClass("disabled");
           if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
-          $(this).attr("id",$(this).html());
+          if($(this).html() == "Gérer les doublons") $(this).attr("id","Doublons");
+          else $(this).attr("id",$(this).html());
         });
         $(this).data("activation",0);
         $(this).attr("class","btn btn-light mesure");
@@ -633,8 +639,6 @@ include ("../unHeader.php");
             nbData += 1;
         }
       });
-      console.log(som);
-      console.log(nbData);
       moy = som/nbData;
 
       //On récupère le label de la colonne
@@ -660,11 +664,137 @@ include ("../unHeader.php");
 
     });
 
-    $(document).on("click","#Gérer les doublons",function(){
+    $(document).on("click","#Doublons",function(){
 
-      console.log("je gère");
+  $(".colonnes").each(function(){
+    $(this).addClass("doublons");
+  });
 
-    })
+  div = modelJLabel.clone().attr("class","divInfo modif");
+  info = modelJLabel.clone().attr("class","alert alert-info").html("Sélectionnez les colonnes où les doublons doivent être enlevés");
+  info2 = modelJLabel.clone().attr("class","alert alert-info").html("Ne rien sélectionner pour enlever les doublons de toutes les colonnes");
+  div.append(info).append(info2).css("margin","5px");
+
+  $(".container-colonnes").after(div);
+  });
+
+  $(document).on("click",".doublons",function(){
+
+
+    var idCol = $(this).data("idColonne");
+    var valData,position;
+    var i=0;
+    $(".data").each(function(){
+      $(this).data("flag",0);
+      if(idCol == $(this).data("idColonne")){
+        valData = $(this).html();
+        position = $(this).data("position");
+        $(this).data("flag",1);
+        $(".data").each(function(){
+
+          i = i+1;
+          if(idCol == $(this).data("idColonne") && valData == $(this).html() && ($(this).data("flag") == undefined || $(this).data("flag") == 0)){
+
+            console.log("YA UN DOUBLON");
+            console.log(i);
+            console.log($(this).html());
+            console.log($(this).data("position"));
+          }
+
+        });
+
+      }
+
+    });
+
+  });
+
+
+    $(document).on("click","#Copier",function(){
+
+      $("#Copier").attr("class","btn btn-success");
+      $(".btn-light").each(function(){
+        $(this).addClass("disabled");
+        $(this).removeAttr("id");
+        if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
+      });
+
+      $(".data").addClass("dataCopiable").data("copie","0");
+
+      $(".modif").css("display","none");
+
+      $(".container-colonnes").after($("<button type='button' class='btn btn-danger modif' id='Annuler'>Annuler</button>"));
+      $(".container-colonnes").after($("<button type='button' class='btn btn-info modif' id='ConfirmCopie'>Confimer copie</button>").css("margin","5px"));
+
+      div = modelJLabel.clone().attr("class","divInfo modif");
+      info = modelJLabel.clone().attr("class","alert alert-info").html("Cliquez sur les lignes à copier");
+      div.append(info).css("margin","5px").css("display","flex");
+
+      $(".container-colonnes").after(div);
+
+    });
+
+    $(document).on("click",".dataCopiable",function(){
+
+      console.log($(this).data("position"));
+      var pos = $(this).data("position");
+
+      $(".dataCopiable").each(function(){
+        if(pos == $(this).data("position")){
+          if($(this).data("copie") == 0){
+            $(this).css("background-color","yellow");
+            $(this).data("copie","1");
+          }
+
+          else{
+            $(this).css("background-color","rgb(134, 138, 143)");
+            $(this).data("copie","0");
+          }
+        }
+      });
+    });
+
+    $(document).on("click","#ConfirmCopie",function(){
+      var text="";
+      nbData = 0;
+      var i = 0;
+      var flag = 0;
+
+        $(".dataCopiable").each(function(){
+          nbData = $(this).data("position");
+        });
+
+        for(i=0;i<=nbData;i++){
+           $(".dataCopiable").each(function(){
+              if(i == $(this).data("position")){
+                if($(this).data("copie") == 1){
+                  if(flag == 0) text = text + $(this).html();
+                  else text = text + " " + $(this).html();
+                  flag=1;
+                }
+              }
+           });
+           if(flag == 1) text = text + "\n";
+          flag = 0;
+        }
+
+        var $temp = $("<textarea>");
+        $(".container-colonnes").after($temp);
+        $temp.val(text).select();
+        document.execCommand("copy");
+        $temp.remove();
+
+        $("#Copier").attr("class","btn btn-light");
+        $(".btn-light").each(function(){
+          $( this).removeClass("disabled");
+          if($(this).html() == "Gérer les doublons") $(this).attr("id","Doublons");
+          else $(this).attr("id",$(this).html());
+          if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
+        });
+        $(".data").removeClass("dataCopiable").css("background-color","rgb(134, 138, 143)");
+
+        $(".modif").remove();
+    });
 
     $(document).on("click","#ajouter", function(){
         $("#popup").fadeToggle(100,'swing');
@@ -688,16 +818,54 @@ include ("../unHeader.php");
 
             })
             .done(function() {
-                console.log("DONE");
             })
 
         });
         $("#popup").remove();
         affichageData();
     });
+
+    $(document).on("keyup",
+    "#recherche",
+    function (contexte){
+
+      if(contexte.which == 13){
+        div = modelJLabel.clone().attr("class","divInfo modif");
+        info = modelJLabel.clone().attr("class","alert alert-info").html("Appuyez sur Echap pour annuler la recherche");
+        div.append(info).css("margin","5px");
+        $(".container-colonnes").after(div);
+
+        var val=$("#recherche").val();
+        var position = [];
+        $(".data").each(function(){
+          var data = $(this).html();
+          reg = new RegExp(val);
+          if(reg.test(data)) position.push($(this).data("position"));
+
+        });
+        var flag = 0;
+        $(".data").each(function(){
+          flag = 0;
+          for(var i=0; i<position.length; i++){
+            if(position[i] == $(this).data("position")) flag = 1;
+          }
+          if(flag == 0) $(this).css("display","none");
+        });
+      }
+
+      if(contexte.which == 27){
+        $("#recherche").val("");
+        affichageData();
+      }
+
+    });
+
     </script>
 
     <style>
+    /*    .test{
+            background-color: yellow;
+        }*/
 
         #content{
             display: flex;
@@ -799,6 +967,7 @@ include ("../unHeader.php");
           }
 
           .data{
+            text-align: center;
             margin-bottom:10px;
             display:flex;
           }
@@ -840,13 +1009,20 @@ include ("../unHeader.php");
 
           .dataModifiable{
             background-color: lightgrey;
-            height:20px;
-          }
+            height:25px;
+        }
+        .dataCopiable{
+          background-color: lightgrey;
+          height:25px;
+        }
+        .dataCopiable:hover{
+          cursor:pointer;
+        }
 
-          .active{
-                background-color: rgba(70, 125, 247, 0.77);
-                box-shadow: 1px 1px 5px rgba(0,0,0,0.17);
-          }
+      .active{
+        background-color: rgba(70, 125, 247, 0.77);
+        box-shadow: 1px 1px 5px rgba(0,0,0,0.17);
+      }
 
       .compter:hover{
         background-color:lightgreen;
@@ -904,6 +1080,12 @@ include ("../unHeader.php");
           margin-right: 10px;
           text-align: center;
       }
+      .doublons{
+          cursor:pointer;
+        }
+        .doublons:hover{
+            background-color: lightgreen;
+        }
 
 
     </style>
@@ -916,7 +1098,8 @@ include ("../unHeader.php");
               <button type="button" class="btn btn-light" id="ajouter">Ajouter</button>
               <button type="button" class="btn btn-light" id="Supprimer">Supprimer</button>
               <button type="button" class="btn btn-light" id="Modifier">Modifier</button>
-              <button type="button" class="btn btn-light">Gérer les doublons</button>
+              <button type="button" class="btn btn-light" id="Copier">Copier</button>
+              <button type="button" class="btn btn-light" id="Doublons">Gérer les doublons</button>
               <button type="button" class="btn btn-light" id="Compter">Compter</button>
               <button type="button" class="btn btn-light mesure" id="Moyenne">Moyenne</button>
               <button type="button" class="btn btn-light mesure" id="Minimum">Minimum</button>
