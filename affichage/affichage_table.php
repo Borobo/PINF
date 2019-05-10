@@ -545,6 +545,7 @@ include("../unHeader.php");
         <div id="name" class="lead font-weight-bold text-uppercase ml-sm-5"><u>'.$_SESSION["nomBdd"].'</u>';
         if($_SESSION["admin"]||$_SESSION["superadmin"])
             echo' <a href="gerer_les_droits.php"><button type="button" class="btn btn-secondary option" id="gererDroits">Gérer les droits</button></a>';
+            echo' <a href="ajouter_user.php"><button type="button" class="btn btn-secondary option" id="ajouterUser">Ajouter User</button></a>';
 
              echo '</div>';
 

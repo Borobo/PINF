@@ -75,6 +75,20 @@ session_start();
 					$data["superadmin"] = $_SESSION["superadmin"];
 				break;
 
+                case 'getUsersNonBdd' :
+                    $idBdd = $_SESSION["idBDD"];
+                    $data["users"] = listerUsersNonBdd($idBdd);
+                    $data["idUser"] = $_SESSION["idUser"];
+                    $data["superadmin"] = $_SESSION["superadmin"];
+                    break;
+
+				case 'addUser':
+					$idBdd = $_SESSION["idBDD"];
+					$idUser = valider("idUser");
+					$data["user"] = addUser($idBdd,$idUser);
+					$data["return"] = 1;
+					break;
+
 				case 'addLigne' :
 					if ($idCol = valider("idCol")){
 						if ($newVal = valider("newVal"));

@@ -18,6 +18,21 @@ function listerUsersBdd($idBdd)
 	return parcoursRs(SQLSelect($SQL));
 }
 
+function listerUsersNonBdd($idBdd)
+{
+    // liste tous les Tables disponibles, triés par valeur du champ 'ordre' croissant
+    $SQL = "SELECT id, nom, prenom FROM user WHERE id NOT IN (
+    		SELECT id FROM user, liste_user
+   			WHERE idBdd = $idBdd AND id=idUser)";
+    return parcoursRs(SQLSelect($SQL));
+}
+
+function addUser($idBdd,$idUser){
+    $SQL = "INSERT INTO liste_user(idBdd,idUser,admin) VALUES('$idBdd','$idUser',0)";
+    return SQLInsert($SQL);
+}
+
+
 function supprimerBDD($idBdd)
 {
     $SQL = "DELETE FROM bdd WHERE id = $idBdd";
