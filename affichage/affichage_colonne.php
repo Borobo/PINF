@@ -495,7 +495,9 @@ include ("../unHeader.php");
       });
 /////////////////////FIN Supprimer un message informant le nombre de données d'une colonne///////////////////
 
+/////////////////////Clique sur une fonction compter,maximum,minimum,moyenne////////////////////////////////
     $(document).on("click",".mesure",function(){
+      //On vérifie si on active ou on désactive la fonction
       if($(this).data("activation") == 0){
         $(this).data("activation",1);
         $(this).attr("class","btn btn-success mesure");
@@ -505,6 +507,7 @@ include ("../unHeader.php");
             $(this).addClass("mesurable");
         });
 
+        //On fait en sorte de désactivé les fonctions autres que celle sélectionné
         $(".btn-light").each(function(){
           $(this).addClass("disabled");
           if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).removeClass("mesure");
@@ -512,6 +515,7 @@ include ("../unHeader.php");
         });
       }
       else{
+        //On fait en sorte de réactivé les fonctions qui ont été désactivé pendant l'utilisation d'une autre fonction
         $(".btn-light").each(function(){
           $(this).removeClass("disabled");
           if($(this).html() == "Maximum" | $(this).html() == "Minimum" | $(this).html() == "Moyenne") $(this).addClass("mesure");
@@ -525,10 +529,10 @@ include ("../unHeader.php");
         });
           $(".divInfo").css("display","none");
       }
-
-
     });
+/////////////////////FIN Clique sur une fonction compter,maximum,minimum,moyenne////////////////////////////
 
+/////////////////////Clique sur la fonction maximum////////////////////////////////////////////////////////
     $(document).on("click","#Maximum",function(){
       if($(this).data("activation")){
         $(".card-body").each(function(){
@@ -536,9 +540,10 @@ include ("../unHeader.php");
             $(this).addClass("max");
         });
       }
-
     });
+/////////////////////FIN Clique sur la fonction maximum////////////////////////////////////////////////////
 
+/////////////////////Clique sur la fonction minimum///////////////////////////////////////////////////////
     $(document).on("click","#Minimum",function(){
       if($(this).data("activation")){
         $(".card-body").each(function(){
@@ -547,7 +552,9 @@ include ("../unHeader.php");
         });
       }
     });
+/////////////////////FIN Clique sur la fonction minimum///////////////////////////////////////////////////
 
+/////////////////////Clique sur la fonction moyenne//////////////////////////////////////////////////////
     $(document).on("click","#Moyenne",function(){
       if($(this).data("activation")){
         $(".card-body").each(function(){
@@ -556,11 +563,13 @@ include ("../unHeader.php");
         });
       }
     });
+/////////////////////FIN Clique sur la fonction moyenne//////////////////////////////////////////////////
 
+/////////////////////Clique sur une colonne pour connaitre son maximum//////////////////////////////////
     $(document).on("click",".max",function(){
-
       var idColonne = $(this).data("idColonne");
       var max = null;
+      //On récupère la valeur max de la colonne
       $(".data").each(function(){
         if(idColonne == $(this).data("idColonne")){
           if(max == null)
@@ -591,11 +600,14 @@ include ("../unHeader.php");
         });
 
     });
+/////////////////////FIN Clique sur une colonne pour connaitre son maximum//////////////////////////////
 
+/////////////////////Clique sur une colonne pour connaitre son minimum/////////////////////////////////
     $(document).on("click",".min",function(){
 
       var idColonne = $(this).data("idColonne");
       var min = null;
+      //On récupère la valeur minimum de la colonne
       $(".data").each(function(){
         if(idColonne == $(this).data("idColonne")){
           if(min == null)
@@ -624,15 +636,17 @@ include ("../unHeader.php");
           div.append(info).append(btn).css("margin","5px").css("display","flex");
           $(".container-colonnes").after(div);
         });
-
     });
+/////////////////////FIN Clique sur une colonne pour connaitre son minimum/////////////////////////////
 
+/////////////////////Clique sur une colonne pour connaitre sa moyenne/////////////////////////////////
     $(document).on("click",".moy",function(){
 
       var idColonne = $(this).data("idColonne");
       var som = 0;
       var moy;
       var nbData = 0;
+      //On récupère la valeur moyenne de la colonne
       $(".data").each(function(){
         if(idColonne == $(this).data("idColonne")){
             som = parseInt(som) + parseInt($(this).html());
@@ -661,10 +675,11 @@ include ("../unHeader.php");
           div.append(info).append(btn).css("margin","5px").css("display","flex");
           $(".container-colonnes").after(div);
         });
-
     });
+/////////////////////FIN Clique sur une colonne pour connaitre sa moyenne/////////////////////////////
 
-    $(document).on("click","#Doublons",function(){
+/////////////////////Fonction gérer les doublons/////////////////////////////////////////////////////
+  $(document).on("click","#Doublons",function(){
 
   $(".colonnes").each(function(){
     $(this).addClass("doublons");
@@ -677,9 +692,10 @@ include ("../unHeader.php");
 
   $(".container-colonnes").after(div);
   });
+/////////////////////FIN Fonction gérer les doublons/////////////////////////////////////////////////
 
+/////////////////////Clique sur une colonne pour enlever ses doublons (PAS FINIE)////////////////////
   $(document).on("click",".doublons",function(){
-
 
     var idCol = $(this).data("idColonne");
     var valData,position;
@@ -694,22 +710,14 @@ include ("../unHeader.php");
 
           i = i+1;
           if(idCol == $(this).data("idColonne") && valData == $(this).html() && ($(this).data("flag") == undefined || $(this).data("flag") == 0)){
-
-            console.log("YA UN DOUBLON");
-            console.log(i);
-            console.log($(this).html());
-            console.log($(this).data("position"));
           }
-
         });
-
       }
-
     });
-
   });
+/////////////////////FIN Clique sur une colonne pour enlever ses doublons (PAS FINIE)////////////////
 
-
+/////////////////////Fonction copier une ou plusieurs lignes////////////////////////////////////////
     $(document).on("click","#Copier",function(){
 
       $("#Copier").attr("class","btn btn-success");
@@ -733,10 +741,11 @@ include ("../unHeader.php");
       $(".container-colonnes").after(div);
 
     });
+/////////////////////FIN Fonction copier une ou plusieurs lignes////////////////////////////////////
 
+/////////////////////Clique sur la ligne à copier//////////////////////////////////////////////////
     $(document).on("click",".dataCopiable",function(){
 
-      console.log($(this).data("position"));
       var pos = $(this).data("position");
 
       $(".dataCopiable").each(function(){
@@ -753,7 +762,9 @@ include ("../unHeader.php");
         }
       });
     });
+/////////////////////Clique sur la ligne à copier//////////////////////////////////////////////////
 
+/////////////////////Confirmation copie des lignes/////////////////////////////////////////////////
     $(document).on("click","#ConfirmCopie",function(){
       var text="";
       nbData = 0;
@@ -763,7 +774,7 @@ include ("../unHeader.php");
         $(".dataCopiable").each(function(){
           nbData = $(this).data("position");
         });
-
+        //ON récupère les valeurs de chaque élément de la ligne
         for(i=0;i<=nbData;i++){
            $(".dataCopiable").each(function(){
               if(i == $(this).data("position")){
@@ -778,12 +789,15 @@ include ("../unHeader.php");
           flag = 0;
         }
 
+
+        //on crée un textarea invisible avec le texte a copier pour l'enregistrer dans le presse papier
         var $temp = $("<textarea>");
         $(".container-colonnes").after($temp);
         $temp.val(text).select();
         document.execCommand("copy");
         $temp.remove();
 
+        //ON réactive les boutons des autres fonctions à la fin de celle ci
         $("#Copier").attr("class","btn btn-light");
         $(".btn-light").each(function(){
           $( this).removeClass("disabled");
@@ -795,6 +809,7 @@ include ("../unHeader.php");
 
         $(".modif").remove();
     });
+/////////////////////FIN Confirmation copie des lignes/////////////////////////////////////////////
 
     $(document).on("click","#ajouter", function(){
         $("#popup").fadeToggle(100,'swing');
@@ -825,17 +840,20 @@ include ("../unHeader.php");
         affichageData();
     });
 
+/////////////////////Fonction recherche selon un mot/////////////////////////////////////////////
     $(document).on("keyup",
     "#recherche",
     function (contexte){
-
+      //Lorsque l'on appuie sur entré après avoir tapé un mot dans la barre de recherche on lance la fonction
       if(contexte.which == 13){
+        //Bulle informative pour quitter la fonction de recherche
         div = modelJLabel.clone().attr("class","divInfo modif");
         info = modelJLabel.clone().attr("class","alert alert-info").html("Appuyez sur Echap pour annuler la recherche");
         div.append(info).css("margin","5px");
         $(".divInfo").empty();
         $(".container-colonnes").after(div);
 
+        //ON enregistre les position des mots correspondant à la recherche
         var val=$("#recherche").val();
         var position = [];
         $(".data").each(function(){
@@ -845,6 +863,7 @@ include ("../unHeader.php");
 
         });
         var flag = 0;
+        //On fait un display:none pour toutes les lignes n'ayant pas la position enregistrée
         $(".data").each(function(){
           flag = 0;
           for(var i=0; i<position.length; i++){
@@ -854,12 +873,14 @@ include ("../unHeader.php");
         });
       }
 
+      //L'appuie sur Echap fais quitter la fonction et on réaffiche toutes les data
       if(contexte.which == 27){
         $("#recherche").val("");
         affichageData();
       }
 
     });
+/////////////////////FIN Fonction recherche selon un mot/////////////////////////////////////////
 
     </script>
 
