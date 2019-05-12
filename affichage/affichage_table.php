@@ -261,8 +261,10 @@ include("../unHeader.php");
         });
 
 		$(document).on('change', '.type', function() {
-			if($(this).val() == "Nombre")
+			if($(this).val() == "Nombre"){
 				$("#autoIncrement").removeAttr("disabled");
+                $("#autoIncrement").removeProp('checked');
+            }
 			else {
 				$("#autoIncrement").attr('disabled', 'true');
                 $("#autoIncrement").prop('checked', false);
