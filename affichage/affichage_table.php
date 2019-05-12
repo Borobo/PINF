@@ -75,7 +75,6 @@ include("../unHeader.php");
                                     action : "getColonnes",
                                     idTable : meta.id},
                                 function(oCol){
-                                    console.log(oCol);
                                     for(var j=0; j<oCol.colonnes.length; j++){
                                         var meta2 = oCol.colonnes[j];
                                         //CREATION DUNE COLONNE////////////////////////////////////////////////////
@@ -92,6 +91,7 @@ include("../unHeader.php");
                                         .append($("<img>").attr("src","ressource/plus.png"))
                                         .data("idTable", meta.id)
                                         .data("nomTable", meta.label);
+                                    //Je stock des meta-données dans le div, pour pouvoir les re-utiliser plus tard.
                                     //Si l'utilisateur est admin ou superadmin, on affiche le boutton pour ajouter une colonne
                                     if(ADMIN == 1 || SUPERADMIN == 1)
                                         lesData.append(colPlus);
@@ -117,7 +117,6 @@ include("../unHeader.php");
 
         //Permet de stocker l'id de la table dans une variable de session
         $(document).on("click",".lien",function(){
-            console.log($(this).data("id"));
             $.getJSON("../data.php",{
                 action:"stockIdTable",
                 id:$(this).data("id")
@@ -139,7 +138,6 @@ include("../unHeader.php");
         //Permet d'ajouter une colonne dans le popup de création de table en cliquant sur le bouton de Ajouter une colonne
         $(document).on("click", "#popup-table-form #addCol", function(){
             $("#popup-table-cols").append(addCol.clone());
-            console.log($(".popup-table-addCol").length);
         });
 
         //Permet de supprimer une colonne dans le popup de création de table en cliquant sur la croix
@@ -150,20 +148,16 @@ include("../unHeader.php");
         //Permet d'ajouter une table en cliquant sur Valider dans le popup
         $(document).on("click", "#validate", function(){
             console.log($("#nomTable").val());
+            //ai = auto increment
+            //dbl = pas de doublons
             ai = $('#autoIncrement').prop('checked');
             dbl = $("#doublons").prop('checked');
-            console.log(ai);
-            console.log(dbl);
             $.getJSON("../data.php", {
                 action : "setTable",
                 label : $("#nomTable").val()
             }, function(oRep){
-                //if(oRep)
                 if($(".popup-table-addCol").length > 0){
                     $(".popup-table-addCol").each(function(){
-                        console.log($(this).find(".input").val());
-                        console.log($(this).children('.type').val());
-                        //console.log(oRep.idTable);
                         $.getJSON("../data.php", {
                             action : "setColonne",
                             idTable : oRep.idTable,
@@ -179,7 +173,9 @@ include("../unHeader.php");
                         })
                     })
                 }
+                //rechargement de la page
                 window.location.reload();
+                // TODO : optimiser le code pour éviter les rechargements de la page
             })
         });
 
@@ -197,7 +193,6 @@ include("../unHeader.php");
                 action : "supprimerTable",
                 idTable : idDeLaTable
             }, function(oRep){
-                console.log(oRep.feedback);
                 window.location.reload();
             })
         });
@@ -213,6 +208,7 @@ include("../unHeader.php");
             })
         });
 
+        //Permet d'afficher le popup de création de colonne en cliquant sur le col-plus
         $(document).on("click", ".col-plus", function(){
             var unLabel = addLabel.clone();
             var uneDesc = addDesc.clone();
@@ -243,8 +239,7 @@ include("../unHeader.php");
 					ai: ai,
 					dbl: dbl
 				},function(){
-					console.log("DONE");
-					window.location.reload();
+					window.location.reload(); //TODO : à optimiser
 				})
 			}else{
 				var alertBox = $("<div class='alert alert-danger'>")
@@ -271,7 +266,6 @@ include("../unHeader.php");
 			else {
 				$("#autoIncrement").attr('disabled', 'true');
                 $("#autoIncrement").prop('checked', false);
-                console.log($("#autoIncrement"));
 			}
 		});
 
@@ -288,12 +282,10 @@ include("../unHeader.php");
                         idCol : idColonne,
                         newLabel : newLab
                     }, function(oRep){
-                        console.log("DONE");
                         var nextLabel = $("<p class='label-col'>").html(newLab);
                         var nextDel = $("<img class='del-col' src='ressource/delete.png'/>");
                         var nextDiv = $("<div class='card-body text-left'>").append(nextLabel).append(nextDel);
                         oldTA.replaceWith(nextDiv);
-                        //window.location.reload();
                     })
 
                 }

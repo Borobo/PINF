@@ -5,7 +5,7 @@ include("../unHeader.php");
 <head>
     <script>
         ///////MODELE////////////////////////////////////////////
-        var modelJUser = $("<div class='user px-4'>");
+        var modelJUser = $("<div class='user px-4 d-flex'>");
         var modelJDroit = $("<select class='custom-select mx-5'>")
             .append(
                 $("<option>").val("Admin").html("Admin")
@@ -27,7 +27,7 @@ include("../unHeader.php");
                     var unUser = modelJUser.clone();
                     var unAjouter = modelAjouter.clone().data("id",meta.id);
                     //$("option[value='Utilisateur']").attr("selected", "true");
-                    unUser.append($("<p>").html(meta.nom + " " + meta.prenom))
+                    unUser.append($("<p class='mr-auto'>").html(meta.nom + " " + meta.prenom))
                         .append(unAjouter);
                     $("#selection-user").append(unUser);
 
